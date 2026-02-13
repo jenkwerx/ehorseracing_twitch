@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        h1::before {
+            content: '💰 ';
+        }
+        
+        h1::after {
+            content: ' 💰';
+        }
+        
+        .setup-screen {
+            display: block;
+        }
+        
+        .game-screen {
+            display: none;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .stocks-header {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stock-box {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stock-box h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .stock-box h3::before {
+            content: '📊 ';
+        }
+        
+        .stock-price {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .stock-change {
+            font-size: 1em;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        
+        .stock-positive {
+            color: #86efac;
+        }
+        
+        .stock-negative {
+            color: #fca5a5;
+        }
+        
+        .players-grid {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .player-row {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.9em;
+        }
+        
+        .player-header {
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 8px;
+            color: #667eea;
+            text-align: center;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 6px;
+        }
+        
+        .player-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-rank {
+            font-weight: bold;
+            font-size: 1.1em;
+            width: 35px;
+            color: #667eea;
+        }
+        
+        .player-name {
+            flex: 1;
+            font-weight: 500;
+            margin-right: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: none;
+        }
+        
+        .player-stocks {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            margin-right: 8px;
+        }
+        
+        .stock-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .player-value {
+            font-weight: bold;
+            font-size: 1em;
+            min-width: 70px;
+            text-align: right;
+            margin-right: 8px;
+        }
+        
+        .player-changes {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 65px;
+            font-size: 0.85em;
+        }
+        
+        .round-change {
+            font-weight: 500;
+        }
+        
+        .overall-change {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        .positive {
+            color: #10b981;
+        }
+        
+        .negative {
+            color: #ef4444;
+        }
+        
+        .round-info {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+        
+        .winner-screen {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .winner-screen h2 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: celebrate 1s ease-in-out infinite;
+        }
+        
+        .winner-screen h2::before {
+            content: '💎💰🏆 ';
+        }
+        
+        .winner-screen h2::after {
+            content: ' 🏆💰💎';
+        }
+        
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .winner-name {
+            font-size: 2em;
+            color: #333;
+            margin: 20px 0;
+        }
+        
+        .winner-name::before {
+            content: '👑 ';
+        }
+        
+        .winner-name::after {
+            content: ' 👑';
+        }
+        
+        .winner-value {
+            font-size: 1.5em;
+            color: #10b981;
+            margin-bottom: 30px;
+        }
+        
+        .winner-value::before {
+            content: '💵 ';
+        }
+        
+        .winner-value::after {
+            content: ' 💵';
+        }
+        
+        .center-button {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="setup-screen" id="setupScreen">
+            <h1>🎮 Stock Market Game</h1>
+            <p style="margin-bottom: 15px; font-size: 1.1em;">Enter player names (one per line):</p>
+            <textarea id="playerInput" placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana"></textarea>
+            <div class="center-button">
+                <button onclick="startGame()">Start Game</button>
+            </div>
+        </div>
+        
+        <div class="game-screen" id="gameScreen">
+            <h1>📈 Stock Market Game</h1>
+            
+            <div class="stocks-header" id="stocksHeader"></div>
+            
+            <div class="round-info" id="roundInfo"></div>
+            
+            <div class="center-button">
+                <button id="nextRoundBtn" onclick="nextRound()">Next Round</button>
+            </div>
+            
+            <div class="players-grid" id="playersList"></div>
+        </div>
+        
+        <div class="winner-screen" id="winnerScreen">
+            <h2>🎉 WINNER! 🎉</h2>
+            <div class="winner-name" id="winnerName"></div>
+            <div class="winner-value" id="winnerValue"></div>
+            <button onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
+    
+    <script>
+        const STOCKS = [
+            { name: 'Energy', color: '#ef4444' },
+            { name: 'Tech', color: '#3b82f6' },
+            { name: 'Finance', color: '#10b981' },
+            { name: 'Healthcare', color: '#f59e0b' },
+            { name: 'Consumer', color: '#8b5cf6' }
+        ];
+        
+        let players = [];
+        let stocks = {};
+        let currentRound = 0;
+        let salt = '';
+        const MAX_ROUNDS = 20;
+        const STARTING_CASH = 250;
+        
+        function calcName(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+        
+        function getMD5(str) {
+            return CryptoJS.MD5(str).toString();
+        }
+        
+        function generateSalt() {
+            const now = new Date();
+            return `${now.getFullYear()}~${String(now.getMonth() + 1).padStart(2, '0')}~${String(now.getDate()).padStart(2, '0')}~${String(now.getHours()).padStart(2, '0')}~${String(now.getMinutes()).padStart(2, '0')}~${String(now.getSeconds()).padStart(2, '0')}`;
+        }
+        
+        function initializeStocks() {
+            stocks = {};
+            STOCKS.forEach(stock => {
+                stocks[stock.name] = {
+                    price: Math.floor(Math.random() * 51) + 50,
+                    color: stock.color,
+                    change: 0
+                };
+            });
+        }
+        
+        function startGame() {
+            const input = document.getElementById('playerInput').value;
+            const names = input.split('\n').filter(n => n.trim());
+            
+            if (names.length === 0) {
+                alert('Please enter at least one player name!');
+                return;
+            }
+            
+            const uniqueCalcNames = new Set();
+            players = [];
+            
+            names.forEach(name => {
+                const trimmed = name.trim();
+                const calc = calcName(trimmed);
+                if (calc && !uniqueCalcNames.has(calc)) {
+                    uniqueCalcNames.add(calc);
+                    players.push({
+                        displayName: trimmed,
+                        calcName: calc,
+                        cash: STARTING_CASH,
+                        stock: null,
+                        previousStock: null,
+                        shares: 0,
+                        previousValue: STARTING_CASH,
+                        startingValue: STARTING_CASH,
+                        roundStartValue: STARTING_CASH
+                    });
+                }
+            });
+            
+            if (players.length === 0) {
+                alert('No valid player names!');
+                return;
+            }
+            
+            salt = generateSalt();
+            currentRound = 0;
+            initializeStocks();
+            
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            renderStocks();
+            nextRound();
+        }
+        
+        function assignStocks() {
+            const playerHashes = players.map(p => ({
+                player: p,
+                hash: getMD5(`${currentRound}~${salt}~${p.calcName}`)
+            }));
+            
+            playerHashes.sort((a, b) => a.hash.localeCompare(b.hash));
+            
+            const stockNames = STOCKS.map(s => s.name);
+            const playersPerStock = Math.ceil(players.length / stockNames.length);
+            
+            playerHashes.forEach((item, index) => {
+                const stockIndex = Math.min(Math.floor(index / playersPerStock), stockNames.length - 1);
+                const stockName = stockNames[stockIndex];
+                const player = item.player;
+                
+                // Calculate current value before selling
+                const currentValue = player.stock ? player.shares * stocks[player.stock].price : player.cash;
+                
+                player.previousStock = player.stock;
+                player.roundStartValue = currentValue;
+                
+                player.stock = stockName;
+                player.shares = currentValue / stocks[stockName].price;
+            });
+        }
+        
+        function updateStockPrices() {
+            STOCKS.forEach(stock => {
+                const hash = getMD5(`${currentRound}~${salt}~${stock.name}`);
+                const hex = hash.substring(0, 6);
+                const value = parseInt(hex, 16);
+                const maxValue = Math.pow(16, 6);
+                
+                let changePercent;
+                
+                if (hex.startsWith('0000')) {
+                    changePercent = 10;
+                } else if (hex.startsWith('ffff')) {
+                    changePercent = -10;
+                } else {
+                    const normalized = (value / maxValue) * 8 - 4;
+                    changePercent = normalized;
+                }
+                
+                const oldPrice = stocks[stock.name].price;
+                stocks[stock.name].price = oldPrice * (1 + changePercent / 100);
+                stocks[stock.name].change = changePercent;
+            });
+        }
+        
+        function nextRound() {
+            if (currentRound >= MAX_ROUNDS) {
+                showWinner();
+                return;
+            }
+            
+            currentRound++;
+            
+            if (currentRound === 1) {
+                assignStocks();
+            } else {
+                updateStockPrices();
+                assignStocks();
+            }
+            
+            renderStocks();
+            renderPlayers();
+            
+            document.getElementById('roundInfo').textContent = `Round ${currentRound} of ${MAX_ROUNDS}`;
+            
+            if (currentRound >= MAX_ROUNDS) {
+                document.getElementById('nextRoundBtn').textContent = 'Show Winner';
+            }
+        }
+        
+        function renderStocks() {
+            const container = document.getElementById('stocksHeader');
+            container.innerHTML = '';
+            
+            STOCKS.forEach(stock => {
+                const data = stocks[stock.name];
+                const div = document.createElement('div');
+                div.className = 'stock-box';
+                div.style.backgroundColor = data.color;
+                
+                const changeText = data.change >= 0 ? `+${data.change.toFixed(2)}%` : `${data.change.toFixed(2)}%`;
+                const changeClass = data.change >= 0 ? 'stock-positive' : 'stock-negative';
+                
+                div.innerHTML = `
+                    <h3>${stock.name}</h3>
+                    <div class="stock-price">${data.price.toFixed(2)}</div>
+                    <div class="stock-change ${changeClass}">${changeText}</div>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+        
+        function renderPlayers() {
+            players.forEach(p => {
+                p.currentValue = p.shares * stocks[p.stock].price;
+            });
+            
+            players.sort((a, b) => b.currentValue - a.currentValue);
+            
+            const container = document.getElementById('playersList');
+            container.innerHTML = '';
+            
+            players.forEach((player, index) => {
+                const div = document.createElement('div');
+                div.className = 'player-row';
+                
+                // Round change is from when they bought to current value
+                const roundChange = ((player.currentValue - player.roundStartValue) / player.roundStartValue) * 100;
+                const roundChangeClass = roundChange >= 0 ? 'positive' : 'negative';
+                const roundChangeText = roundChange >= 0 ? `+${roundChange.toFixed(1)}%` : `${roundChange.toFixed(1)}%`;
+                
+                const overallChange = ((player.currentValue - player.startingValue) / player.startingValue) * 100;
+                const overallChangeClass = overallChange >= 0 ? 'positive' : 'negative';
+                const overallChangeText = overallChange >= 0 ? `+${overallChange.toFixed(1)}%` : `${overallChange.toFixed(1)}%`;
+                
+                let stocksHTML = '';
+                if (player.previousStock && player.previousStock !== player.stock) {
+                    stocksHTML = `
+                        <div class="stock-indicator" style="background-color: ${stocks[player.previousStock].color}">S</div>
+                        <div class="stock-indicator" style="background-color: ${stocks[player.stock].color}">B</div>
+                    `;
+                } else if (player.previousStock && player.previousStock === player.stock) {
+                    stocksHTML = `
+                        <div class="stock-indicator" style="background-color: ${stocks[player.stock].color}">H</div>
+                    `;
+                } else {
+                    stocksHTML = `
+                        <div class="stock-indicator" style="background-color: ${stocks[player.stock].color}">B</div>
+                    `;
+                }
+                
+                div.innerHTML = `
+                    <div class="player-header">${player.displayName}</div>
+                    <div class="player-content">
+                        <div class="player-rank">#${index + 1}</div>
+                        <div class="player-stocks">${stocksHTML}</div>
+                        <div class="player-value">${player.currentValue.toFixed(2)}</div>
+                        <div class="player-changes">
+                            <div class="round-change ${roundChangeClass}">${roundChangeText}</div>
+                            <div class="overall-change ${overallChangeClass}">${overallChangeText}</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+        
+        function showWinner() {
+            players.sort((a, b) => b.currentValue - a.currentValue);
+            const winner = players[0];
+            
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('winnerScreen').style.display = 'block';
+            document.getElementById('winnerName').textContent = winner.displayName;
+            document.getElementById('winnerValue').textContent = `Final Value: $${winner.currentValue.toFixed(2)}`;
+        }
+        
+        function resetGame() {
+            const playerNames = players.map(p => p.displayName).join('\n');
+            document.getElementById('playerInput').value = playerNames;
+            
+            document.getElementById('winnerScreen').style.display = 'none';
+            document.getElementById('setupScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

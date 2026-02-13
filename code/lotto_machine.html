@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotto Machine Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 50px;
+            font-size: 3em;
+            text-align: center;
+        }
+
+        .spin-all-button {
+            margin-bottom: 40px;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(145deg, #FF6B6B, #EE5A6F);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .spin-all-button:hover:not(:disabled) {
+            transform: scale(1.08);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+        }
+
+        .spin-all-button:active:not(:disabled) {
+            transform: scale(1.02);
+        }
+
+        .spin-all-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .machines-container {
+            display: flex;
+            gap: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1400px;
+        }
+
+        .machine-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .machine-label {
+            color: #FFD700;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            background: rgba(255,255,255,0.1);
+            padding: 10px 25px;
+            border-radius: 10px;
+        }
+
+        .lotto-machine {
+            width: 320px;
+            height: 450px;
+            background: linear-gradient(145deg, #c9d6ff, #e2e2e2);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            border: 8px solid #444;
+        }
+
+        .machine-top {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(145deg, #FFD700, #FFA500);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .ball-chamber {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(200,200,255,0.3));
+            border-radius: 20px;
+            border: 5px solid #333;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .ball {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.4), inset -2px -2px 5px rgba(0,0,0,0.3);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            text-align: center;
+            padding: 2px;
+            overflow: hidden;
+            line-height: 1.1;
+        }
+
+        .spin-button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .spin-button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .spin-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .result-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 90%;
+            z-index: 100;
+            display: none;
+            animation: popIn 0.4s ease-out;
+        }
+
+        .result-display.show {
+            display: block;
+        }
+
+        .result-display h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .result-display p {
+            color: #333;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .play-again-button {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.8em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: none;
+            text-transform: uppercase;
+        }
+
+        .play-again-button.show {
+            display: inline-block;
+        }
+
+        .play-again-button:hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        }
+
+        .play-again-button:active {
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .machines-container {
+                gap: 30px;
+            }
+            
+            .lotto-machine {
+                width: 280px;
+                height: 400px;
+            }
+
+            .ball-chamber {
+                width: 240px;
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎰 Lotto Machine Game 🎰</h1>
+    
+    <button class="spin-all-button" id="spinAllBtn">🎰 SPIN ALL MACHINES 🎰</button>
+    
+    <button class="play-again-button" id="playAgainBtn">🔄 Play Again 🔄</button>
+    
+    <div class="machines-container">
+        <!-- Machine 1: Breeding Cards -->
+        <div class="machine-wrapper">
+            <div class="machine-label">Machine 1</div>
+            <div class="lotto-machine">
+                <div class="machine-top">Breeding Packs</div>
+                <div class="ball-chamber" id="chamber1"></div>
+                <div class="result-display" id="result1">
+                    <h3>You Won!</h3>
+                    <p id="resultText1"></p>
+                </div>
+                <button class="spin-button" id="spinBtn1">SPIN</button>
+            </div>
+        </div>
+
+        <!-- Machine 2: Horses Set 1 -->
+        <div class="machine-wrapper">
+            <div class="machine-label">Machine 2</div>
+            <div class="lotto-machine">
+                <div class="machine-top">Elite Stallions</div>
+                <div class="ball-chamber" id="chamber2"></div>
+                <div class="result-display" id="result2">
+                    <h3>You Won!</h3>
+                    <p id="resultText2"></p>
+                </div>
+                <button class="spin-button" id="spinBtn2">SPIN</button>
+            </div>
+        </div>
+
+        <!-- Machine 3: Horses Set 2 -->
+        <div class="machine-wrapper">
+            <div class="machine-label">Machine 3</div>
+            <div class="lotto-machine">
+                <div class="machine-top">Champion Stallions</div>
+                <div class="ball-chamber" id="chamber3"></div>
+                <div class="result-display" id="result3">
+                    <h3>You Won!</h3>
+                    <p id="resultText3"></p>
+                </div>
+                <button class="spin-button" id="spinBtn3">SPIN</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Machine 1: Breeding Cards with weighted percentages
+        const breedingPacks = [
+            { name: "Claimer Pack (5D cards)", chance: 50 },
+            { name: "Starters Allowance Pack (4D, 1C)", chance: 20 },
+            { name: "Allowance Pack (3D, 2C)", chance: 15 },
+            { name: "Stakes Pack (2D, 2C, 1B)", chance: 5 },
+            { name: "Grade 3 Pack (4C, 1B)", chance: 5 },
+            { name: "Grade 2 Pack (3C, 2B)", chance: 4 },
+            { name: "Grade 1 Pack (4B, 1A)", chance: 1 }
+        ];
+
+        // Machine 2: Horse names
+        const horsesSet1 = [
+            "CANDY RIDE", "NIGHT OF THUNDER", "EQUINOX (JPN)", "LORD KANALOA", "MEHMAS", 
+            "CODY'S WISH", "STREET SENSE", "FASTNET ROCK (AUS)", "SNITZEL", "CAMELOT (GB)", 
+            "ZOUSTAR", "KIZUNA", "CITY OF LIGHT (USA)", 
+            "EXTREME CHOICE (AUS)", "ELITE POWER", "TWIRLING CANDY", "NATIONAL TREASURE (USA)", 
+            "MUNNINGS", "LIFE IS GOOD (USA)", "OASIS DREAM (GB)", "BOLT D'ORO", "BAAEED", 
+            "TOO DARN HOT (GB)", "VIOLENCE", "KITASAN BLACK", "SEIZE THE GREY", "KODIAC (GB)", 
+            "WRITTEN TYCOON (AUS)", "MCKINZIE", "TEOFILO", "COGBURN", "VEKOMA", 
+            "OMAHA BEACH (USA)", "KING OF STEEL", "BLUE POINT (IRE)", "AUSTRALIA", 
+            "ESSENTIAL QUALITY", "AUTHENTIC", "MUTH", "ST MARK'S BASILICA", "SHOWCASING (GB)", 
+            "BRICKS AND MORTAR", "HARD SPUN", "AUGUSTE RODIN (IRE)", "NEW APPROACH (IRE)", 
+            "EPIPHANEIA (JPN)", "MODERN GAMES", "MINESHAFT", "LIAM'S MAP", 
+            "CONTRAIL"
+        ];
+
+        // Machine 3: Horse names
+        const horsesSet2 = [
+            "CURLIN", "DUBAWI (IRE)", "GUN RUNNER", "JUSTIFY", "FRANKEL (GB)", 
+            "INTO MISCHIEF", "TAPIT", "WOOTTON BASSETT (GB)", "CITY OF TROY (USA)", 
+            "SEA THE STARS", "MEDAGLIA D'ORO", "GOOD MAGIC", "NO NAY NEVER", "KINGMAN", 
+            "NYQUIST", "WAR FRONT", "NOT THIS TIME", "QUALITY ROAD", "I AM INVINCIBLE (AUS)", 
+            "AMERICAN PHAROAH", "GHOSTZAPPER", "FLIGHTLINE", "LOPE DE VEGA", "SIYOUNI", 
+            "DARK ANGEL (IRE)", "CONSTITUTION", "PRACTICAL JOKE"
+        ];
+
+        const ballColors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+            '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#52B788'
+        ];
+
+        let activeMachines = {};
+        let spinAllActive = false;
+
+        function createBalls(machineNum, count = 15) {
+            const chamber = document.getElementById(`chamber${machineNum}`);
+            chamber.innerHTML = '';
+            
+            let dataSource;
+            if (machineNum === 1) {
+                dataSource = breedingPacks.map(p => p.name);
+            } else if (machineNum === 2) {
+                dataSource = horsesSet1;
+            } else {
+                dataSource = horsesSet2;
+            }
+            
+            const balls = [];
+            for (let i = 0; i < count; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'ball';
+                const colorIndex = i % ballColors.length;
+                ball.style.background = ballColors[colorIndex];
+                ball.style.left = Math.random() * 220 + 'px';
+                ball.style.top = Math.random() * 220 + 'px';
+                
+                const textIndex = i % dataSource.length;
+                ball.textContent = dataSource[textIndex];
+                
+                chamber.appendChild(ball);
+                balls.push({
+                    element: ball,
+                    x: parseFloat(ball.style.left),
+                    y: parseFloat(ball.style.top),
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8
+                });
+            }
+            return balls;
+        }
+
+        function animateBalls(balls, chamber) {
+            const chamberWidth = chamber.clientWidth;
+            const chamberHeight = chamber.clientHeight;
+            const ballSize = 50;
+            
+            balls.forEach(ball => {
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                
+                if (ball.x <= 0 || ball.x >= chamberWidth - ballSize) {
+                    ball.vx *= -1;
+                    ball.x = Math.max(0, Math.min(chamberWidth - ballSize, ball.x));
+                }
+                
+                if (ball.y <= 0 || ball.y >= chamberHeight - ballSize) {
+                    ball.vy *= -1;
+                    ball.y = Math.max(0, Math.min(chamberHeight - ballSize, ball.y));
+                }
+                
+                ball.element.style.left = ball.x + 'px';
+                ball.element.style.top = ball.y + 'px';
+            });
+        }
+
+        function selectWeightedRandom(items) {
+            const totalWeight = items.reduce((sum, item) => sum + item.chance, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let item of items) {
+                if (random < item.chance) {
+                    return item.name;
+                }
+                random -= item.chance;
+            }
+            return items[items.length - 1].name;
+        }
+
+        function spinMachine(machineNum) {
+            if (activeMachines[machineNum]) return;
+            
+            const button = document.getElementById(`spinBtn${machineNum}`);
+            button.disabled = true;
+            button.textContent = 'SPINNING...';
+            
+            const resultDiv = document.getElementById(`result${machineNum}`);
+            resultDiv.classList.remove('show');
+            
+            const chamber = document.getElementById(`chamber${machineNum}`);
+            const balls = createBalls(machineNum);
+            
+            activeMachines[machineNum] = true;
+            
+            const animationInterval = setInterval(() => {
+                animateBalls(balls, chamber);
+            }, 20);
+            
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                
+                let result;
+                if (machineNum === 1) {
+                    result = selectWeightedRandom(breedingPacks);
+                } else if (machineNum === 2) {
+                    result = horsesSet1[Math.floor(Math.random() * horsesSet1.length)];
+                } else {
+                    result = horsesSet2[Math.floor(Math.random() * horsesSet2.length)];
+                }
+                
+                document.getElementById(`resultText${machineNum}`).textContent = result;
+                resultDiv.classList.add('show');
+                
+                button.disabled = false;
+                button.textContent = 'SPIN';
+                button.style.display = 'none';
+                activeMachines[machineNum] = false;
+            }, 5000);
+        }
+
+        function spinAllMachines() {
+            if (spinAllActive) return;
+            
+            spinAllActive = true;
+            const spinAllButton = document.getElementById('spinAllBtn');
+            spinAllButton.disabled = true;
+            spinAllButton.textContent = '🎰 SPINNING ALL... 🎰';
+            
+            const buttons = [
+                document.getElementById('spinBtn1'),
+                document.getElementById('spinBtn2'),
+                document.getElementById('spinBtn3')
+            ];
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            const timings = [
+                { machine: 1, delay: 3000, label: 'SPINNING...' },
+                { machine: 2, delay: 5000, label: 'SPINNING...' },
+                { machine: 3, delay: 7000, label: 'SPINNING...' }
+            ];
+            
+            timings.forEach(config => {
+                const button = buttons[config.machine - 1];
+                button.textContent = config.label;
+                
+                const resultDiv = document.getElementById(`result${config.machine}`);
+                resultDiv.classList.remove('show');
+                
+                const chamber = document.getElementById(`chamber${config.machine}`);
+                const balls = createBalls(config.machine);
+                
+                activeMachines[config.machine] = true;
+                
+                const animationInterval = setInterval(() => {
+                    animateBalls(balls, chamber);
+                }, 20);
+                
+                setTimeout(() => {
+                    clearInterval(animationInterval);
+                    
+                    let result;
+                    if (config.machine === 1) {
+                        result = selectWeightedRandom(breedingPacks);
+                    } else if (config.machine === 2) {
+                        result = horsesSet1[Math.floor(Math.random() * horsesSet1.length)];
+                    } else {
+                        result = horsesSet2[Math.floor(Math.random() * horsesSet2.length)];
+                    }
+                    
+                    document.getElementById(`resultText${config.machine}`).textContent = result;
+                    resultDiv.classList.add('show');
+                    
+                    button.textContent = 'SPIN';
+                    button.style.display = 'none';
+                    activeMachines[config.machine] = false;
+                    
+                    if (config.machine === 3) {
+                        setTimeout(() => {
+                            spinAllButton.style.display = 'none';
+                            document.getElementById('playAgainBtn').classList.add('show');
+                            spinAllActive = false;
+                        }, 500);
+                    }
+                }, config.delay);
+            });
+        }
+
+        function resetGame() {
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            const spinAllBtn = document.getElementById('spinAllBtn');
+            
+            playAgainBtn.classList.remove('show');
+            spinAllBtn.style.display = 'inline-block';
+            spinAllBtn.disabled = false;
+            spinAllBtn.textContent = '🎰 SPIN ALL MACHINES 🎰';
+            
+            for (let i = 1; i <= 3; i++) {
+                const resultDiv = document.getElementById(`result${i}`);
+                const spinBtn = document.getElementById(`spinBtn${i}`);
+                
+                resultDiv.classList.remove('show');
+                spinBtn.style.display = 'inline-block';
+                spinBtn.disabled = false;
+                spinBtn.textContent = 'SPIN';
+                
+                createBalls(i);
+            }
+        }
+
+        // Set up event listeners
+        document.getElementById('spinBtn1').addEventListener('click', () => spinMachine(1));
+        document.getElementById('spinBtn2').addEventListener('click', () => spinMachine(2));
+        document.getElementById('spinBtn3').addEventListener('click', () => spinMachine(3));
+        document.getElementById('spinAllBtn').addEventListener('click', spinAllMachines);
+        document.getElementById('playAgainBtn').addEventListener('click', resetGame);
+
+        // Initialize balls on load
+        window.addEventListener('load', () => {
+            for (let i = 1; i <= 3; i++) {
+                createBalls(i);
+            }
+        });
+    </script>
+</body>
+</html>

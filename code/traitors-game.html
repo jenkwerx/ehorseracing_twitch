@@ -1,0 +1,3195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRAINROT TRAITORS 🧠💀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Righteous&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Righteous', cursive;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                padding: 15px;
+            }
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.5), 
+                         -2px -2px 0px rgba(255,255,255,0.3);
+            letter-spacing: 4px;
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-family: 'Permanent Marker', cursive;
+            font-size: 18px;
+            border-radius: 10px;
+            border: 3px solid #fff;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            resize: vertical;
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        button {
+            font-family: 'Righteous', cursive;
+            font-size: 24px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .player-list {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+
+        /* Responsive grid based on player count */
+        .player-list[data-count="1"] {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .player-list[data-count="2"] {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .player-list[data-count="3"] {
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .player-list[data-count="4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (min-width: 1400px) {
+            .player-list {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        .player-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .player-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .voting-stage {
+            text-align: center;
+        }
+
+        .voter-announcement {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .elimination {
+            margin: 15px 0;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 4px solid #ff0000;
+            border-radius: 15px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .eliminated-name {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            color: #ff0000;
+            text-shadow: 3px 3px 0px #000;
+            margin: 8px 0;
+        }
+
+        .reason {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-style: italic;
+        }
+
+        .elimination-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .elimination-item {
+            font-size: 16px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-style: italic;
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .elimination-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .winner-announcement {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .winner-name {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            color: #ffd700;
+            text-shadow: 4px 4px 0px #000;
+            margin: 20px 0;
+            animation: rainbow 3s infinite;
+        }
+
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            17% { color: #ff7700; }
+            33% { color: #ffff00; }
+            50% { color: #00ff00; }
+            67% { color: #0077ff; }
+            83% { color: #7700ff; }
+            100% { color: #ff0000; }
+        }
+
+        .remaining-count {
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: none; /* Hidden - we'll combine with round header */
+        }
+
+        .rps-container {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .rps-players {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .rps-player {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .rps-player-name {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 20px;
+        }
+
+        .rps-choice {
+            font-size: 80px;
+            margin: 20px 0;
+            animation: rpsFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes rpsFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .rps-result {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+        }
+
+        .rps-vs {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: bold;
+        }
+
+        .group-header {
+            font-family: 'Black Ops One', cursive;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            text-align: center;
+            margin: 20px 0 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            transition: width 0.5s ease;
+        }
+
+        .final-winners {
+            display: grid;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .final-winner-item {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .dupe-warning {
+            background: rgba(255, 165, 0, 0.3);
+            border: 3px solid #ffa500;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .info-text {
+            font-size: 18px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .center-btn {
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Entry Screen -->
+        <div id="entryScreen" class="screen active">
+            <h1>🧠💀 BRAINROT TRAITORS 💀🧠</h1>
+            <div class="card">
+                <h2 style="margin-bottom: 20px; text-align: center;">Enter Players (one per line)</h2>
+                <textarea id="playerInput" placeholder="Skibidi Toilet&#10;Sigma Male&#10;Rizz Master&#10;Baby Gronk&#10;..."></textarea>
+                <div class="info-text">We'll remove dupes and split into groups of max 20!</div>
+                <button onclick="processPlayers()" class="center-btn">START THE CHAOS 🔥</button>
+            </div>
+        </div>
+
+        <!-- Duplicate Removal Screen -->
+        <div id="dupeScreen" class="screen">
+            <h1>🚨 DUPE CHECK 🚨</h1>
+            <div class="card">
+                <div id="dupeInfo"></div>
+                <button onclick="startGame()" class="center-btn">CONTINUE TO GROUPS 👉</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div id="gameContent"></div>
+        </div>
+
+        <!-- Final Winners Screen -->
+        <div id="winnersScreen" class="screen">
+            <h1>🏆 ULTIMATE SURVIVORS 🏆</h1>
+            <div class="card">
+                <div id="finalWinnersList"></div>
+                <button onclick="resetGame()" class="center-btn">PLAY AGAIN? 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPlayers = [];
+        let uniquePlayers = [];
+        let groups = [];
+        let currentGroupIndex = 0;
+        let currentGroup = [];
+        let previousVoters = []; // Track who has voted
+        let usedReasons = new Set();
+        let allWinners = [];
+
+        const brainrotReasons = [
+            "caught lacking in 4K HDR",
+            "sus imposter energy detected",
+            "no rizz detected on the vibes check",
+            "failed the vibe check catastrophically",
+            "got ratioed in the group chat",
+            "kids these days with their loud music",
+            "back in my day we didn't need participation trophies",
+            "doesn't respect their elders properly",
+            "thinks manual labor is beneath them",
+            "never served their country",
+            "couldn't change a tire to save their life",
+            "doesn't know how to read a map",
+            "needs GPS to go to the grocery store",
+            "can't drive a stick shift",
+            "parallel parking is impossible for them",
+            "afraid to answer the phone",
+            "texts instead of calling like a normal person",
+            "doesn't own a lawn mower",
+            "pays someone to do yard work",
+            "can't fix anything around the house",
+            "calls a handyman for everything",
+            "doesn't know how to use tools",
+            "never changed their own oil",
+            "takes car to shop for air in tires",
+            "wouldn't last a day on a farm",
+            "soft hands never worked a day",
+            "complains about getting dirty",
+            "afraid to get under the hood",
+            "doesn't know what a carburetor is",
+            "never built anything with their hands",
+            "can't read a measuring tape",
+            "doesn't understand work ethic",
+            "expects everything handed to them",
+            "participation trophy generation personified",
+            "everyone gets a medal ruined them",
+            "can't handle constructive criticism",
+            "needs safe spaces everywhere",
+            "offended by everything nowadays",
+            "too sensitive for the real world",
+            "couldn't survive without their phone",
+            "technology has made them helpless",
+            "can't go five minutes without checking phone",
+            "addicted to that damn smartphone",
+            "face buried in screen constantly",
+            "doesn't know how to have conversation",
+            "social skills destroyed by internet",
+            "spent childhood staring at screens",
+            "never played outside growing up",
+            "doesn't know what it's like to work hard",
+            "thinks eight hour day is too long",
+            "complains about forty hour work week",
+            "back in my day we worked sixty hours",
+            "walked to school uphill both ways",
+            "had to earn everything we got",
+            "nothing was given for free",
+            "pulled ourselves up by bootstraps",
+            "didn't have video games rotting our brains",
+            "entertained ourselves with nothing",
+            "made our own fun back then",
+            "didn't need fancy toys",
+            "played with sticks and rocks",
+            "built character through hard times",
+            "adversity made us stronger",
+            "coddled generation ruined",
+            "helicopter parents destroyed them",
+            "never faced consequences growing up",
+            "always got what they wanted",
+            "spoiled rotten from birth",
+            "thinks world owes them something",
+            "entitled attitude about everything",
+            "expects handouts constantly",
+            "wants government to solve problems",
+            "doesn't believe in personal responsibility",
+            "blames society for everything",
+            "victim mentality runs deep",
+            "everything is someone else's fault",
+            "can't take ownership of mistakes",
+            "always has an excuse ready",
+            "doesn't understand consequences",
+            "never learned accountability",
+            "mommy and daddy fixed everything",
+            "bailed out of trouble constantly",
+            "never faced the music",
+            "protected from reality too long",
+            "real world shock incoming",
+            "life lessons coming hard",
+            "reality check overdue",
+            "cushy life ending soon",
+            "easy times made them weak",
+            "hardship builds character they lack",
+            "struggles ahead they can't handle",
+            "said 'sheesh' too many times",
+            "couldn't find the impostor among us",
+            "tried to be quirky and it flopped",
+            "main character syndrome activated",
+            "ate beans in the theater",
+            "unironically said 'poggers'",
+            "brought a ukulele to the party",
+            "tried to gaslight, gatekeep, girlboss",
+            "chronic LinkedIn motivational poster",
+            "said 'it's giving' one too many times",
+            "doesn't appreciate what they have",
+            "takes everything for granted",
+            "ungrateful for opportunities given",
+            "wastes money on frivolous things",
+            "can't budget to save their life",
+            "spends paycheck immediately",
+            "no concept of saving money",
+            "lives beyond their means constantly",
+            "drowning in credit card debt",
+            "financing lifestyle they can't afford",
+            "leases car they should buy",
+            "rents when should be building equity",
+            "no understanding of compound interest",
+            "doesn't invest for retirement",
+            "thinks social security will save them",
+            "no financial planning whatsoever",
+            "living paycheck to paycheck unnecessarily",
+            "avocado toast instead of down payment",
+            "coffee shop visits adding up",
+            "subscription services bleeding them dry",
+            "streaming six services can't afford",
+            "ordering takeout instead of cooking",
+            "can't boil water properly",
+            "doesn't know basic cooking skills",
+            "microwaves everything possible",
+            "thinks cooking is hard work",
+            "lives on fast food and delivery",
+            "never learned to meal prep",
+            "wastes food constantly",
+            "groceries spoil before using",
+            "doesn't know what leftovers are",
+            "throws away perfectly good food",
+            "picky eater at their age",
+            "acts like child about vegetables",
+            "refuses to try new foods",
+            "chicken nugget mentality adult",
+            "palate of a toddler",
+            "discord kitten energy off the charts",
+            "posted cringe and didn't own it",
+            "NPC dialogue on repeat",
+            "got caught simping in public",
+            "ratio'd by their own grandmother",
+            "negative aura detected: -10000",
+            "L + ratio + no rizz + mid",
+            "thought they ate but they starved",
+            "couldn't handle the smoke",
+            "tried to cook but burnt the kitchen",
+            "chronically online behavior",
+            "touched grass and freaked out",
+            "doesn't know what sigma means",
+            "doesn't understand respect anymore",
+            "talks back to authority figures",
+            "questions everything they're told",
+            "thinks rules don't apply to them",
+            "no discipline whatsoever",
+            "parents never said no",
+            "timeout generation weakness",
+            "needs structure and doesn't have it",
+            "never learned to follow instructions",
+            "can't take orders from anyone",
+            "authority issues obvious",
+            "rebellious for no good reason",
+            "contrarian just to be difficult",
+            "argues with common sense",
+            "logic means nothing to them",
+            "feelings over facts always",
+            "emotions guide every decision",
+            "can't think rationally",
+            "knee jerk reactions constantly",
+            "impulsive with no forethought",
+            "acts before thinking ever",
+            "consequences never considered",
+            "short term thinking only",
+            "no long term planning ability",
+            "instant gratification required",
+            "can't delay satisfaction",
+            "patience is nonexistent",
+            "wants results immediately",
+            "effort is too much to ask",
+            "shortcuts to everything",
+            "easy way out mentality",
+            "hard work is foreign concept",
+            "doesn't understand perseverance",
+            "quits when things get difficult",
+            "no grit or determination",
+            "gives up at first sign of trouble",
+            "resilience completely lacking",
+            "can't push through adversity",
+            "crumbles under pressure always",
+            "folding like cheap lawn chair",
+            "soft as butter in summer",
+            "reported for being too sussy",
+            "caught watching TikToks on mute",
+            "uses 'RAWR XD' unironically",
+            "their fit was not giving",
+            "tried to be edgy, became a circle",
+            "still does the floss dance",
+            "posts minion memes on Facebook",
+            "calls everything 'bussin' fr fr",
+            "got too comfortable in the group chat",
+            "tried to start a podcast",
+            "doesn't know value of dollar anymore",
+            "money grows on trees apparently",
+            "thinks jobs are easy to get",
+            "doesn't pound pavement looking",
+            "applies online and wonders why no response",
+            "resume is embarrassing mess",
+            "interview skills are nonexistent",
+            "shows up in jeans to interview",
+            "doesn't dress appropriately anywhere",
+            "casual Friday ruined dress codes",
+            "doesn't own proper business attire",
+            "thinks flip flops are acceptable",
+            "wears pajamas to grocery store",
+            "left house in sweatpants",
+            "looks like they rolled out of bed",
+            "no pride in appearance",
+            "doesn't care how they present",
+            "first impressions mean nothing",
+            "judge book by cover they fail",
+            "presentation is everything they forgot",
+            "looking professional is too hard",
+            "effort in appearance lacking",
+            "sloppy in all aspects",
+            "couldn't be bothered to try",
+            "bare minimum effort given",
+            "phoning it in constantly",
+            "going through motions only",
+            "checked out mentally long ago",
+            "coasting by on nothing",
+            "skating by barely",
+            "minimum viable effort expert",
+            "does just enough not to fail",
+            "aims for C's gets D's",
+            "underachiever extraordinaire",
+            "potential completely wasted",
+            "could do better refuses to",
+            "capable but unmotivated",
+            "smart but lazy combination",
+            "brains but no work ethic",
+            "has a crypto bro mentality",
+            "won't shut up about their Wordle score",
+            "makes their MBTI their whole personality",
+            "peaked in high school",
+            "quotes The Office constantly",
+            "trauma dumps on first dates",
+            "makes being tired their personality",
+            "won't stop talking about that one trip abroad",
+            "humble brags on their finsta",
+            "takes astrology too seriously",
+            "sends good morning texts to the GC",
+            "laughs at their own jokes exclusively",
+            "screenshotted a Snapchat",
+            "talent wasted on laziness",
+            "gifted child burnout personified",
+            "used to be smart gave up",
+            "coasted on natural ability too long",
+            "never learned to work hard",
+            "things came easy stopped trying",
+            "hit wall when talent not enough",
+            "discovered work required checked out",
+            "effort was never taught",
+            "participation ribbons taught nothing",
+            "false confidence from fake awards",
+            "told they're special too much",
+            "overinflated ego unjustified",
+            "thinks they're better than they are",
+            "delusions of grandeur obvious",
+            "reality hasn't hit yet",
+            "bubble hasn't burst yet",
+            "sheltered from truth too long",
+            "protected from reality",
+            "insulated from consequences",
+            "safety net always there",
+            "fall back plan is parents",
+            "trust fund saves them",
+            "family money cushions life",
+            "never truly struggled financially",
+            "doesn't know what poor means",
+            "poverty is abstract concept",
+            "homeless invisible to them",
+            "problems are first world only",
+            "perspective is completely skewed",
+            "privileged and doesn't know it",
+            "born on third thinks hit triple",
+            "head start looks like merit to them",
+            "advantages invisible to them",
+            "can't see their own privilege",
+            "blind to help they received",
+            "forgets who helped them up",
+            "kicked ladder down behind them",
+            "got theirs forget others",
+            "pulls ladder up after climbing",
+            "their Spotify Wrapped was embarrassing",
+            "plays music out loud on public transport",
+            "chews with their mouth open",
+            "leaves people on read for days",
+            "double texts immediate red flag",
+            "vapes indoors like it's cool",
+            "wears sunglasses indoors unironically",
+            "calls themselves an entrepreneur",
+            "has a LinkedIn Premium subscription",
+            "thinks Joker is literally them",
+            "their Pinterest board leaked",
+            "caught being performatively woke",
+            "said 'slay' to their boss",
+            "tries too hard to be relatable",
+            "makes everything about themselves",
+            "overshares in the workplace",
+            "ghosted the entire group chat",
+            "posts gym selfies with motivational quotes",
+            "talks about their side hustle constantly",
+            "brings a guitar to every gathering",
+            "won't stop talking about Fight Club",
+            "thinks they're quirky for liking pizza",
+            "personality is watching The Office",
+            "asks 'did you get my email' 2 minutes after sending",
+            "reheats fish in the microwave",
+            "speaks in TikTok sounds IRL",
+            "orders pumpkin spice everything",
+            "makes being from LA their personality",
+            "won't shut up about Coachella",
+            "calls everything 'aesthetic'",
+            "has strong opinions about oat milk",
+            "gatekeeps random music genres",
+            "tries to make fetch happen",
+            "still references Vine in 2024",
+            "uses 'literally' incorrectly constantly",
+            "brags about not watching TV",
+            "only reads self-help books",
+            "makes everything a teaching moment",
+            "shares clickbait articles uncritically",
+            "falls for fake news regularly",
+            "argues in YouTube comments",
+            "writes Yelp reviews for everything",
+            "leaves passive aggressive notes",
+            "brags about waking up at 5 AM",
+            "calls themselves an alpha",
+            "unironically uses the term 'grindset'",
+            "posts inspirational quotes over sunsets",
+            "shares every article they skim",
+            "takes calls on speakerphone in public",
+            "FaceTimes in crowded places",
+            "records concerts on their phone the entire time",
+            "posts photos of their food always",
+            "checks their phone during movies",
+            "spoils shows without warning",
+            "asks questions answered in the episode",
+            "talks during the movie constantly",
+            "shows up late to everything",
+            "never brings snacks to share",
+            "eats all the good snacks first",
+            "doesn't refill the ice tray",
+            "leaves one sheet of paper in the printer",
+            "doesn't replace the toilet paper roll",
+            "leaves dishes in the sink overnight",
+            "uses your streaming passwords without asking",
+            "changes the group chat name constantly",
+            "adds random people to the group chat",
+            "sends 47 messages that could be one",
+            "replies to a specific message from 3 days ago",
+            "screenshots and shares private convos",
+            "reads messages but doesn't respond for hours",
+            "starts typing and stops 15 times",
+            "doesn't understand delayed gratification",
+            "needs immediate results always",
+            "can't wait for anything",
+            "microwave generation mentality",
+            "Amazon Prime ruined patience",
+            "two day shipping still too slow",
+            "same day delivery expectations",
+            "wants everything instantly",
+            "waiting is unbearable to them",
+            "lines are intolerable",
+            "traffic is personal attack",
+            "delays send them into rage",
+            "loading screens cause meltdown",
+            "buffering is end of world",
+            "slow WiFi ruins their day",
+            "connection issues are crisis",
+            "technology problems break them",
+            "can't function without internet",
+            "WiFi password emergency",
+            "no signal causes panic attack",
+            "dead battery is disaster",
+            "lost charger ends world",
+            "cracked screen keeps using",
+            "broken phone still functional barely",
+            "duct tape holds life together",
+            "zip ties fix everything temporarily",
+            "temporary solutions are permanent",
+            "quick fix mentality always",
+            "band aid on bullet wound approach",
+            "treats symptoms ignores disease",
+            "surface level solutions only",
+            "doesn't address root cause",
+            "same problems keep returning",
+            "never learns from mistakes",
+            "repeats errors constantly",
+            "history keeps repeating itself",
+            "groundhog day of bad choices",
+            "same decision different day",
+            "Einstein definition of insanity",
+            "expects different results somehow",
+            "hope is not a strategy",
+            "wishing doesn't make it so",
+            "manifesting is not planning",
+            "positive thoughts need action",
+            "vision board isn't enough",
+            "affirmations without work fail",
+            "belief must meet effort",
+            "faith without works is dead",
+            "talk is cheap action required",
+            "walk the walk not just talk",
+            "all hat no cattle",
+            "all bark no bite",
+            "all show no substance",
+            "style over substance always",
+            "appearance over competence",
+            "looks good does nothing",
+            "pretty but useless basically",
+            "decorative not functional",
+            "form over function failure",
+            "aesthetics trump practicality",
+            "design before utility",
+            "cute but doesn't work",
+            "Instagram worthy but broken",
+            "looks good on camera only",
+            "social media vs reality gap",
+            "online persona vs actual self",
+            "curated life not real life",
+            "highlight reel not full story",
+            "filtered version of truth",
+            "edited reality constantly",
+            "photoshopped existence",
+            "fake it till you make it failing",
+            "posts vague-booking statuses for attention",
+            "live tweets everything they do",
+            "makes their location public constantly",
+            "overshares their relationship drama online",
+            "posts breakup lyrics obviously",
+            "changes relationship status before telling friends",
+            "tags themselves in random locations for clout",
+            "check-ins at the gym every time",
+            "posts transformation Tuesday every week",
+            "shares every chain message they receive",
+            "believes and shares hoaxes",
+            "falls for phishing scams regularly",
+            "has a weak password: 'password123'",
+            "clicks suspicious links without hesitation",
+            "overshares personal info online",
+            "accepts friend requests from strangers",
+            "posts their full birthday and location",
+            "shares their daily routine publicly",
+            "posts vacation plans before leaving",
+            "announces when their house is empty",
+            "shares their kids' school location",
+            "posts pics with license plates visible",
+            "geotags their home constantly",
+            "livestreams while driving",
+            "films strangers without permission",
+            "posts other people's kids without asking",
+            "shares screenshots of private DMs",
+            "exposes group chat drama publicly",
+            "subtweeets everyone constantly",
+            "makes passive aggressive stories",
+            "posts cryptic messages for attention",
+            "shares their entire camera roll",
+            "uploads unflattering photos of friends",
+            "tags people in embarrassing throwbacks",
+            "comments 'we need to catch up' but never does",
+            "likes posts from 47 weeks ago while stalking",
+            "watches all stories but never responds",
+            "leaves reactions but no replies",
+            "sends streaks on Snap with no substance",
+            "has a public Finsta that defeats the purpose",
+            "makes TikToks of strangers in public",
+            "does dances in inappropriate places",
+            "films 'pranks' that are just mean",
+            "stages fake scenarios for content",
+            "clickbaits with misleading thumbnails",
+            "stretches 2 min content to 10 mins",
+            "has an intro longer than the video",
+            "asks to smash like and subscribe 8 times",
+            "puts the answer in Part 2 always",
+            "reacts to their own old content",
+            "makes reaction videos with no commentary",
+            "watches videos on 2x speed always",
+            "skips the actual content to comments",
+            "reads wikis instead of watching shows",
+            "spoils themselves before experiencing things",
+            "reads the last page of books first",
+            "watches endings before beginnings",
+            "Googles plot before watching movies",
+            "asks who dies before starting a series",
+            "reads reviews and ruins surprises",
+            "can't enjoy things without analyzing them",
+            "makes everything a 'hot take'",
+            "plays devil's advocate unnecessarily",
+            "well actually's everyone constantly",
+            "corrects grammar in casual texts",
+            "mansplains topics to experts",
+            "talks over people in meetings",
+            "dominates conversations always",
+            "never asks questions about others",
+            "turns every topic back to themselves",
+            "one-ups every story immediately",
+            "has to prove they're the smartest",
+            "name drops constantly for clout",
+            "brags about connections nobody asked about",
+            "tells the same story at every party",
+            "laughs at jokes they don't understand",
+            "pretends to know things they don't",
+            "googles basic facts mid-conversation to look smart",
+            "uses big words incorrectly",
+            "quotes philosophers out of context",
+            "misuses statistics confidently",
+            "cites sources they haven't read",
+            "shares articles based on headlines only",
+            "forms opinions from tweets alone",
+            "believes everything they see online",
+            "trusts random social media doctors",
+            "takes medical advice from influencers",
+            "tries MLM products unironically",
+            "falls for get rich quick schemes",
+            "thinks crypto will make them rich",
+            "loses money on NFTs obviously",
+            "invested in a obvious scam",
+            "sent money to a foreign prince",
+            "gave their SSN to a phisher",
+            "clicked 'you've won an iPhone' ad",
+            "downloaded sketchy software carelessly",
+            "ignored all the red flags",
+            "trusted a DM from a celebrity",
+            "thought they were specially selected",
+            "believed they won a contest they didn't enter",
+            "paid to unlock frozen funds",
+            "sent gift cards to solve fake emergencies",
+            "gave remote access to their computer",
+            "shared their password with tech support scammer",
+            "installed malware thinking it was antivirus",
+            "clicked every popup without reading",
+            "disabled security to install sketchy apps",
+            "uses the same password everywhere",
+            "password is their birthday",
+            "security question answers are public info",
+            "doesn't use two factor authentication",
+            "logs into public WiFi without VPN",
+            "leaves Bluetooth on always",
+            "accepts all cookies without reading",
+            "gives apps unnecessary permissions",
+            "doesn't update their software ever",
+            "ignores security warnings completely",
+            "clicks agree without reading terms",
+            "shares passwords over text messages",
+            "writes passwords on sticky notes",
+            "saves passwords in Notes app",
+            "lets browser save all passwords",
+            "uses auto-fill for sensitive info",
+            "doesn't log out of shared devices",
+            "leaves laptop unlocked in public",
+            "discusses private info in public",
+            "shouts credit card numbers over phone",
+            "shows boarding pass with barcode on social",
+            "posts photos of new credit/debit cards",
+            "shares confirmation codes publicly",
+            "announces travel dates months in advance",
+            "tells everyone when house is empty",
+            "shares their daily routine online",
+            "posts real time location constantly",
+            "geotags home in every photo",
+            "shares kids school and schedule",
+            "posts about expensive purchases immediately",
+            "shows off valuables with address visible",
+            "announces deliveries arriving when not home",
+            "shares when they're home alone",
+            "posts workout times and locations",
+            "announces their running route publicly",
+            "shares exactly where they park",
+            "can't read analog clock anymore",
+            "doesn't know cursive writing",
+            "signature is printed name",
+            "penmanship is illegible",
+            "handwriting looks like chicken scratch",
+            "types everything no handwriting",
+            "can't write without autocorrect",
+            "spelling is atrocious",
+            "grammar never learned properly",
+            "punctuation is mystery",
+            "capitalization random",
+            "apostrophes confuse them",
+            "your you're same thing",
+            "there their they're interchangeable",
+            "to too two all same",
+            "then than doesn't matter",
+            "lose loose who cares",
+            "affect effect whatever",
+            "lie lay doesn't matter",
+            "who whom same thing",
+            "I me interchangeable",
+            "good well same thing",
+            "fewer less doesn't matter",
+            "amount number whatever",
+            "that which same thing",
+            "farther further interchangeable",
+            "literally figuratively same",
+            "ironic coincidental whatever",
+            "nauseous nauseated same",
+            "imply infer doesn't matter",
+            "uninterested disinterested whatever",
+            "anxious eager same thing",
+            "convince persuade interchangeable",
+            "raise rise doesn't matter",
+            "sit set whatever",
+            "lay lie too hard",
+            "who whom too difficult",
+            "grammar rules are suggestions",
+            "language evolves excuse everything",
+            "descriptive not prescriptive cop out",
+            "rules change so ignore them",
+            "communication is what matters defensively",
+            "you understood me deflection",
+            "stop being pedantic when corrected",
+            "grammar nazi dismissal",
+            "language police mockery",
+            "don't be that person defense",
+            "it's not that deep response",
+            "calm down overreaction",
+            "take a chill pill dated",
+            "relax bro dismissal",
+            "you're too sensitive gaslighting",
+            "can't take a joke defense",
+            "it was just playing excuse",
+            "no offense but proceeds offense",
+            "not to be rude continues rudeness",
+            "I'm just being honest cruelty",
+            "telling it like it is mean",
+            "brutal honesty without brutal",
+            "keeping it real insensitive",
+            "straight shooter tactless",
+            "no filter no control",
+            "says what everyone thinking no they don't",
+            "speaks their mind no one asked",
+            "doesn't sugarcoat just rude",
+            "calls spade spade insults",
+            "tells truth rudely unnecessary",
+            "honesty without kindness cruelty",
+            "truth without tact harm",
+            "frankness without empathy damage",
+            "directness without care hurt",
+            "bluntness without thought pain",
+            "candor without compassion cruel",
+            "openness without wisdom foolish",
+            "transparency without discretion harmful",
+            "authenticity without boundaries toxic",
+            "realness without filter destructive",
+            "posts hotel room numbers on vacation",
+            "shares flight numbers and times",
+            "announces layovers and delays publicly",
+            "posts rental car info and plates",
+            "shares AirBnB address on social media",
+            "tags exact restaurant locations while there",
+            "posts receipts with full card numbers",
+            "shares IDs with info visible",
+            "posts medical records without redacting",
+            "shares prescriptions with details visible",
+            "posts insurance cards online",
+            "shares test results with personal info",
+            "posts jury duty summons unredacted",
+            "shares ballots before voting",
+            "posts tax returns for some reason",
+            "shares pay stubs with full details",
+            "posts W2s without redacting anything",
+            "shares bank statements publicly",
+            "posts utility bills unredacted",
+            "shares lease agreements online",
+            "posts mortgage documents carelessly",
+            "shares title to car with VIN visible",
+            "posts registration with plate and address",
+            "shares insurance declarations page",
+            "posts proof of income unredacted",
+            "shares entire employment contract",
+            "posts NDA while violating NDA",
+            "shares proprietary work documents",
+            "posts client information publicly",
+            "shares confidential company data",
+            "leaks unreleased products accidentally",
+            "posts internal memos externally",
+            "shares salary information against policy",
+            "posts about workplace drama publicly",
+            "complains about boss using real names",
+            "shares coworker gossip on main account",
+            "posts from work account inappropriately",
+            "mixes personal and professional online",
+            "doesn't separate work and personal social media",
+            "friends boss on personal accounts",
+            "adds coworkers they barely know",
+            "overshares at work constantly",
+            "brings personal drama to the office",
+            "discusses salary openly and awkwardly",
+            "asks invasive personal questions at work",
+            "shares TMI health details at work",
+            "makes everything uncomfortable in meetings",
+            "sends inappropriate memes in work chat",
+            "replies all to company wide emails unnecessarily",
+            "uses company email for personal drama",
+            "CCs people who don't need to be included",
+            "sends vague meeting invites without context",
+            "schedules meetings during lunch constantly",
+            "books conference rooms and no-shows",
+            "leaves messes in common areas",
+            "steals food from shared fridge",
+            "doesn't clean up after themselves",
+            "makes coffee and doesn't make more",
+            "uses last of supplies without telling anyone",
+            "takes credit for others work",
+            "throws team under bus publicly",
+            "blames others for their mistakes",
+            "never admits when they're wrong",
+            "argues about everything always",
+            "has to win every discussion",
+            "makes meetings about themselves",
+            "interrupts presentations constantly",
+            "asks questions that were just answered",
+            "doesn't pay attention in meetings",
+            "multitasks obviously during calls",
+            "forgets to mute and disrupts everything",
+            "leaves camera on showing chaos",
+            "doesn't mute barking dog on call",
+            "eats loudly with mic on",
+            "types aggressively during meetings",
+            "has terrible lighting on video calls",
+            "uses cringe virtual backgrounds",
+            "doesn't test tech before important calls",
+            "Can you hear me's for 10 minutes",
+            "shares screen with embarrassing tabs open",
+            "forgets to stop screen share afterward",
+            "shares screen with notifications enabled",
+            "gets personal messages during screen share",
+            "shows browser history accidentally",
+            "reveals embarrassing bookmarks when sharing",
+            "has desktop full of random screenshots",
+            "computer desktop is complete chaos",
+            "never organizes files ever",
+            "downloads everything to desktop",
+            "has 47 Chrome tabs open always",
+            "bookmarks nothing or everything",
+            "search history is concerning",
+            "doesn't clear cache ever",
+            "has 999+ unread emails",
+            "marks everything as unread for later",
+            "uses inbox as to do list",
+            "never archives anything ever",
+            "search instead of organizing email",
+            "misses important emails in spam",
+            "sends work emails at 3 AM",
+            "expects immediate responses always",
+            "follows up after 5 minutes",
+            "marks everything urgent when it's not",
+            "uses high priority for normal emails",
+            "writes novel length emails for simple questions",
+            "sends one word emails that need context",
+            "doesn't use subject lines properly",
+            "replies to wrong email thread",
+            "sends attachments in separate emails",
+            "forgets the attachment always",
+            "sends corrupted files regularly",
+            "doesn't compress large files ever",
+            "emails huge files that bounce",
+            "doesn't use cloud sharing for big files",
+            "sends version 1 then 2 then final then final2",
+            "tracks changes but accepts all immediately",
+            "comments instead of just editing",
+            "doesn't understand track changes",
+            "rejects all suggestions out of spite",
+            "makes doc editing a battlefield",
+            "passive aggressive comment warrior",
+            "edits without saving for others",
+            "works in wrong version of document",
+            "doesn't check for updates before editing",
+            "creates version conflict nightmares",
+            "saves over shared document locally",
+            "doesn't sync cloud files properly",
+            "loses work by not saving",
+            "doesn't back up anything ever",
+            "clicks don't save accidentally on important work",
+            "closes without saving regularly",
+            "ignores save prompts constantly",
+            "relies on autosave exclusively",
+            "didn't save before computer died",
+            "lost everything to a crash",
+            "didn't back up before update",
+            "deleted important files accidentally",
+            "emptied trash without checking",
+            "formatted wrong drive completely",
+            "installed update that broke everything",
+            "ignored low storage warnings until too late",
+            "filled device with duplicate photos",
+            "never deletes anything ever",
+            "hoards digital junk compulsively",
+            "has apps they used once in 2015",
+            "subscriptions they forgot about",
+            "pays for services they don't use",
+            "auto-renewed something expensive by accident",
+            "forgot to cancel free trial",
+            "didn't read terms before subscribing",
+            "agreed to auto-price increases",
+            "locked into annual plan impulsively",
+            "bought in-app purchases accidentally",
+            "kid made purchases on their account",
+            "clicked ads and got charged",
+            "fell for subscription trap",
+            "can't figure out how to cancel",
+            "customer service ghosted them",
+            "stuck in phone tree hell",
+            "gave up trying to get refund",
+            "accepted loss instead of fighting",
+            "didn't dispute obvious fraud",
+            "ignored suspicious charges",
+            "didn't check bank statement for months",
+            "overdrafted due to forgotten subscription",
+            "bounced check in 2024 somehow",
+            "still writes checks regularly",
+            "doesn't use mobile banking",
+            "goes to bank branch for everything",
+            "waits in line to deposit checks",
+            "doesn't set up direct deposit",
+            "gets paper statements mailed",
+            "pays bills with physical checks mailed",
+            "mails rent check monthly",
+            "doesn't use autopay ever",
+            "forgets to pay bills on time",
+            "pays late fees regularly",
+            "has terrible credit score from laziness",
+            "ignores credit card rewards",
+            "doesn't track spending at all",
+            "surprised by credit card bill every month",
+            "carries balance and pays interest unnecessarily",
+            "only makes minimum payments",
+            "maxed out credit cards casually",
+            "took cash advance on credit card",
+            "used credit card for ATM withdrawal",
+            "didn't know that costs extra",
+            "ignores APR completely when choosing cards",
+            "picked card based on look alone",
+            "has store credit card for every store",
+            "opened cards for sign up bonus and forgot them",
+            "hurt credit score opening too many cards",
+            "closed old cards and tanked credit",
+            "doesn't understand how credit works",
+            "cosigned loan for deadbeat friend",
+            "lent money never got back",
+            "Venmo requested wrong amount publicly",
+            "sent money to wrong person on payment app",
+            "made Venmo transactions public and embarrassing",
+            "put inappropriate notes on Venmo payments",
+            "requested payment for something weird publicly",
+            "split bill in most annoying way possible",
+            "asked for exact change down to pennies",
+            "Venmo requested someone for 47 cents",
+            "doesn't tip delivery driver fairly",
+            "undertipped based on pre-tax total",
+            "doesn't tip for takeout ever",
+            "argues about tipping culture always",
+            "tips in change only",
+            "leaves fake money religious tracts as tips",
+            "tips less for things beyond servers control",
+            "punishes server for kitchen mistakes",
+            "reduces tip for slow service during rush",
+            "doesn't understand how restaurants work",
+            "demands to speak to manager over nothing",
+            "leaves one star reviews unfairly",
+            "threatens bad review to get free stuff",
+            "leaves review before trying product",
+            "rates delivery driver badly for restaurant mistake",
+            "blames gig worker for company policy",
+            "rates Uber driver 1 star for traffic",
+            "complains about driver taking fastest route",
+            "backseat drives rideshare driver",
+            "tells driver obvious directions they know",
+            "makes driver uncomfortable with personal questions",
+            "tries to sit in front seat of Uber",
+            "brings too many people for rideshare",
+            "makes extra stops without warning",
+            "eats messy food in rideshare",
+            "leaves trash in vehicle",
+            "slams door getting out",
+            "doesn't wear seatbelt in rideshare",
+            "distracts driver dangerously",
+            "makes driver wait without warning",
+            "changes destination mid ride without asking",
+            "tries to negotiate price of rideshare",
+            "argues about surge pricing",
+            "doesn't understand supply and demand",
+            "complains about prices during peak times",
+            "upset dynamic pricing exists",
+            "mad concert tickets cost more for good seats",
+            "thinks lawn seats should be same as front row",
+            "complains about airline seat pricing tiers",
+            "books basic economy and expects full service",
+            "mad they charge for checked bags",
+            "tries to bring oversize carry on",
+            "argues with gate agent about bag size",
+            "holds up boarding being difficult",
+            "doesn't have boarding pass ready",
+            "tries to board in wrong group",
+            "cuts line during boarding process",
+            "puts bag in overhead far from seat",
+            "takes both overhead bins for themselves",
+            "refuses to gate check oversized bag",
+            "reclines seat immediately on takeoff",
+            "reclines during meal service inconsiderately",
+            "doesn't un-recline for landing",
+            "kicks seat in front repeatedly",
+            "uses tray table as drum set",
+            "shakes leg and vibrates whole row",
+            "armrest hogger extraordinaire",
+            "manspreads on airplane seats",
+            "falls asleep on strangers shoulder",
+            "snores loudly on plane for hours",
+            "takes shoes off on flight",
+            "walks to bathroom barefoot on plane",
+            "uses bathroom and doesn't lock door",
+            "makes huge mess in airplane bathroom",
+            "takes forever in bathroom on plane",
+            "brings smelly food on flight",
+            "eats tuna sandwich on plane",
+            "clips nails on airplane",
+            "does full skincare routine at seat",
+            "applies nail polish on plane",
+            "watches video without headphones",
+            "FaceTimes on plane with volume up",
+            "lets kids run wild on flight",
+            "doesn't parent kids disturbing others",
+            "lets baby scream without trying to soothe",
+            "changes diaper at seat on plane",
+            "brings crying baby to R rated movie",
+            "lets kids kick seats in theater",
+            "talks during entire movie loudly",
+            "uses phone in movie theater",
+            "records movie on phone in theater",
+            "leaves huge mess in theater",
+            "puts feet on seat in front",
+            "saves seats for people not coming",
+            "sneaks entire meal into theater",
+            "unwraps candy loudly through quiet scenes",
+            "asks what happened every 5 minutes",
+            "predicts plot loudly and wrong",
+            "spoils ending for everyone nearby",
+            "explains jokes that everyone got",
+            "still uses hashtags unironically",
+            "posts LinkedIn lunatic motivational content",
+            "makes TikToks at funerals",
+            "brings their emotional support peacock everywhere",
+            "wears a full suit to the beach",
+            "puts ketchup on expensive steak",
+            "asks if the ice cream machine works at McDonald's",
+            "returns shopping cart to wrong store",
+            "writes checks at the grocery store in 2024",
+            "pays for $3 purchase with $100 bill",
+            "holds up the line counting exact change",
+            "tries to return clearly used items",
+            "peels price stickers off in the store",
+            "opens products before buying them",
+            "samples grapes without buying any",
+            "treats retail workers like servants",
+            "asks to speak to the manager as opening line",
+            "takes all the free samples",
+            "reads entire magazine without buying it",
+            "test drives cars with no intention to buy",
+            "ghost applies to jobs for practice",
+            "no-shows to interviews without notice",
+            "brings parents to job interview",
+            "asks about vacation days in first question",
+            "negotiates salary with no leverage",
+            "lists skills they don't have on resume",
+            "exaggerates job titles dramatically",
+            "uses someone else's work in portfolio",
+            "fake references from friends",
+            "lies about graduation date on resume",
+            "claims fluency in languages they don't speak",
+            "photoshops degree from prestigious university",
+            "adds fictional job experience",
+            "backdates employment to hide gaps",
+            "inflates GPAs significantly",
+            "claims awards they never won",
+            "steals credit for team projects",
+            "name drops people they met once",
+            "considers watching YouTube a certification",
+            "lists Microsoft Word as advanced skill",
+            "puts high school on resume after 30",
+            "includes irrelevant hobbies section",
+            "uses Comic Sans on resume",
+            "submits 5 page resume for entry level",
+            "includes photo on resume in US",
+            "writes resume in third person",
+            "uses objective statement in 2024",
+            "references available upon request",
+            "includes full address in 2024",
+            "lists every job since age 14",
+            "goes into detail about paper route",
+            "uses geocities email address",
+            "voicemail is a 2 minute song",
+            "doesn't check voicemail for months",
+            "full mailbox always",
+            "has same voicemail since 2009",
+            "robotic default greeting still active",
+            "never responds to voicemails left",
+            "prefers calls over texts for everything",
+            "calls instead of texting simple questions",
+            "leaves voicemail saying call me back",
+            "doesn't text before calling",
+            "calls multiple times in a row",
+            "doesn't understand do not disturb",
+            "calls at inappropriate hours always",
+            "FaceTimes without asking first",
+            "answers FaceTime in bathroom",
+            "video calls from bed looking rough",
+            "camera pointed at ceiling entire call",
+            "walks around during video meetings",
+            "drives during important video calls",
+            "strong backlight makes them a silhouette",
+            "sits in dark room looking like cryptid",
+            "extreme close-up nose cam angle",
+            "terrible camera angle looking up nostril",
+            "eats full meal during video call",
+            "vapes obviously on camera",
+            "picks teeth during meeting",
+            "clips nails during call",
+            "does completely different task obviously",
+            "watches TV in background during call",
+            "plays video games during meeting",
+            "online shopping during important call",
+            "swipes on dating apps during Zoom",
+            "clearly not paying any attention",
+            "asks to repeat everything said",
+            "joins meeting and immediately goes AFK",
+            "never turns camera on ever",
+            "profile pic from 15 years ago",
+            "uses Snapchat filter for work meetings",
+            "background is obviously a mess",
+            "walks around showing whole messy house",
+            "forgets camera on during private moments",
+            "doesn't realize they're unmuted",
+            "entire argument captured on hot mic",
+            "trash talks coworkers thinking they're muted",
+            "bathroom sounds broadcast to all",
+            "private phone call overheard by everyone",
+            "didn't know screen share was still on",
+            "forgot about camera during workout",
+            "picks wedgie on camera",
+            "adjusts underwear thinking camera off",
+            "full outfit change visible on camera",
+            "walks around in towel on work call",
+            "answers door half dressed on camera",
+            "significant other walks by naked behind them",
+            "kids burst in saying inappropriate things",
+            "pet destroys something expensive on camera",
+            "smoke alarm beeping entire meeting",
+            "leaf blower outside entire call",
+            "construction noise drowning everything out",
+            "sirens constantly in background",
+            "neighbor practicing drums during call",
+            "roommate yelling at video game audible",
+            "shares wall with loud neighbors",
+            "lives above/below nightmare neighbors",
+            "blasts music at 2 AM regularly",
+            "vacuums at midnight on weekdays",
+            "does laundry at 4 AM",
+            "stomps around in heels at all hours",
+            "moves furniture constantly and loudly",
+            "drops heavy things on floor repeatedly",
+            "has loud arguments at 3 AM",
+            "slams doors for no reason",
+            "plays instruments poorly at bad times",
+            "practices tap dancing at midnight",
+            "does home renovations on weekends starting at 6 AM",
+            "power tools at sunrise on Sunday",
+            "leaf blows at 7 AM Saturday",
+            "mows lawn at crack of dawn",
+            "weed whacker before 8 AM",
+            "pressure washer at inappropriate hours",
+            "car alarm goes off constantly",
+            "doesn't fix car alarm that activates randomly",
+            "revs engine in driveway repeatedly",
+            "works on loud motorcycle at midnight",
+            "bass from car stereo shakes windows",
+            "plays subwoofer way too loud",
+            "parks across multiple spots",
+            "takes two parking spaces with one car",
+            "parks in handicap without placard",
+            "uses handicap spot as loading zone",
+            "blocks driveway constantly",
+            "parks in front of mailbox",
+            "takes someone's assigned spot",
+            "parks in no parking zone daily",
+            "ignores fire lane restrictions",
+            "parks in electric charging spot with gas car",
+            "leaves shopping cart in parking space",
+            "doesn't return cart to corral ever",
+            "abandons cart in random location",
+            "takes cart home and keeps it",
+            "leaves trash in shopping cart",
+            "spills drink and doesn't tell anyone",
+            "breaks product and hides it",
+            "switches price tags on items",
+            "eats food before paying for it",
+            "uses store as personal bathroom only",
+            "makes huge mess trying things on",
+            "leaves fitting room disaster",
+            "doesn't hang items back up",
+            "tosses clothes on floor in store",
+            "unfolds every display item",
+            "opens all the packages to look inside",
+            "samples makeup without buying",
+            "tries perfume by spraying entire bottle",
+            "tests markers on random surfaces",
+            "lets kids destroy toy aisle",
+            "opens toys and plays with them in store",
+            "treats store like playground",
+            "brings stroller and blocks entire aisle",
+            "stops in middle of aisle to take call",
+            "leaves cart blocking traffic",
+            "brings whole family shopping unnecessarily",
+            "debates every purchase for 20 minutes",
+            "price checks everything on phone",
+            "uses store WiFi to stream videos",
+            "charges phone at stores outlet without buying anything",
+            "unironically thinks they're an influencer with 47 followers",
+            "posts good morning on LinkedIn daily",
+            "uses corporate buzzwords in casual conversation",
+            "says synergy unironically",
+            "thinks they invented something that already exists",
+            "explains obvious things condescendingly",
+            "fact checks memes in the comments",
+            "takes satire articles seriously",
+            "shares Babylon Bee thinking it's real news",
+            "tags 30 people in a Facebook meme",
+            "comments first on every post",
+            "asks is this real on every obviously fake post",
+            "sends good morning GIFs daily",
+            "overshares medical procedures on social media",
+            "live updates their entire medical procedure",
+            "posts about every doctor visit",
+            "shares graphic surgery photos unprompted",
+            "discusses bodily functions publicly",
+            "overshares relationship problems online",
+            "posts about every argument with partner",
+            "updates relationship status 5 times a week",
+            "subtly asks for validation constantly",
+            "fishing for compliments obviously",
+            "posts unflattering selfie saying they look terrible",
+            "says nobody will see this on public post",
+            "posts screenshot of texts for validation",
+            "shares private conversations publicly",
+            "screenshots DMs and posts them",
+            "records phone conversations without consent",
+            "publicly calls out people by name",
+            "airs dirty laundry on Facebook",
+            "live tweets every thought they have",
+            "overshares every minor inconvenience",
+            "complains about first world problems dramatically",
+            "acts like mild inconvenience is a tragedy",
+            "makes everything about them always",
+            "hijacks others posts to talk about themselves",
+            "comments me too on every single post",
+            "shares others tragedy for their own engagement",
+            "uses tragedy for personal gain",
+            "makes someone else's problem about them",
+            "centers themselves in every situation",
+            "trauma dumps unprompted on strangers",
+            "overshares in inappropriate settings",
+            "tells life story to cashier",
+            "shares deep secrets with Uber driver",
+            "discusses therapy session details publicly",
+            "posts therapy breakthroughs on main",
+            "live tweets therapy session somehow",
+            "records therapist without permission",
+            "diagnoses themselves on WebMD constantly",
+            "self diagnoses rare diseases regularly",
+            "thinks every symptom is cancer",
+            "Googles symptoms and panics",
+            "asks Facebook for medical advice",
+            "trusts random people over doctors",
+            "refuses medicine but takes random supplements",
+            "believes essential oils cure everything",
+            "tries to cure disease with crystals",
+            "thinks manifesting fixes real problems",
+            "law of attraction cures their illness apparently",
+            "manifests parking spots unironically",
+            "believes in every conspiracy theory",
+            "thinks birds aren't real seriously",
+            "believes earth is flat",
+            "thinks moon landing was fake",
+            "convinced lizard people run world",
+            "talks about Illuminati constantly",
+            "sees signs and symbols everywhere",
+            "thinks everything is a conspiracy",
+            "researches on YouTube exclusively",
+            "does their own research means watch videos",
+            "believes documentaries over peer reviewed studies",
+            "thinks documentary is unbiased truth",
+            "falls for propaganda easily",
+            "shares misinformation confidently",
+            "spreads debunked claims as fact",
+            "never checks sources ever",
+            "believes first result on Google",
+            "trusts random blog over experts",
+            "thinks opinion pieces are news",
+            "can't distinguish satire from reality",
+            "shares Onion articles as real news",
+            "doesn't understand what satire means",
+            "takes jokes too seriously",
+            "can't handle any banter",
+            "reports jokes as offensive",
+            "gets offended on behalf of others",
+            "polices everyone's language constantly",
+            "corrects people's preferred terminology",
+            "well actually's minority groups",
+            "speaks over people sharing experiences",
+            "centers their feelings in others struggles",
+            "makes others pain about them",
+            "plays devil's advocate on serious topics",
+            "argues just for the sake of arguing",
+            "debates every single thing",
+            "can't just agree and move on",
+            "has to be right about everything",
+            "doubles down when proven wrong",
+            "moves goalposts when losing argument",
+            "changes subject when they're wrong",
+            "whataboutism is their only defense",
+            "false equivalence is their specialty",
+            "strawman argument expert",
+            "ad hominem attacks when losing",
+            "resorts to insults immediately",
+            "name calling is their debate strategy",
+            "blocks anyone who disagrees",
+            "creates echo chamber deliberately",
+            "only follows people who agree with them",
+            "unfriends over political disagreements",
+            "makes politics their whole personality",
+            "brings up politics at every gathering",
+            "can't talk about anything but politics",
+            "makes everything political somehow",
+            "turns hobby groups into political debates",
+            "political rants on recipe posts",
+            "argues politics in mom groups",
+            "fights strangers in comment sections",
+            "spends hours arguing with trolls",
+            "feeds trolls constantly",
+            "takes obvious bait every time",
+            "falls for rage bait posts",
+            "gets mad at engagement bait",
+            "reposts outrage porn constantly",
+            "doom scrolls for hours daily",
+            "addicted to being angry online",
+            "seeks out things to be mad about",
+            "looks for reasons to be offended",
+            "professional victim mentality",
+            "makes everything an attack on them",
+            "takes constructive criticism as attack",
+            "can't handle any feedback",
+            "gets defensive about everything",
+            "perceives slights that aren't there",
+            "reads into things too much",
+            "overanalyzes every interaction",
+            "creates drama where there is none",
+            "stirs pot for entertainment",
+            "plays people against each other",
+            "gossips about everyone constantly",
+            "can't keep a secret ever",
+            "tells others secrets immediately",
+            "shares confidential information casually",
+            "loose lips sink ships personified",
+            "talks behind everyone's back",
+            "says different things to different people",
+            "two faced behavior always",
+            "fake nice to your face",
+            "passive aggressive master",
+            "backhanded compliments are their specialty",
+            "insults disguised as jokes",
+            "just kidding after being mean",
+            "can't take what they dish out",
+            "makes fun of others but can't handle jokes",
+            "bullies others then plays victim",
+            "dishes it but can't take it",
+            "sensitive when joke's on them",
+            "expects apologies but never apologizes",
+            "never takes accountability",
+            "always someone else's fault",
+            "blames everyone but themselves",
+            "can't admit they made mistake",
+            "excuses for everything always",
+            "justifies bad behavior constantly",
+            "won't own up to anything",
+            "denies reality when confronted",
+            "gaslights when caught in lie",
+            "rewrites history to suit narrative",
+            "misremembers events conveniently",
+            "selective memory extraordinaire",
+            "forgets what they said yesterday",
+            "contradicts themselves constantly",
+            "says opposite things on different days",
+            "flip flops on every position",
+            "no consistent values whatsoever",
+            "changes opinions based on audience",
+            "performs for different crowds",
+            "fake personality for each friend group",
+            "code switches inappropriately",
+            "changes accent around different people",
+            "pretends to be someone they're not",
+            "entire personality is fabricated",
+            "lies about basic facts of life",
+            "exaggerates every story dramatically",
+            "adds details that never happened",
+            "tells obvious lies constantly",
+            "pathological liar vibes",
+            "caught lying but keeps lying",
+            "lies about lying when caught",
+            "doubles down on obvious lies",
+            "creates elaborate cover stories",
+            "can't keep lies straight",
+            "forgets which version they told whom",
+            "trips over own lies regularly",
+            "web of lies catching up to them",
+            "living in house of cards",
+            "one question away from exposure",
+            "avoiding people they lied to",
+            "paranoid about being found out",
+            "covers lies with more lies",
+            "digs hole deeper constantly",
+            "point of no return passed",
+            "too deep in lies to come clean",
+            "entire life is a lie at this point",
+            "wouldn't know truth if it hit them",
+            "convinced own lies are real",
+            "believes their own BS",
+            "lost touch with reality completely",
+            "delusions of grandeur activated",
+            "thinks they're better than everyone",
+            "superiority complex off charts",
+            "looks down on everyone",
+            "judges people constantly",
+            "criticizes everyone else",
+            "hypocrite of highest order",
+            "does exactly what they condemn",
+            "rules for thee not for me",
+            "holds others to standards they ignore",
+            "demands perfection from others",
+            "extremely critical of everyone",
+            "impossible to please",
+            "never satisfied with anything",
+            "complains about everything constantly",
+            "negative Nancy energy",
+            "Debbie downer personified",
+            "rains on every parade",
+            "brings mood down always",
+            "buzzkill at every party",
+            "can't let people enjoy things",
+            "has to point out flaws in everything",
+            "sucks joy out of every room",
+            "energy vampire vibes",
+            "drains everyone around them",
+            "exhausting to be around",
+            "no one wants to hang out with them",
+            "wonders why no one invites them",
+            "doesn't realize they're the problem",
+            "blames others for being excluded",
+            "can't see their own behavior",
+            "zero self awareness",
+            "oblivious to social cues",
+            "doesn't pick up on hints",
+            "can't read the room",
+            "stays when clearly unwanted",
+            "overstays welcome everywhere",
+            "doesn't know when to leave",
+            "misses obvious exit cues",
+            "keeps talking when people leave",
+            "follows people who are leaving",
+            "won't let conversation end",
+            "one more thing syndrome",
+            "says goodbye then keeps talking",
+            "goodbye takes 45 minutes",
+            "stands in doorway talking forever",
+            "blocks exit while chatting",
+            "traps people in conversations",
+            "monopolizes everyone's time",
+            "doesn't respect others time",
+            "late to absolutely everything",
+            "keeps everyone waiting always",
+            "no concept of punctuality",
+            "thinks their time is more valuable",
+            "shows up whenever they feel like it",
+            "doesn't call when running late",
+            "no show without warning",
+            "flakes on plans constantly",
+            "cancels last minute habitually",
+            "makes plans they won't keep",
+            "says yes then bails every time",
+            "unreliable to the core",
+            "can't count on them for anything",
+            "lets everyone down regularly",
+            "disappoints people consistently",
+            "breaks promises casually",
+            "commitments mean nothing to them",
+            "their word is worthless",
+            "trust issues are their fault",
+            "burned every bridge possible",
+            "no friends left anymore",
+            "everyone has cut them off",
+            "blocked by entire friend group",
+            "can't figure out why people ghost them",
+            "thinks everyone else is the problem",
+            "refuses to see pattern in their behavior",
+            "won't consider they might be wrong",
+            "unteachable and proud of it",
+            "resistant to any growth",
+            "same mistakes over and over",
+            "never learns from experience",
+            "repeats same patterns endlessly",
+            "groundhog day of bad decisions",
+            "definition of insanity personified",
+            "expects different results doing same thing",
+            "won't change despite consequences",
+            "digs heels in stubbornly",
+            "pride is their fatal flaw",
+            "ego won't let them admit fault",
+            "too proud to ask for help",
+            "struggles alone unnecessarily",
+            "rejects good advice always",
+            "knows better than everyone apparently",
+            "won't listen to anyone",
+            "ignores all warnings",
+            "told you so waiting to happen",
+            "preventable disaster incoming",
+            "watching train wreck in slow motion",
+            "can see crash coming from mile away",
+            "inevitable failure approaching",
+            "writing on wall is clear",
+            "ignoring obvious red flags",
+            "walking into obvious trap",
+            "about to learn hard lesson",
+            "consequences catching up finally",
+            "karma is coming for them",
+            "reaping what they sowed",
+            "chickens coming home to roost",
+            "past catching up to them",
+            "running out of second chances",
+            "luck has run out",
+            "nine lives used up",
+            "plot armor expired",
+            "main character syndrome ending",
+            "reality check incoming",
+            "wake up call overdue",
+            "rude awakening approaching",
+            "bubble about to burst",
+            "house of cards collapsing",
+            "everything unraveling now",
+            "downward spiral activated",
+            "freefall has begun",
+            "rock bottom approaching fast",
+            "hit rock bottom and started digging",
+            "making things worse for themselves",
+            "self sabotage is their specialty",
+            "worst enemy is themselves",
+            "shoots themselves in foot constantly",
+            "cuts off nose to spite face",
+            "own worst critic and destroyer",
+            "destroys good things they have",
+            "pushes away people who care",
+            "ruins every good opportunity",
+            "snatches defeat from jaws of victory",
+            "fumbles the bag spectacularly",
+            "drops ball at goal line",
+            "chokes when it matters most",
+            "crumbles under any pressure",
+            "folds like lawn chair",
+            "falls apart at first sign of adversity",
+            "gives up immediately when challenged",
+            "quits at first obstacle",
+            "no resilience whatsoever",
+            "paper thin mental fortitude",
+            "can't handle slightest difficulty",
+            "throws tantrum when things get hard",
+            "acts like baby when frustrated",
+            "emotional regulation of toddler",
+            "meltdown over minor issues",
+            "proportional response not in vocabulary",
+            "overreacts to everything",
+            "makes mountains out of molehills",
+            "drama queen supreme",
+            "theatrics are their default",
+            "everything is end of world",
+            "catastrophizes constantly",
+            "worst case scenario is only scenario",
+            "anxiety spirals out of control",
+            "panics over nothing",
+            "freaks out unnecessarily",
+            "loses mind over small things",
+            "complete chaos over minor issue",
+            "acts like it's emergency when it's not",
+            "cries wolf constantly",
+            "boy who cried wolf personified",
+            "false alarms are their norm",
+            "no one takes them seriously anymore",
+            "credibility is nonexistent",
+            "reputation in tatters",
+            "name is mud basically",
+            "laughingstock at this point",
+            "joke to everyone around them",
+            "no one respects them",
+            "lost all dignity",
+            "embarrassment to themselves",
+            "clown emoji comes to life",
+            "entire circus at this point",
+            "peak comedy unintentionally",
+            "meme material constantly",
+            "living cautionary tale",
+            "example of what not to do",
+            "case study in failure",
+            "how not to live life",
+            "poster child for bad decisions",
+            "walking red flag collection",
+            "red flag factory",
+            "marinara flags everywhere",
+            "warning signs ignored by all",
+            "yikes personified",
+            "big yikes energy",
+            "oof size large",
+            "cringe compilation material",
+            "belongs on cringe subreddit",
+            "makes everyone uncomfortable",
+            "second hand embarrassment inducing",
+            "painful to witness",
+            "can't watch without cringing",
+            "need to look away",
+            "too awkward to bear",
+            "uncomfortable viewing",
+            "makes skin crawl",
+            "gives everyone the ick",
+            "ick factor off the charts",
+            "repels everyone instantly",
+            "no one can stand them",
+            "universally disliked somehow",
+            "managed to unite everyone against them",
+            "common enemy of all",
+            "brought everyone together in dislike",
+            "accomplished the impossible being that annoying",
+            "uses air quotes excessively in conversation",
+            "refers to themselves in third person",
+            "says not to brag but before bragging",
+            "humble brags disguised as self deprecation",
+            "fake humility is transparent",
+            "fishing for compliments constantly with reverse psychology",
+            "says I'm so bad at this after doing well",
+            "pretends to be worse than they are for attention",
+            "fake incompetence for sympathy",
+            "plays dumb to manipulate situations",
+            "weaponized incompetence expert",
+            "conveniently can't do tasks they don't want to",
+            "suddenly forgets how to do basic things",
+            "claims they don't know how when they do",
+            "makes others do their work through fake helplessness",
+            "learned helplessness is a strategy",
+            "refuses to learn on purpose",
+            "willfully ignorant about everything",
+            "proud of not knowing basic things",
+            "wears ignorance like a badge of honor",
+            "thinks being uninformed is cool",
+            "anti intellectual vibes strong",
+            "dismisses education and expertise",
+            "thinks street smarts means being ignorant",
+            "confuses cynicism with intelligence",
+            "thinks being contrarian makes them smart",
+            "disagrees just to seem interesting",
+            "takes opposite position reflexively",
+            "edgy for the sake of being edgy",
+            "thinks shock value equals comedy",
+            "offensive jokes are their only material",
+            "punches down constantly in humor",
+            "makes fun of marginalized groups",
+            "bullies people and calls it joking",
+            "cruelty disguised as honesty",
+            "brutal honesty is just being brutal",
+            "uses I'm just being honest to be mean",
+            "no filter means no self control",
+            "word vomit constantly with no thought",
+            "says whatever pops in head",
+            "no internal monologue stays internal",
+            "thinks out loud inappropriately",
+            "streams consciousness without editing",
+            "unfiltered thoughts are all terrible",
+            "inside thoughts keep coming outside",
+            "says quiet part loud always",
+            "accidentally reveals what they really think",
+            "Freudian slips constantly",
+            "tells on themselves without realizing",
+            "accidentally admits to things",
+            "confesses to crimes casually",
+            "incriminates themselves regularly",
+            "loose lips about illegal activities",
+            "overshares criminal behavior",
+            "posts their crimes on social media",
+            "live streams themselves breaking law",
+            "TikToks their felonies",
+            "documents evidence against themselves",
+            "creates paper trail of bad behavior",
+            "texts confession of wrongdoing",
+            "puts it all in writing stupidly",
+            "emails their illegal plans",
+            "group chat has all the evidence",
+            "screenshots exist of everything",
+            "digital footprint is incriminating",
+            "left trail of evidence everywhere",
+            "covered tracks by leaving more tracks",
+            "attempts to hide evidence badly",
+            "deletes nothing permanently",
+            "forgets cloud backups exist",
+            "doesn't understand how internet works",
+            "thinks incognito mode hides everything",
+            "believes deleted means gone forever",
+            "doesn't know about data recovery",
+            "tech literacy is nonexistent",
+            "confused by basic technology",
+            "calls everything the YouTube",
+            "thinks WiFi and internet are same thing",
+            "doesn't understand how phones work",
+            "believes everything they see on screen",
+            "thinks TV is watching them",
+            "paranoid about technology wrong ways",
+            "worried about wrong privacy issues",
+            "covers webcam but overshares online",
+            "fears hackers but password is password",
+            "security theater performer",
+            "takes fake security measures seriously",
+            "does security cosplay ineffectively",
+            "security through obscurity believer",
+            "thinks being unknown keeps them safe",
+            "obscurity is not security",
+            "false sense of security everywhere",
+            "thinks they're safe when they're not",
+            "unaware of actual threats around them",
+            "oblivious to real dangers",
+            "worried about wrong things completely",
+            "misplaced priorities everywhere",
+            "focuses on trivial ignores important",
+            "sweats small stuff ignores big stuff",
+            "can't see forest for trees",
+            "misses big picture completely",
+            "tunnel vision on wrong details",
+            "obsesses over minutiae",
+            "nitpicks irrelevant details",
+            "pedantic about wrong things",
+            "corrects things that don't matter",
+            "well actually about trivial facts",
+            "fun at parties they're not invited to",
+            "wonders why no party invites",
+            "doesn't get social cues at all",
+            "takes everything literally always",
+            "doesn't understand sarcasm exists",
+            "thinks every joke is serious",
+            "no sense of humor detected",
+            "laughs at wrong times always",
+            "inappropriate laughter constantly",
+            "giggles during serious moments",
+            "can't read tone of situation",
+            "mood deaf completely",
+            "emotional intelligence is zero",
+            "EQ in the negatives",
+            "reads emotions like reads hieroglyphics",
+            "interprets facial expressions backwards",
+            "thinks angry face means happy",
+            "can't tell when people are upset",
+            "oblivious to others feelings",
+            "unaware of emotional impact",
+            "tramples feelings without noticing",
+            "emotional bull in china shop",
+            "causes hurt feelings cluelessly",
+            "insensitive without meaning to be",
+            "accidentally cruel regularly",
+            "unintentional menace to others",
+            "disaster waiting to happen socially",
+            "walking social faux pas",
+            "commits etiquette violations constantly",
+            "doesn't know basic manners",
+            "raised by wolves apparently",
+            "no home training visible",
+            "acts feral in public",
+            "uncivilized behavior normalized",
+            "barbaric table manners",
+            "eats like they're in food fight",
+            "messy eater extraordinaire",
+            "food on face after every meal",
+            "doesn't use napkin ever",
+            "wipes mouth on sleeve",
+            "spills on themselves always",
+            "stains every shirt immediately",
+            "can't eat without making mess",
+            "walking disaster with food",
+            "banned from buffets everywhere",
+            "asked to leave all you can eat",
+            "blacklisted from restaurants",
+            "has pictures on wall of shame",
+            "do not serve list member",
+            "restaurant red flag database",
+            "Yelp has warnings about them",
+            "Google reviews mention them by name",
+            "urban legends at local eateries",
+            "folklore about their behavior exists",
+            "cautionary tale among service workers",
+            "staff warns each other about them",
+            "managers know them on sight",
+            "security called when they arrive",
+            "escort out proactively sometimes",
+            "preemptively banned from establishments",
+            "reputation precedes them everywhere",
+            "infamy in the local area",
+            "locally famous for wrong reasons",
+            "neighborhood knows their name badly",
+            "community pariah status achieved",
+            "outcasted from local society",
+            "shunned by everyone nearby",
+            "avoid them signs posted",
+            "warning flyers distributed about them",
+            "NextDoor has thread about them",
+            "HOA has special meeting about them",
+            "neighborhood watch watches them specifically",
+            "ring camera content star",
+            "everyone's security footage features them",
+            "viral on local Facebook groups",
+            "community drama main character",
+            "town gossip revolves around them",
+            "what they did is legend",
+            "stories told about them for years",
+            "infamy outlasts them personally",
+            "legacy is being cautionary tale",
+            "will be remembered for all wrong reasons",
+            "epitaph will be yikes",
+            "tombstone says finally",
+            "obituary is relief announcement",
+            "death notice gets likes not sad reacts",
+            "funeral attendance is low",
+            "eulogy struggles to find nice things",
+            "no stories worth sharing nicely",
+            "best thing is they're consistent at least",
+            "consistently terrible is consistency",
+            "reliable in their unreliability",
+            "predictably unpredictable badly",
+            "guaranteed to disappoint",
+            "dependably lets everyone down",
+            "trusted to be untrustworthy",
+            "count on them to not show up",
+            "will definitely flake as expected",
+            "promises are made to break",
+            "commitments are suggestions to them",
+            "yes means maybe to them",
+            "maybe means no to them",
+            "no means they didn't hear question",
+            "selective hearing is superpower",
+            "asks you to repeat then still doesn't listen",
+            "hears what they want to hear only",
+            "filters out anything inconvenient",
+            "tunes out when it's important",
+            "pays attention to wrong parts",
+            "misses point of every conversation",
+            "takes away wrong message always",
+            "interprets everything backwards",
+            "understands opposite of what was said",
+            "hears instructions then does opposite",
+            "given clear directions still gets lost",
+            "maps are a mystery to them",
+            "GPS can't even help them",
+            "gets lost in parking lot",
+            "no sense of direction at all",
+            "turns wrong way consistently",
+            "always goes opposite direction needed",
+            "left and right are confusing",
+            "can't tell north from south",
+            "orienting themselves is impossible",
+            "landmark blind completely",
+            "passes destination three times",
+            "circles same block repeatedly",
+            "asks for directions then ignores them",
+            "refuses to admit they're lost",
+            "too proud to use GPS",
+            "argues with navigation system",
+            "thinks they know better than maps",
+            "shortcut always takes longer",
+            "back way is never faster",
+            "insists on wrong route stubbornly",
+            "late because of bad directions",
+            "blames traffic for their navigation",
+            "gets lost and blames everyone else",
+            "can't follow simple route",
+            "written directions confuse them",
+            "turn by turn instructions too complex",
+            "landmarks don't help them",
+            "street names mean nothing to them",
+            "house numbers are decorative apparently",
+            "addresses are just suggestions",
+            "zip codes are mysteries",
+            "area codes confuse them greatly",
+            "can't remember their own address",
+            "doesn't know home phone number",
+            "forgot own email address",
+            "username is mystery to them",
+            "password reset constant companion",
+            "security questions stump them",
+            "can't remember mother's maiden name",
+            "forgets own birthday somehow",
+            "mixed up social security number",
+            "driver's license info is wrong",
+            "passport has errors everywhere",
+            "filled forms out incorrectly",
+            "checkbox confusion is real",
+            "instructions say check one box they check all",
+            "do not write here so they write there",
+            "sign here they sign everywhere else",
+            "date format confuses them completely",
+            "month day year is hard concept",
+            "writes date wrong every time",
+            "year is always off by one",
+            "still writes 2019 on checks",
+            "dateline is suggestions to them",
+            "deadlines are flexible in their mind",
+            "due date means whenever",
+            "ASAP means eventually",
+            "urgent means when they feel like it",
+            "priority system doesn't compute",
+            "everything is equal importance",
+            "can't triage tasks at all",
+            "critical and trivial are same",
+            "emergency doesn't mean emergency",
+            "fire drill treated like suggestion",
+            "alarm goes off they hit snooze",
+            "snooze button worn out completely",
+            "alarms set but ignored always",
+            "five more minutes becomes hour",
+            "perpetually running late everywhere",
+            "early means only 10 minutes late",
+            "on time is foreign concept",
+            "fashionably late is just late",
+            "keeps everyone waiting habitually",
+            "doesn't value others time ever",
+            "their time is precious only",
+            "double standards about punctuality",
+            "mad when others late but always late",
+            "expects people to wait for them",
+            "doesn't extend same courtesy",
+            "courtesy is one way street",
+            "golden rule doesn't apply to them",
+            "do unto others unless it's inconvenient",
+            "treats service workers terribly",
+            "rude to anyone they perceive beneath them",
+            "kisses up kicks down expert",
+            "nice to bosses mean to subordinates",
+            "shows true colors with waitstaff",
+            "character revealed by restaurant behavior",
+            "tips poorly with terrible attitude",
+            "complains to get free stuff",
+            "scams their way through life",
+            "always working an angle",
+            "thinks participation counts more than results",
+            "shows up is their accomplishment",
+            "presence is all they contribute",
+            "body at meeting mind elsewhere",
+            "warm body filling seat nothing more",
+            "contribution level: minimal to none",
+            "dead weight on every team",
+            "carried by others constantly",
+            "free rider extraordinaire",
+            "coattail rider professional",
+            "piggybacks on everyone's work",
+            "takes credit gives none",
+            "spotlight hogger team player faker",
+            "me me me mentality always",
+            "team means them and peasants",
+            "collaboration means you do it",
+            "group project solo credit seeker",
+            "divides work keeps easy part",
+            "delegates everything claims leadership",
+            "boss without authority or respect",
+            "backseat driver from passenger seat",
+            "armchair quarterback never played",
+            "Monday morning quarterback extraordinaire",
+            "hindsight hero foresight zero",
+            "shoulda coulda woulda energy",
+            "if only attitude constant",
+            "woulda been great if different",
+            "excuses for days results never",
+            "explanation ready execution lacking",
+            "justification expert action amateur",
+            "words without deeds specialist",
+            "promises without delivery guaranteed",
+            "big plans small follow through",
+            "grand ideas terrible implementation",
+            "vision without execution useless",
+            "dreamer not doer obviously",
+            "talker not walker clearly",
+            "preacher not practitioner definitely",
+            "theorist not pragmatist entirely",
+            "academic not practical completely",
+            "book smart street dumb",
+            "educated fool basically",
+            "degree without common sense",
+            "credentials without competence",
+            "certified incompetent officially",
+            "qualified on paper only",
+            "resume impressive reality disappointing",
+            "interviews well performs poorly",
+            "first impression deceiving",
+            "honeymoon period short lived",
+            "new job shine wears off quick",
+            "probation barely survived",
+            "performance plan territory reached",
+            "improvement needed repeatedly",
+            "meets expectations never",
+            "below standards consistently",
+            "needs development everywhere",
+            "coaching required constantly",
+            "micromanagement necessary unfortunately",
+            "autonomy not possible here",
+            "independence not earned yet",
+            "trust not established ever",
+            "reliability not demonstrated once",
+            "consistency not shown period",
+            "quality not delivered regularly",
+            "standards not met typically",
+            "expectations not fulfilled usually",
+            "requirements not satisfied often",
+            "deadlines not hit frequently",
+            "commitments not kept habitually",
+            "promises not delivered routinely",
+            "word not honored normally",
+            "bond not good worthless",
+            "handshake deal broken instantly",
+            "verbal agreement forgotten immediately",
+            "understanding misunderstood conveniently",
+            "gentleman's agreement one sided",
+            "good faith bad faith actually",
+            "honest mistake dishonest pattern",
+            "oversight intentional clearly",
+            "accident on purpose obviously",
+            "unintentional very intentional",
+            "didn't mean to meant every bit",
+            "mistake choice really",
+            "error judgment lack thereof",
+            "lapse memory selective amnesia",
+            "forgot remembered not to",
+            "overlooked ignored deliberately",
+            "missed saw chose not",
+            "didn't notice noticed ignored",
+            "wasn't aware fully aware",
+            "didn't realize realized didn't care",
+            "didn't know knew didn't matter",
+            "wasn't told told didn't listen",
+            "didn't hear heard tuned out",
+            "didn't understand understood rejected",
+            "didn't get got disagreed with",
+            "misunderstood understood hated it",
+            "confused clear chose chaos",
+            "uncertain sure chose wrong",
+            "unclear crystal ignored anyway",
+            "ambiguous obvious pretended not",
+            "vague specific played dumb",
+            "needs clarification needs replacement",
+            "requires explanation requires termination",
+            "wants guidance wants hand holding",
+            "seeks feedback seeks validation",
+            "asks questions wastes time",
+            "needs help needs miracle",
+            "could use support could use exit",
+            "would benefit from honestly beyond help",
+            "might improve with won't improve regardless",
+            "has potential to had potential once",
+            "capable of achieving capable of nothing",
+            "positioned to succeed positioned to fail",
+            "ready to excel ready to leave",
+            "prepared to deliver prepared excuses",
+            "equipped to handle equipped to fumble",
+            "able to accomplish able to disappoint",
+            "qualified to perform qualified to underperform",
+            "licensed to practice licensed to malpractice",
+            "authorized to proceed authorized to mess up",
+            "permitted to continue permitted unfortunately",
+            "allowed to try allowed to fail",
+            "encouraged to attempt discouraged internally",
+            "supported in efforts unsupported in results",
+            "backed by team carried by team",
+            "championed by manager regretted by manager",
+            "endorsed by leadership questioned by everyone",
+            "recommended by someone who regrets it",
+            "referred by enemy probably",
+            "vouched for voucher wants refund",
+            "guaranteed by someone rethinking life",
+            "certified by diploma mill",
+            "approved by low standards",
+            "passed by generous grading",
+            "graduated somehow mysteriously",
+            "promoted Peter Principle poster child",
+            "advanced beyond competence long ago",
+            "rose to incompetence level",
+            "climbed until couldn't anymore",
+            "peaked immediately after hire",
+            "topped out day one",
+            "maxed potential instantly",
+            "reached ceiling at floor",
+            "hit limit at start",
+            "capped abilities right away",
+            "plateaued below ground level",
+            "stagnated upon arrival",
+            "stuck at inadequate",
+            "frozen at insufficient",
+            "trapped in mediocrity best case",
+            "mired in incompetence worst case",
+            "bogged down in excuses always",
+            "weighed down by laziness constantly",
+            "held back by themselves only",
+            "limited by attitude entirely",
+            "constrained by effort lack thereof",
+            "restricted by motivation absence of",
+            "bound by commitment none of",
+            "tied by responsibility avoidance of",
+            "chained by accountability refusal of",
+            "shackled by ownership rejection of",
+            "imprisoned by ego inflation of",
+            "caged by pride excess of",
+            "confined by stubbornness abundance of",
+            "locked by closed mindedness full of",
+            "stuck by inflexibility rigid with",
+            "stranded by adaptability zero of",
+            "marooned by change resistance total of",
+            "abandoned by learning willingness none",
+            "deserted by growth desire absent",
+            "forsaken by improvement interest lacking",
+            "left by progress completely",
+            "ditched by advancement entirely",
+            "dropped by success deservedly",
+            "dumped by achievement rightfully",
+            "jilted by accomplishment fittingly",
+            "rejected by excellence properly",
+            "spurned by quality justly",
+            "dismissed by standards appropriately",
+            "expelled by competence correctly",
+            "excluded by performance accurately",
+            "ousted by results fairly",
+            "removed by outcomes suitably",
+            "terminated by productivity aptly",
+            "fired by contribution deservingly",
+            "canned by value added none",
+            "sacked by impact made negative",
+            "axed by difference made worse",
+            "booted by improvement brought decline",
+            "shown door by presence lowered bar",
+            "walked out by participation decreased quality",
+            "escorted out by involvement harmed team",
+            "security called by attendance unfortunate",
+            "box given by tenure wasted",
+            "belongings packed by career squandered",
+            "keys returned by opportunity blown",
+            "badge surrendered by chance ruined",
+            "access revoked by position abused",
+            "privileges removed by trust violated",
+            "benefits terminated by faith betrayed",
+            "perks eliminated by goodwill exhausted",
+            "parking spot reassigned by patience tested",
+            "desk cleared by tolerance exceeded"
+        ];
+
+        function normalizePlayerName(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function processPlayers() {
+            const input = document.getElementById('playerInput').value;
+            const lines = input.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            
+            if (lines.length === 0) {
+                alert('Please enter at least one player! 🧠');
+                return;
+            }
+
+            allPlayers = lines;
+            const uniqueMap = new Map();
+            const duplicates = [];
+
+            // Find unique players and track duplicates
+            allPlayers.forEach(player => {
+                const normalized = normalizePlayerName(player);
+                if (!uniqueMap.has(normalized)) {
+                    uniqueMap.set(normalized, player);
+                } else {
+                    duplicates.push(player);
+                }
+            });
+
+            uniquePlayers = Array.from(uniqueMap.values());
+
+            // Show dupe screen
+            let dupeHtml = `<h2>Players Entered: ${allPlayers.length}</h2>`;
+            dupeHtml += `<h2>Unique Players: ${uniquePlayers.length}</h2>`;
+            
+            if (duplicates.length > 0) {
+                dupeHtml += `<div class="dupe-warning">
+                    <h3>⚠️ Duplicates Removed: ${duplicates.length}</h3>
+                    <div style="margin-top: 10px; font-size: 16px;">
+                        ${duplicates.map(d => `<div>${d}</div>`).join('')}
+                    </div>
+                </div>`;
+            } else {
+                dupeHtml += `<div style="margin: 20px 0; font-size: 20px;">✅ No duplicates found!</div>`;
+            }
+
+            document.getElementById('dupeInfo').innerHTML = dupeHtml;
+            showScreen('dupeScreen');
+        }
+
+        function startGame() {
+            // Split into groups
+            const maxGroupSize = 20;
+            const numGroups = Math.ceil(uniquePlayers.length / maxGroupSize);
+            const baseGroupSize = Math.floor(uniquePlayers.length / numGroups);
+            const remainder = uniquePlayers.length % numGroups;
+
+            groups = [];
+            let playerIndex = 0;
+            
+            for (let i = 0; i < numGroups; i++) {
+                const groupSize = baseGroupSize + (i < remainder ? 1 : 0);
+                groups.push(uniquePlayers.slice(playerIndex, playerIndex + groupSize));
+                playerIndex += groupSize;
+            }
+
+            // Shuffle groups
+            groups = groups.map(group => shuffleArray([...group]));
+
+            currentGroupIndex = 0;
+            allWinners = [];
+            usedReasons = new Set();
+            showScreen('gameScreen');
+            startRound();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startRound() {
+            if (currentGroupIndex >= groups.length) {
+                // Check if we need a final boss round
+                if (allWinners.length > 1) {
+                    showRoundWinnersBeforeFinalBoss();
+                } else {
+                    showWinners();
+                }
+                return;
+            }
+
+            currentGroup = [...groups[currentGroupIndex]];
+            previousVoters = []; // Reset voters for new round
+            displayRoundStart();
+        }
+
+        function showRoundWinnersBeforeFinalBoss() {
+            const winnersHtml = `
+                <div class="winner-announcement">
+                    <h2 style="font-family: 'Black Ops One', cursive; font-size: clamp(2rem, 6vw, 4rem); margin: 30px 0;">
+                        🏆 ROUND WINNERS 🏆
+                    </h2>
+                    <div style="font-size: 24px; margin: 20px 0;">
+                        Congratulations to all round winners!
+                    </div>
+                    <div class="card" style="margin: 30px 0;">
+                        <div class="final-winners">
+                            ${allWinners.map((winner, index) => `
+                                <div class="final-winner-item">
+                                    Round ${index + 1}: ${winner}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <button onclick="startFinalBossRound()" class="center-btn">PROCEED TO FINAL BOSS ROUND 👑</button>
+                    <div style="text-align: center; margin-top: 15px; font-size: 16px; opacity: 0.8;">
+                        Click anywhere or press spacebar to continue
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = winnersHtml;
+            
+            // Set up one-time click/spacebar handler
+            const startHandler = (e) => {
+                if (e.type === 'click' || e.code === 'Space' || e.key === ' ') {
+                    if (e.type === 'keydown') e.preventDefault();
+                    document.removeEventListener('click', startHandler);
+                    document.removeEventListener('keydown', startHandler);
+                    startFinalBossRound();
+                }
+            };
+            
+            document.addEventListener('click', startHandler);
+            document.addEventListener('keydown', startHandler);
+        }
+
+        function startFinalBossRound() {
+            // Set current group to all winners and treat it like a regular round
+            currentGroup = [...allWinners];
+            previousVoters = [];
+            
+            const finalHtml = `
+                <div class="winner-announcement">
+                    <h2 style="font-family: 'Black Ops One', cursive; font-size: clamp(2rem, 6vw, 4rem); margin: 30px 0;">
+                        👑 FINAL BOSS ROUND 👑
+                    </h2>
+                    <div style="font-size: 24px; margin: 20px 0;">
+                        All round winners will now compete to become the ULTIMATE SURVIVOR!
+                    </div>
+                    <div class="card" style="margin: 30px 0;">
+                        <h3 style="margin-bottom: 20px;">Final Boss Contestants: ${allWinners.length}</h3>
+                        <div class="player-list" data-count="${allWinners.length}">
+                            ${allWinners.map(player => `<div class="player-item">${player}</div>`).join('')}
+                        </div>
+                    </div>
+                    <button onclick="startFinalBossVoting()" class="center-btn">BEGIN FINAL BOSS ROUND 🔥</button>
+                    <div style="text-align: center; margin-top: 15px; font-size: 16px; opacity: 0.8;">
+                        Click anywhere or press spacebar to begin
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = finalHtml;
+            
+            // Set up one-time click/spacebar handler to start final boss
+            const startHandler = (e) => {
+                if (e.type === 'click' || e.code === 'Space' || e.key === ' ') {
+                    if (e.type === 'keydown') e.preventDefault();
+                    document.removeEventListener('click', startHandler);
+                    document.removeEventListener('keydown', startHandler);
+                    startFinalBossVoting();
+                }
+            };
+            
+            document.addEventListener('click', startHandler);
+            document.addEventListener('keydown', startHandler);
+        }
+
+        async function startFinalBossVoting() {
+            // Dice rolling final boss round
+            currentGroup = [...allWinners];
+            setupSkipHandlers();
+            
+            await rollDiceRound();
+        }
+
+        async function rollDiceRound() {
+            const numDice = currentGroup.length;
+            
+            // Show rolling announcement
+            const rollingHtml = `
+                <div class="rps-container">
+                    <div class="group-header">👑 FINAL BOSS DICE BATTLE 👑</div>
+                    <div class="card">
+                        <h2 style="margin-bottom: 15px; font-size: clamp(1.5rem, 4vw, 2rem);">🎲 ROLLING ${numDice} DICE 🎲</h2>
+                        <div style="font-size: 18px; margin: 10px 0;">
+                            Each player rolls ${numDice} six-sided ${numDice === 1 ? 'die' : 'dice'}! Highest total wins!
+                        </div>
+                        <div style="font-size: 36px; margin: 20px 0;">
+                            <div id="diceCountdown">Rolling...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = rollingHtml;
+            
+            await sleep(2000);
+            
+            // Roll dice for each player
+            const rolls = [];
+            for (const player of currentGroup) {
+                const playerRolls = [];
+                let total = 0;
+                for (let i = 0; i < numDice; i++) {
+                    const roll = Math.floor(Math.random() * 6) + 1;
+                    playerRolls.push(roll);
+                    total += roll;
+                }
+                rolls.push({ player, rolls: playerRolls, total });
+            }
+            
+            // Sort by total (highest first)
+            rolls.sort((a, b) => b.total - a.total);
+            
+            // Check for ties at the top
+            const highestTotal = rolls[0].total;
+            const winners = rolls.filter(r => r.total === highestTotal);
+            
+            // Display results
+            const resultsHtml = `
+                <div class="rps-container">
+                    <div class="group-header">👑 FINAL BOSS DICE BATTLE 👑</div>
+                    <div class="card">
+                        <h2 style="margin-bottom: 15px; font-size: clamp(1.5rem, 4vw, 2rem);">🎲 RESULTS 🎲</h2>
+                        <div style="display: grid; gap: 12px; margin: 15px 0;">
+                            ${rolls.map((r, index) => `
+                                <div style="
+                                    padding: 12px;
+                                    background: ${r.total === highestTotal ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
+                                    border: 2px solid ${r.total === highestTotal ? '#00ff00' : 'rgba(255, 255, 255, 0.3)'};
+                                    border-radius: 10px;
+                                ">
+                                    <div style="font-family: 'Black Ops One', cursive; font-size: 18px; margin-bottom: 8px;">
+                                        ${index === 0 && winners.length === 1 ? '👑 ' : ''}${r.player}
+                                    </div>
+                                    <div style="font-size: clamp(24px, 5vw, 36px); margin: 8px 0; line-height: 1.2;">
+                                        ${r.rolls.map(die => {
+                                            const faces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+                                            return faces[die - 1];
+                                        }).join(' ')}
+                                    </div>
+                                    <div style="font-size: 20px; font-weight: bold; color: ${r.total === highestTotal ? '#00ff00' : '#fff'};">
+                                        Total: ${r.total}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${winners.length > 1 ? `
+                            <div style="
+                                margin: 15px 0;
+                                padding: 15px;
+                                background: rgba(255, 165, 0, 0.3);
+                                border: 3px solid #ffa500;
+                                border-radius: 10px;
+                                font-size: 18px;
+                            ">
+                                🔥 TIE! 🔥<br>
+                                ${winners.map(w => w.player).join(', ')} tied with ${highestTotal}!<br>
+                                Rolling again...
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = resultsHtml;
+            
+            await sleep(winners.length > 1 ? 5000 : 8000);
+            
+            if (winners.length > 1) {
+                // Tie - roll again with only the tied players
+                currentGroup = winners.map(w => w.player);
+                await rollDiceRound();
+            } else {
+                // We have a winner!
+                const finalBoss = winners[0].player;
+                announceFinalBoss(finalBoss);
+            }
+        }
+
+        function announceFinalBoss(finalBoss) {
+            const bossHtml = `
+                <div class="winner-announcement">
+                    <h2 style="font-family: 'Black Ops One', cursive; font-size: clamp(2.5rem, 8vw, 5rem); margin: 30px 0; animation: rainbow 3s infinite;">
+                        👑 FINAL BOSS 👑
+                    </h2>
+                    <div class="winner-name" style="font-size: clamp(3rem, 9vw, 6rem);">${finalBoss}</div>
+                    <div style="margin: 30px 0; font-size: 28px;">
+                        🔥 THE ULTIMATE SURVIVOR 🔥<br>
+                        rolled the highest and reigns supreme!
+                    </div>
+                    <button onclick="resetGame()" class="center-btn">PLAY AGAIN? 🔄</button>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = bossHtml;
+        }
+
+        function nextRound() {
+            currentGroupIndex++;
+            startRound();
+        }
+
+
+        function displayRoundStart() {
+            const html = `
+                <div class="group-header">
+                    🎮 ROUND ${currentGroupIndex + 1} of ${groups.length} 🎮
+                </div>
+                <div class="card">
+                    <h2 style="text-align: center; margin-bottom: 20px;">
+                        Players in this round: ${currentGroup.length}
+                    </h2>
+                    <div class="player-list" data-count="${currentGroup.length}">
+                        ${currentGroup.map(player => `<div class="player-item">${player}</div>`).join('')}
+                    </div>
+                    <button onclick="startVoting()" class="center-btn">START VOTING 🗳️</button>
+                    <div style="text-align: center; margin-top: 15px; font-size: 16px; opacity: 0.8;">
+                        Click anywhere or press spacebar to start
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = html;
+            
+            // Set up one-time click/spacebar handler to start voting
+            const startHandler = (e) => {
+                if (e.type === 'click' || e.code === 'Space' || e.key === ' ') {
+                    if (e.type === 'keydown') e.preventDefault();
+                    document.removeEventListener('click', startHandler);
+                    document.removeEventListener('keydown', startHandler);
+                    startVoting();
+                }
+            };
+            
+            document.addEventListener('click', startHandler);
+            document.addEventListener('keydown', startHandler);
+        }
+
+        async function startVoting() {
+            setupSkipHandlers(); // Enable click/spacebar to skip
+            
+            while (currentGroup.length > 2) {
+                // Determine how many to eliminate (more aggressive)
+                let eliminationCount;
+                if (currentGroup.length > 10) {
+                    eliminationCount = 4;
+                } else if (currentGroup.length >= 7) {
+                    eliminationCount = 3;
+                } else if (currentGroup.length >= 4) {
+                    eliminationCount = 2;
+                } else {
+                    eliminationCount = 1;
+                }
+                
+                await conductVote(eliminationCount);
+            }
+            
+            // If exactly 2 players left, do rock paper scissors
+            if (currentGroup.length === 2) {
+                await playRockPaperScissors();
+            } else {
+                // Only 1 player - they win
+                announceRoundWinner();
+            }
+        }
+
+        async function playRockPaperScissors() {
+            const player1 = currentGroup[0];
+            const player2 = currentGroup[1];
+            const choices = ['🪨', '📄', '✂️'];
+            const choiceNames = ['Rock', 'Paper', 'Scissors'];
+            
+            // Show countdown
+            const countdownHtml = `
+                <div class="rps-container">
+                    <div class="group-header">ROUND ${currentGroupIndex + 1} | FINAL SHOWDOWN!</div>
+                    <div class="card">
+                        <h2 style="margin-bottom: 30px;">⚔️ ROCK PAPER SCISSORS ⚔️</h2>
+                        <div class="rps-players">
+                            <div class="rps-player">
+                                <div class="rps-player-name">${player1}</div>
+                            </div>
+                            <div class="rps-vs">VS</div>
+                            <div class="rps-player">
+                                <div class="rps-player-name">${player2}</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 48px; margin: 30px 0;">
+                            <div id="rpsCountdown">READY...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = countdownHtml;
+            
+            await sleep(1500);
+            document.getElementById('rpsCountdown').textContent = '3...';
+            await sleep(1000);
+            document.getElementById('rpsCountdown').textContent = '2...';
+            await sleep(1000);
+            document.getElementById('rpsCountdown').textContent = '1...';
+            await sleep(1000);
+            document.getElementById('rpsCountdown').textContent = 'SHOOT!';
+            await sleep(500);
+            
+            // Pick different choices to ensure no tie
+            const choice1Index = Math.floor(Math.random() * 3);
+            let choice2Index;
+            do {
+                choice2Index = Math.floor(Math.random() * 3);
+            } while (choice2Index === choice1Index);
+            
+            // Determine winner
+            let winner, loser, resultText;
+            if (
+                (choice1Index === 0 && choice2Index === 2) || // Rock beats Scissors
+                (choice1Index === 1 && choice2Index === 0) || // Paper beats Rock
+                (choice1Index === 2 && choice2Index === 1)    // Scissors beats Paper
+            ) {
+                winner = player1;
+                loser = player2;
+                resultText = `${choiceNames[choice1Index]} beats ${choiceNames[choice2Index]}!`;
+            } else {
+                winner = player2;
+                loser = player1;
+                resultText = `${choiceNames[choice2Index]} beats ${choiceNames[choice1Index]}!`;
+            }
+            
+            // Show result
+            const resultHtml = `
+                <div class="rps-container">
+                    <div class="group-header">ROUND ${currentGroupIndex + 1} | FINAL SHOWDOWN!</div>
+                    <div class="card">
+                        <div class="rps-players">
+                            <div class="rps-player">
+                                <div class="rps-player-name" style="${winner === player1 ? 'color: #00ff00;' : ''}">${player1}</div>
+                                <div class="rps-choice">${choices[choice1Index]}</div>
+                                <div>${choiceNames[choice1Index]}</div>
+                            </div>
+                            <div class="rps-vs">VS</div>
+                            <div class="rps-player">
+                                <div class="rps-player-name" style="${winner === player2 ? 'color: #00ff00;' : ''}">${player2}</div>
+                                <div class="rps-choice">${choices[choice2Index]}</div>
+                                <div>${choiceNames[choice2Index]}</div>
+                            </div>
+                        </div>
+                        <div class="rps-result">
+                            ${resultText}<br>
+                            💀 ${loser} is eliminated! 💀
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = resultHtml;
+            
+            // Update current group to just the winner
+            currentGroup = [winner];
+            
+            await sleep(8000);
+            announceRoundWinner();
+        }
+
+        function announceRoundWinner() {
+            const winner = currentGroup[0];
+            allWinners.push(winner);
+            
+            const winnerHtml = `
+                <div class="winner-announcement">
+                    <h2>🏆 ROUND ${currentGroupIndex + 1} WINNER 🏆</h2>
+                    <div class="winner-name">${winner}</div>
+                    <div style="margin: 30px 0; font-size: 24px;">
+                        survived the chaos and lives to see another day! 💪
+                    </div>
+                    <button onclick="nextRound()" class="center-btn">
+                        ${currentGroupIndex + 1 < groups.length ? 'NEXT ROUND ➡️' : 'SEE ALL WINNERS 👑'}
+                    </button>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = winnerHtml;
+        }
+
+        async function conductVote(eliminationCount = 1) {
+            // Determine eligible voters
+            let eligibleVoters;
+            if (currentGroup.length < 5) {
+                // When less than 5 players, anyone can vote
+                eligibleVoters = currentGroup;
+            } else {
+                // Filter out previous voters
+                eligibleVoters = currentGroup.filter(player => !previousVoters.includes(player));
+                
+                // If all have voted, reset the list
+                if (eligibleVoters.length === 0) {
+                    previousVoters = [];
+                    eligibleVoters = currentGroup;
+                }
+            }
+            
+            // Pick random voter from eligible voters
+            const voterIndex = Math.floor(Math.random() * eligibleVoters.length);
+            const voter = eligibleVoters[voterIndex];
+            
+            // Add to previous voters list
+            if (currentGroup.length >= 5) {
+                previousVoters.push(voter);
+            }
+            
+            // Pick random targets (not the voter)
+            const otherPlayers = currentGroup.filter(p => p !== voter);
+            const targets = [];
+            const shuffledOthers = shuffleArray([...otherPlayers]);
+            
+            for (let i = 0; i < Math.min(eliminationCount, shuffledOthers.length); i++) {
+                targets.push(shuffledOthers[i]);
+            }
+
+            // Get unused reasons for each target
+            const eliminations = targets.map(target => ({
+                target,
+                reason: getUnusedReason()
+            }));
+
+            // Display voting
+            let eliminationEmoji;
+            if (eliminations.length >= 4) {
+                eliminationEmoji = '💀💀💀💀';
+            } else if (eliminations.length === 3) {
+                eliminationEmoji = '💀💀💀';
+            } else if (eliminations.length === 2) {
+                eliminationEmoji = '💀💀';
+            } else {
+                eliminationEmoji = '💀';
+            }
+            
+            const votingHtml = `
+                <div class="voting-stage">
+                    <div class="group-header">ROUND ${currentGroupIndex + 1} | ${currentGroup.length} Players Remaining</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${((groups[currentGroupIndex].length - currentGroup.length + targets.length) / groups[currentGroupIndex].length * 100)}%"></div>
+                    </div>
+                    <div class="card">
+                        <div class="voter-announcement">
+                            🎲 ${voter} VOTES OFF ${eliminationEmoji}
+                        </div>
+                        <div class="elimination-grid">
+                            ${eliminations.map(e => `
+                                <div class="elimination-item">
+                                    <strong>${e.target}:</strong> "${e.reason}"
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="player-list" data-count="${currentGroup.length}">
+                            ${currentGroup.map(player => {
+                                if (targets.includes(player)) {
+                                    return `<div class="player-item" style="background: rgba(255,0,0,0.3); text-decoration: line-through;">${player} ❌</div>`;
+                                }
+                                return `<div class="player-item">${player}</div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = votingHtml;
+
+            // Remove targets from current group
+            currentGroup = currentGroup.filter(p => !targets.includes(p));
+
+            // Wait time: 5 minutes base (300 seconds) + 3 seconds per elimination
+            const waitTime = 300000 + (targets.length * 3000);
+            await sleep(waitTime);
+        }
+
+        function getUnusedReason() {
+            let attempts = 0;
+            let reason;
+            
+            do {
+                reason = brainrotReasons[Math.floor(Math.random() * brainrotReasons.length)];
+                attempts++;
+                
+                // If we've tried 100 times, just reset used reasons
+                if (attempts > 100) {
+                    usedReasons.clear();
+                }
+            } while (usedReasons.has(reason));
+            
+            usedReasons.add(reason);
+            return reason;
+        }
+
+        let currentTimeout = null;
+        let skipEnabled = false;
+
+        function setupSkipHandlers() {
+            if (skipEnabled) return; // Already set up
+            
+            skipEnabled = true;
+            
+            const skipHandler = () => {
+                if (currentTimeout) {
+                    clearTimeout(currentTimeout);
+                    currentTimeout = null;
+                    // Trigger the continuation immediately
+                    window.dispatchEvent(new CustomEvent('skipWait'));
+                }
+            };
+            
+            document.addEventListener('click', skipHandler);
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' || e.key === ' ') {
+                    e.preventDefault();
+                    skipHandler();
+                }
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => {
+                currentTimeout = setTimeout(resolve, ms);
+                
+                const skipListener = () => {
+                    window.removeEventListener('skipWait', skipListener);
+                    resolve();
+                };
+                
+                window.addEventListener('skipWait', skipListener);
+            });
+        }
+
+        function showWinners() {
+            const winnersHtml = allWinners.map((winner, index) => 
+                `<div class="final-winner-item">
+                    Round ${index + 1}: ${winner}
+                </div>`
+            ).join('');
+            
+            document.getElementById('finalWinnersList').innerHTML = winnersHtml;
+            showScreen('winnersScreen');
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function resetGame() {
+            allPlayers = [];
+            uniquePlayers = [];
+            groups = [];
+            currentGroupIndex = 0;
+            currentGroup = [];
+            previousVoters = [];
+            usedReasons = new Set();
+            allWinners = [];
+            document.getElementById('playerInput').value = '';
+            showScreen('entryScreen');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Triple Crown Horse Picker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: #ffd700;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            color: #c4b454;
+        }
+
+        .picker-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .random-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #c9a227 0%, #ffd700 50%, #c9a227 100%);
+            color: #1a472a;
+            border: 3px solid #8b7220;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .random-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+        }
+
+        .random-button:active {
+            transform: translateY(-1px);
+        }
+
+        .selected-horse {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            border-radius: 10px;
+            border: 3px solid #ffd700;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .selected-horse.empty {
+            border-style: dashed;
+            border-color: #ccc;
+            background: #f5f5f5;
+        }
+
+        .horse-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .pedigree-info {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .pedigree-line {
+            font-size: 1.1em;
+            color: #c4b454;
+            text-align: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+
+        .pedigree-label {
+            font-weight: bold;
+            color: #ffd700;
+            display: inline-block;
+            min-width: 140px;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .race-info {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #c4b454;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .empty-text {
+            color: #999;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .race-list {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .race-section {
+            margin-bottom: 25px;
+        }
+
+        .race-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .race-title {
+            color: #1a472a;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .horse-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #333;
+        }
+
+        .horse-tag {
+            background: #e8f4e8;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            border: 1px solid #c4b454;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .picker-box, .race-list {
+                padding: 20px;
+            }
+            
+            .horse-name {
+                font-size: 1.8em;
+            }
+
+            .pedigree-label {
+                min-width: 100px;
+                font-size: 0.95em;
+            }
+
+            .pedigree-line {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏇 2025 Triple Crown Horse Picker 🏇</h1>
+        <p class="subtitle">Kentucky Derby • Preakness Stakes • Belmont Stakes</p>
+        
+        <div class="picker-box">
+            <button class="random-button" onclick="pickRandomHorse()">
+                🎲 Pick Random Horse 🎲
+            </button>
+            
+            <div id="selectedHorse" class="selected-horse empty">
+                <div class="empty-text">Click the button above to pick a random horse!</div>
+            </div>
+        </div>
+
+        <div class="race-list">
+            <div class="race-section">
+                <div class="race-title">🌹 Kentucky Derby (May 3, 2025)</div>
+                <div class="horse-list">
+                    <span class="horse-tag">Sovereignty (Winner)</span>
+                    <span class="horse-tag">Journalism</span>
+                    <span class="horse-tag">Baeza</span>
+                    <span class="horse-tag">Final Gambit</span>
+                    <span class="horse-tag">Owen Almighty</span>
+                    <span class="horse-tag">Citizen Bull</span>
+                    <span class="horse-tag">Neoequos</span>
+                    <span class="horse-tag">American Promise</span>
+                    <span class="horse-tag">Admire Daytona</span>
+                    <span class="horse-tag">Luxor Cafe</span>
+                    <span class="horse-tag">Burnham Square</span>
+                    <span class="horse-tag">Flying Mohawk</span>
+                    <span class="horse-tag">East Avenue</span>
+                    <span class="horse-tag">Publisher</span>
+                    <span class="horse-tag">Tiztastic</span>
+                    <span class="horse-tag">Render Judgment</span>
+                    <span class="horse-tag">Coal Battle</span>
+                    <span class="horse-tag">Sandman</span>
+                    <span class="horse-tag">Chunk Of Gold</span>
+                </div>
+            </div>
+
+            <div class="race-section">
+                <div class="race-title">🏆 Preakness Stakes (May 17, 2025)</div>
+                <div class="horse-list">
+                    <span class="horse-tag">Journalism (Winner)</span>
+                    <span class="horse-tag">Heart of Honor</span>
+                    <span class="horse-tag">Sandman</span>
+                    <span class="horse-tag">American Promise</span>
+                    <span class="horse-tag">Goal Oriented</span>
+                    <span class="horse-tag">Pay Billy</span>
+                    <span class="horse-tag">River Rhames</span>
+                    <span class="horse-tag">Clever Again</span>
+                    <span class="horse-tag">Gosger</span>
+                </div>
+            </div>
+
+            <div class="race-section">
+                <div class="race-title">⚡ Belmont Stakes (June 7, 2025)</div>
+                <div class="horse-list">
+                    <span class="horse-tag">Sovereignty (Winner)</span>
+                    <span class="horse-tag">Journalism</span>
+                    <span class="horse-tag">Baeza</span>
+                    <span class="horse-tag">Rodriguez</span>
+                    <span class="horse-tag">Crudo</span>
+                    <span class="horse-tag">Hill Road</span>
+                    <span class="horse-tag">Heart of Honor</span>
+                    <span class="horse-tag">Uncaged</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const horses = [
+            // Kentucky Derby
+            { name: "Sovereignty", sire: "Into Mischief", broodmareSire: "Bernardini", damsDamSire: "Empire Maker", race: "Kentucky Derby (Winner), Belmont Stakes (Winner)" },
+            { name: "Journalism", sire: "American Pharoah", broodmareSire: "Uncle Mo", damsDamSire: "Bernardini", race: "Kentucky Derby, Preakness Stakes (Winner), Belmont Stakes" },
+            { name: "Baeza", sire: "McKinzie", broodmareSire: "Big Brown", damsDamSire: "Empire Maker", race: "Kentucky Derby, Belmont Stakes" },
+            { name: "Final Gambit", sire: "Not This Time", broodmareSire: "Tapit", damsDamSire: "A.P. Indy", race: "Kentucky Derby" },
+            { name: "Owen Almighty", sire: "Speightstown", broodmareSire: "Bayern", damsDamSire: "Offlee Wild", race: "Kentucky Derby" },
+            { name: "Citizen Bull", sire: "Tonalist", broodmareSire: "Into Mischief", damsDamSire: "Stormy Atlantic", race: "Kentucky Derby" },
+            { name: "Neoequos", sire: "Neolithic", broodmareSire: "Birdstone", damsDamSire: "Giant's Causeway", race: "Kentucky Derby" },
+            { name: "American Promise", sire: "Flatter", broodmareSire: "Candy Ride", damsDamSire: "Storm Cat", race: "Kentucky Derby, Preakness Stakes" },
+            { name: "Admire Daytona", sire: "Drefong", broodmareSire: "Shackleford", damsDamSire: "Majesticperfection", race: "Kentucky Derby" },
+            { name: "Luxor Cafe", sire: "American Pharoah", broodmareSire: "More Than Ready", damsDamSire: "Giant's Causeway", race: "Kentucky Derby" },
+            { name: "Burnham Square", sire: "Liam's Map", broodmareSire: "Super Saver", damsDamSire: "A.P. Indy", race: "Kentucky Derby" },
+            { name: "Flying Mohawk", sire: "Karakontie", broodmareSire: "Twirling Candy", damsDamSire: "Sky Mesa", race: "Kentucky Derby" },
+            { name: "East Avenue", sire: "Quality Road", broodmareSire: "Street Boss", damsDamSire: "Tapit", race: "Kentucky Derby" },
+            { name: "Publisher", sire: "American Pharoah", broodmareSire: "Proud Citizen", damsDamSire: "Indian Charlie", race: "Kentucky Derby" },
+            { name: "Tiztastic", sire: "Tiz the Law", broodmareSire: "Tapit", damsDamSire: "Distorted Humor", race: "Kentucky Derby" },
+            { name: "Render Judgment", sire: "Blame", broodmareSire: "Commissioner", damsDamSire: "Deputy Minister", race: "Kentucky Derby" },
+            { name: "Coal Battle", sire: "Hard Spun", broodmareSire: "Malibu Moon", damsDamSire: "A.P. Indy", race: "Kentucky Derby" },
+            { name: "Sandman", sire: "Not This Time", broodmareSire: "First Samurai", damsDamSire: "Giant's Causeway", race: "Kentucky Derby, Preakness Stakes" },
+            { name: "Chunk Of Gold", sire: "Preservationist", broodmareSire: "Cairo Prince", damsDamSire: "Johannesburg", race: "Kentucky Derby" },
+            
+            // Preakness only
+            { name: "Heart of Honor", sire: "Honor A. P.", broodmareSire: "Tapit", damsDamSire: "A.P. Indy", race: "Preakness Stakes, Belmont Stakes" },
+            { name: "Goal Oriented", sire: "Curlin", broodmareSire: "Smart Strike", damsDamSire: "Mr. Prospector", race: "Preakness Stakes" },
+            { name: "Pay Billy", sire: "California Chrome", broodmareSire: "Grand Slam", damsDamSire: "Gone West", race: "Preakness Stakes" },
+            { name: "River Rhames", sire: "Oxbow", broodmareSire: "Kitten's Joy", damsDamSire: "El Prado", race: "Preakness Stakes" },
+            { name: "Clever Again", sire: "Street Boss", broodmareSire: "Officer", damsDamSire: "Bertrando", race: "Preakness Stakes" },
+            { name: "Gosger", sire: "Not This Time", broodmareSire: "Quality Road", damsDamSire: "A.P. Indy", race: "Preakness Stakes" },
+            
+            // Belmont only
+            { name: "Rodriguez", sire: "Mage", broodmareSire: "Curlin", damsDamSire: "Smart Strike", race: "Belmont Stakes" },
+            { name: "Crudo", sire: "Astern", broodmareSire: "Uncle Mo", damsDamSire: "Danehill", race: "Belmont Stakes" },
+            { name: "Hill Road", sire: "Curlin", broodmareSire: "Tapit", damsDamSire: "A.P. Indy", race: "Belmont Stakes" },
+            { name: "Uncaged", sire: "Not This Time", broodmareSire: "Into Mischief", damsDamSire: "Street Cry", race: "Belmont Stakes" }
+        ];
+
+        let lastPickedIndex = -1;
+
+        function pickRandomHorse() {
+            let randomIndex;
+            
+            // If there's only one horse, pick it
+            if (horses.length === 1) {
+                randomIndex = 0;
+            } else {
+                // Keep generating random numbers until we get a different horse
+                do {
+                    randomIndex = Math.floor(Math.random() * horses.length);
+                } while (randomIndex === lastPickedIndex);
+            }
+            
+            lastPickedIndex = randomIndex;
+            const selectedHorse = horses[randomIndex];
+            
+            const container = document.getElementById('selectedHorse');
+            container.className = 'selected-horse';
+            container.innerHTML = `
+                <div class="horse-name">${selectedHorse.name}</div>
+                <div class="pedigree-info">
+                    <div class="pedigree-line">
+                        <span class="pedigree-label">Sire:</span> ${selectedHorse.sire}
+                    </div>
+                    <div class="pedigree-line">
+                        <span class="pedigree-label">Dam's Sire:</span> ${selectedHorse.broodmareSire}
+                    </div>
+                    <div class="pedigree-line">
+                        <span class="pedigree-label">Dam's Dam's Sire:</span> ${selectedHorse.damsDamSire}
+                    </div>
+                </div>
+                <div class="race-info">
+                    ${selectedHorse.race}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

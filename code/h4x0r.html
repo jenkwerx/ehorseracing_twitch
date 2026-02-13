@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>H4X0R // TH3 G4M3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap');
+:root{
+  --bg:#0a0a0f;--tg:#00ff41;--cb:#00d4ff;--cp:#ff00aa;--cv:#8b00ff;
+  --warn:#ffaa00;--danger:#ff0040;--sbg:#0d1117;--sb:#1a3a1a;--td:#3a5a3a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--tg);font-family:'Share Tech Mono',monospace;overflow-x:hidden;min-height:100vh;-webkit-tap-highlight-color:transparent}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.012) 2px,rgba(0,255,65,0.012) 4px);pointer-events:none;z-index:9999}
+
+@keyframes glitch{0%,100%{text-shadow:2px 0 var(--cp),-2px 0 var(--cb)}25%{text-shadow:-2px -1px var(--cp),2px 1px var(--cb)}50%{text-shadow:1px 2px var(--cp),-1px -2px var(--cb)}75%{text-shadow:-1px 1px var(--cp),1px -1px var(--cb)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 3px var(--tg),0 0 6px rgba(0,255,65,0.2)}50%{box-shadow:0 0 8px var(--tg),0 0 16px rgba(0,255,65,0.3)}}
+@keyframes winner-celebration{0%{transform:scale(1);filter:hue-rotate(0deg)}25%{transform:scale(1.03);filter:hue-rotate(90deg)}50%{transform:scale(1);filter:hue-rotate(180deg)}75%{transform:scale(1.03);filter:hue-rotate(270deg)}100%{transform:scale(1);filter:hue-rotate(360deg)}}
+@keyframes matrix-rain{0%{transform:translateY(-100%);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(100vh);opacity:0}}
+@keyframes skull-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes flash-hit{0%{background:rgba(255,170,0,0.25)}100%{background:transparent}}
+@keyframes celebrate-pop{0%{transform:scale(0.5) rotate(-10deg);opacity:0}50%{transform:scale(1.15) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes celebrate-fade{0%{opacity:1}70%{opacity:1}100%{opacity:0}}
+
+#matrix-bg{position:fixed;inset:0;z-index:0;overflow:hidden;opacity:0.12}
+.matrix-col{position:absolute;top:-100%;font-family:'VT323',monospace;font-size:12px;color:var(--tg);writing-mode:vertical-rl;animation:matrix-rain linear infinite;white-space:nowrap}
+
+#app{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:6px 8px}
+
+/* HEADER */
+.header{text-align:center;padding:10px 0 6px;border-bottom:1px solid var(--sb);margin-bottom:10px}
+.header h1{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;letter-spacing:6px;animation:glitch 3s infinite;background:linear-gradient(90deg,var(--tg),var(--cb),var(--cp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .subtitle{font-family:'VT323',monospace;font-size:0.9rem;color:var(--td);letter-spacing:3px;margin-top:2px}
+.header .skull-row{font-size:1rem;animation:skull-float 3s ease-in-out infinite;margin-top:3px}
+
+/* SETUP */
+#setup-screen{max-width:600px;margin:0 auto}
+.terminal-box{background:var(--sbg);border:1px solid var(--sb);border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.box-title{font-size:0.7rem;color:var(--cb);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.box-title::before{content:'● ● ●';font-size:8px;color:var(--danger);letter-spacing:3px}
+textarea{width:100%;min-height:140px;background:#060a10;border:1px solid var(--sb);border-radius:4px;color:var(--tg);font-family:'Share Tech Mono',monospace;font-size:0.85rem;padding:8px;resize:vertical;outline:none}
+textarea:focus{border-color:var(--tg);box-shadow:0 0 8px rgba(0,255,65,0.15)}
+textarea::placeholder{color:var(--td)}
+.info-row{display:flex;justify-content:space-between;margin-top:6px;font-size:0.75rem;color:var(--td)}
+.player-count{color:var(--warn);font-weight:bold}
+.salt-display{background:#060a10;border:1px solid var(--cv);border-radius:4px;padding:6px 12px;font-family:'VT323',monospace;font-size:1rem;color:var(--cv);text-align:center;margin-top:4px;text-shadow:0 0 5px var(--cv)}
+.btn{display:inline-block;padding:10px 30px;font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:2px solid var(--tg);background:transparent;color:var(--tg);cursor:pointer;transition:all 0.3s}
+.btn:hover{background:var(--tg);color:var(--bg);box-shadow:0 0 15px rgba(0,255,65,0.4)}
+.btn:disabled{opacity:0.3;cursor:not-allowed}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn.danger:hover{background:var(--danger);color:white}
+.btn-center{text-align:center;margin-top:10px}
+
+/* GAME */
+#game-screen{display:none}
+
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:5px}
+
+.player-screen{background:#0a0e14;border:1px solid var(--sb);border-radius:5px;overflow:hidden;transition:all 0.3s}
+.player-screen.mining{animation:pulse-glow 2.5s infinite}
+.player-screen.eliminated{opacity:0.2;filter:grayscale(0.8);border-color:#222}
+.player-screen.won{border-color:var(--warn);box-shadow:0 0 12px rgba(255,170,0,0.4)}
+.player-screen.champion{border-color:var(--cp);animation:winner-celebration 3s infinite;box-shadow:0 0 20px rgba(255,0,170,0.4)}
+.player-screen.flash-anim{animation:flash-hit 0.3s ease-out}
+.player-screen.top1{border-color:var(--warn);box-shadow:0 0 10px rgba(255,170,0,0.5),0 0 20px rgba(255,170,0,0.2);background:#2a0a0a}
+.player-screen.top1 .screen-topbar{background:#3a1010}
+.player-screen.top1 .screen-name{color:var(--warn)}
+.player-screen.top1 .hash-display{color:var(--td)}
+.player-screen.top1 .zero-prefix{color:var(--warn);text-shadow:0 0 6px var(--warn)}
+.player-screen.top1 .hash-rest{color:var(--td);opacity:0.6}
+.player-screen.top1 .leet-name{color:var(--warn)}
+.player-screen.top2{border-color:var(--cb);box-shadow:0 0 8px rgba(0,212,255,0.4),0 0 16px rgba(0,212,255,0.15)}
+.player-screen.top3{border-color:var(--cv);box-shadow:0 0 8px rgba(139,0,255,0.4),0 0 16px rgba(139,0,255,0.15)}
+
+.screen-topbar{background:#111820;padding:2px 5px;display:flex;align-items:center;gap:3px;border-bottom:1px solid #1a2a1a}
+.sd{width:4px;height:4px;border-radius:50%;background:var(--danger)}.sd.y{background:var(--warn)}.sd.g{background:var(--tg)}
+.screen-name{font-family:'Orbitron',sans-serif;font-size:0.5rem;color:var(--cb);letter-spacing:1px;margin-left:3px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase}
+
+.screen-body{padding:3px 5px;min-height:34px;font-family:'VT323',monospace;position:relative}
+.leet-name{font-size:0.55rem;color:var(--cv);margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.5px}
+.hash-display{font-size:1.15rem;word-break:break-all;line-height:1.3;color:var(--td);transition:color 0.15s;height:1.3em;overflow:hidden;letter-spacing:1px}
+.hash-display.hit{color:var(--warn);text-shadow:0 0 4px var(--warn)}
+.zero-prefix{color:var(--tg);font-weight:bold;text-shadow:0 0 4px var(--tg);font-size:1.15rem}
+.hash-rest{font-size:0.92rem;opacity:0.7}
+
+.prog-wrap{padding:0 5px 3px}
+.prog-outer{background:#111;border:1px solid #1a2a1a;border-radius:2px;height:8px;position:relative;overflow:hidden}
+.prog-inner{height:100%;border-radius:2px;transition:width 0.2s ease;background:linear-gradient(90deg,var(--tg),var(--cb))}
+.prog-inner.hot{background:linear-gradient(90deg,var(--warn),var(--cp))}
+.prog-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.48rem;color:white;text-shadow:0 0 2px black;font-family:'Share Tech Mono',monospace}
+
+.badge{display:inline-block;padding:1px 4px;font-size:0.45rem;font-family:'Orbitron',sans-serif;letter-spacing:1px;border-radius:2px;margin-top:2px}
+.badge.adv{background:rgba(0,255,65,0.15);color:var(--tg);border:1px solid var(--tg)}
+.badge.elim{background:rgba(255,0,64,0.15);color:var(--danger);border:1px solid var(--danger)}
+
+/* BUG OVERLAY on player screen */
+.bug-overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,0,64,0.15);z-index:5;pointer-events:none;
+  animation:bug-pop 0.4s ease-out forwards;
+}
+.bug-overlay .bug-icon{font-size:2.2rem;filter:drop-shadow(0 0 8px rgba(255,0,64,0.6))}
+.bug-overlay .bug-label{
+  position:absolute;bottom:4px;left:0;right:0;text-align:center;
+  font-family:'VT323',monospace;font-size:0.7rem;color:var(--danger);
+  text-shadow:0 0 6px var(--danger);letter-spacing:1px;
+}
+@keyframes bug-pop{0%{opacity:0;transform:scale(0.5)}50%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+@keyframes bug-shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-15deg)}75%{transform:rotate(15deg)}}
+@keyframes bug-fade{0%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.bug-overlay.fading{animation:bug-fade 6s ease-in forwards}
+
+/* SKULL/LOCKED OVERLAY on player screen */
+.skull-overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:rgba(10,0,0,0.85);z-index:6;pointer-events:none;
+  animation:skull-pop 0.5s ease-out forwards;
+}
+.skull-overlay .skull-icon{font-size:2.5rem;animation:skull-pulse 1.5s ease-in-out infinite}
+.skull-overlay .skull-label{
+  font-family:'VT323',monospace;font-size:0.65rem;color:var(--danger);
+  text-shadow:0 0 8px var(--danger);letter-spacing:2px;margin-top:2px;
+}
+@keyframes skull-pop{0%{opacity:0;transform:scale(0.3) rotate(-20deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes skull-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0.8}}
+
+.player-screen.locked{border-color:var(--danger)!important;box-shadow:0 0 12px rgba(255,0,64,0.5)!important;animation:none!important}
+.player-screen.bugged{border-color:var(--danger);box-shadow:0 0 8px rgba(255,0,64,0.3)}
+.player-screen .screen-body{position:relative;overflow:hidden}
+
+/* CELEBRATE OVERLAY */
+#celebrate-overlay{
+  position:fixed;inset:0;z-index:200;display:none;
+  background:rgba(5,5,10,0.82);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  justify-content:center;align-items:center;flex-direction:column;
+}
+#celebrate-overlay.visible{display:flex}
+#celebrate-overlay .cel-text{
+  font-family:'VT323',monospace;font-size:2rem;color:var(--warn);
+  text-shadow:0 0 15px var(--warn),0 0 30px rgba(255,170,0,0.4);
+  animation:celebrate-pop 0.5s ease-out forwards;
+  white-space:nowrap;text-align:center;padding:0 20px;
+}
+#celebrate-overlay .cel-sub{
+  font-family:'Orbitron',sans-serif;font-size:0.7rem;color:var(--cp);
+  letter-spacing:2px;margin-top:8px;
+}
+#celebrate-overlay .cel-dismiss{
+  font-family:'VT323',monospace;font-size:0.8rem;color:var(--td);
+  margin-top:20px;animation:pulse-glow 2s infinite;letter-spacing:1px;
+}
+
+/* BOTTOM BAR */
+
+/* LOBBY OVERLAY */
+#lobby-overlay{
+  position:fixed;inset:0;z-index:200;display:none;
+  background:rgba(5,5,10,0.75);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  justify-content:center;align-items:center;flex-direction:column;
+  cursor:pointer;
+}
+#lobby-overlay.visible{display:flex}
+.lobby-content{text-align:center}
+.lobby-title{
+  font-family:'Orbitron',sans-serif;font-size:3rem;font-weight:900;
+  letter-spacing:8px;animation:glitch 3s infinite;
+  background:linear-gradient(90deg,var(--tg),var(--cb),var(--cp));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.lobby-sub{
+  font-family:'VT323',monospace;font-size:1rem;color:var(--td);
+  letter-spacing:3px;margin-top:6px;
+}
+.lobby-go{
+  font-family:'Orbitron',sans-serif;font-size:0.8rem;font-weight:700;
+  color:var(--tg);letter-spacing:3px;margin-top:30px;
+  animation:pulse-glow 2s infinite;
+  padding:12px 30px;border:2px solid var(--tg);border-radius:4px;
+  display:inline-block;
+}
+
+/* BOTTOM BAR (actual) */
+#bottom-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:linear-gradient(0deg,#0a0a0f 70%,transparent);
+  padding:3px 8px 5px;display:none;
+}
+#bottom-bar .bi{max-width:1400px;margin:0 auto}
+.bottom-strip{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.sr{font-family:'VT323',monospace;font-size:0.8rem;color:var(--td)}.sr span{color:var(--tg)}
+.spd{display:flex;align-items:center;gap:4px}
+.spd label{font-size:0.55rem;color:var(--td);letter-spacing:1px}
+.spd input[type="range"]{-webkit-appearance:none;width:60px;height:3px;background:var(--sb);border-radius:2px;outline:none}
+.spd input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--tg);cursor:pointer;box-shadow:0 0 5px var(--tg)}
+.spd-val{font-size:0.55rem;color:var(--tg);min-width:20px}
+
+.log-c{max-height:40px;overflow-y:auto;font-size:0.55rem;font-family:'VT323',monospace;margin-top:2px;padding:2px 4px;background:rgba(6,10,16,0.85);border-radius:3px;border:1px solid #1a2a1a}
+.le{margin-bottom:1px;line-height:1.2}.ts{color:var(--td)}.ac{color:var(--cb)}.hl{color:var(--warn)}.ok{color:var(--tg)}.no{color:var(--danger)}
+
+.bbr{text-align:center;margin-top:3px}
+.bbtn{padding:4px 16px;font-family:'Orbitron',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--tg);background:transparent;color:var(--tg);cursor:pointer;transition:all 0.2s}
+.bbtn:hover{background:var(--tg);color:var(--bg)}
+
+#bottom-spacer{height:90px}
+
+/* WINNER */
+#winner-screen{display:none;text-align:center;padding:20px 10px}
+.wt{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;letter-spacing:4px;animation:glitch 1s infinite;margin-bottom:10px}
+.wn{font-family:'VT323',monospace;font-size:3rem;color:var(--cp);text-shadow:0 0 15px var(--cp);margin-bottom:6px}
+.wl{font-family:'VT323',monospace;font-size:1.6rem;color:var(--warn);text-shadow:0 0 8px var(--warn);margin-bottom:15px;letter-spacing:3px}
+.wh{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--td);word-break:break-all;max-width:400px;margin:0 auto 15px}
+.wa{font-family:'VT323',monospace;font-size:0.85rem;color:var(--tg);white-space:pre;line-height:1.15;margin:10px auto;text-shadow:0 0 4px var(--tg)}
+.winner-particles{position:fixed;inset:0;pointer-events:none;z-index:10;overflow:hidden}
+.particle{position:absolute;font-family:'VT323',monospace;animation:matrix-rain linear infinite;opacity:0.7}
+
+/* MOBILE */
+@media(max-width:768px){
+  #app{padding:3px}
+  .header h1{font-size:1.5rem}
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:3px}
+  .screen-name{font-size:0.44rem}.hash-display{font-size:0.95rem}
+  .screen-body{min-height:28px;padding:2px 4px}
+  .leet-name{font-size:0.48rem}
+  .prog-outer{height:7px}.prog-text{font-size:0.42rem}
+  #bottom-spacer{height:80px}
+}
+@media(max-width:420px){
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:2px}
+  .screen-name{font-size:0.4rem;letter-spacing:0}
+  .hash-display{font-size:0.8rem}
+  .screen-topbar{padding:1px 3px}
+  .leet-name{font-size:0.42rem}
+  .wn{font-size:2rem}.wl{font-size:1.1rem}.wa{font-size:0.65rem}
+  #celebrate-overlay .cel-text{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+<div id="matrix-bg"></div>
+<div id="app">
+  <div class="header" id="setup-header">
+    <div class="skull-row">☠ ⚡ ☠ ⚡ ☠</div>
+    <h1>H4X0R</h1>
+    <div class="subtitle">// TH3 H4SH1NG G4M3 //</div>
+  </div>
+
+  <div id="setup-screen">
+    <div class="terminal-box">
+      <div class="box-title">3NT3R PL4Y3R N4M3S (one per line)</div>
+      <textarea id="player-input" placeholder="// One name per line&#10;// Dupes auto-removed (h1oe b == h1oeb)&#10;&#10;CyberPunk&#10;N3oN_R4c3r&#10;Gh0stShell"></textarea>
+      <div class="info-row">
+        <span>Unique: <span class="player-count" id="player-count">0</span></span>
+        <span id="group-info"></span>
+      </div>
+    </div>
+    <div class="terminal-box">
+      <div class="box-title">S4LT (auto)</div>
+      <div class="salt-display" id="salt-display">...</div>
+    </div>
+    <div class="btn-center">
+      <button class="btn" id="start-btn" disabled onclick="startGame()">&#62;&#62; H4CK &#60;&#60;</button>
+    </div>
+  </div>
+
+  <div id="game-screen">
+    <div id="groups-container"></div>
+    <div id="bottom-spacer"></div>
+  </div>
+
+  <!-- CELEBRATE OVERLAY -->
+  <div id="celebrate-overlay"></div>
+
+  <!-- LOBBY OVERLAY -->
+  <div id="lobby-overlay" onclick="lobbyGo()">
+    <div class="lobby-content">
+      <div class="lobby-title">H4X0R</div>
+      <div class="lobby-sub">// SC R33NS R34DY //</div>
+      <div class="lobby-go">&#62;&#62; CL1CK 0R SP4C3B4R T0 ST4RT &#60;&#60;</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div id="bottom-bar">
+    <div class="bi">
+      <div class="bottom-strip">
+        <div class="sr" id="subround-display">SR: <span>0</span></div>
+        <div class="spd">
+          <label>SPD:</label>
+          <input type="range" id="speed-slider" min="1" max="100" value="35">
+          <span class="spd-val" id="speed-label">66</span>
+        </div>
+      </div>
+      <div class="log-c" id="log-panel"></div>
+      <div class="bbr" id="game-controls" style="display:none">
+        <button class="bbtn" id="next-btn" onclick="nextRound()">N3XT ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINNER -->
+  <div id="winner-screen">
+    <div class="winner-particles" id="winner-particles"></div>
+    <div class="wa" id="winner-ascii"></div>
+    <div class="wt">&#62;&#62; 3L1T3 H4X0R &#60;&#60;</div>
+    <div class="wn" id="winner-name"></div>
+    <div class="wl" id="winner-leet"></div>
+    <div class="wh" id="winner-hash"></div>
+    <div style="margin-top:20px">
+      <button class="btn" onclick="resetGame()">&#62;&#62; PL4Y 4G41N &#60;&#60;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  CONFIG FLAGS
+// ═══════════════════════════════════════
+const HIGHLIGHT_HITS = false;   // flash player screen on each hit
+const LOG_EVERY_HIT  = false;   // log each individual 0-hit to terminal
+const MAX_PER_GROUP  = 8;
+const MAX_SCORE      = 5;
+const HIT_THRESHOLD  = 0x024;  // first 3 hex <= this value counts as hit (~0.9% chance)
+
+// ═══════════════════════════════════════
+//  500 GEEKY BRAINROT CELEBRATIONS
+// ═══════════════════════════════════════
+const CELEBRATIONS = [
+"r00t@pwn3d:~# 4cc3ss gr4nt3d","$UD0 h4x0r m0d3 4ct1v4t3d","[0x1337] k3rn3l p4n1c 1n y0ur f4v0r","::1 l00pb4ck v1ct0ry","chmod 777 /tr0phy","s3gf4ult(c0r3 dump3d): w1nn3r","m4k3 -j69 w1nn3r.0","git push --f0rc3 v1ct0ry","pip install w1nn1ng --br34k-sys","npm run h4x0r:m0d3","SELECT * FROM w1nn3rs WHERE sk1ll='g0dl1k3'","DROP TABLE l0s3rs;--","sudo rm -rf /d0ubt","[OK] b00tl04d3r: ch4mp10n.k3rn3l","ping -c 1337 v1ct0ry.h4x","ssh r00t@m41nfr4m3 -p 1337",":wq! s4v3d th3 g4m3","0xDEADBEEF? m0r3 l1k3 0xDEADG04T","<script>alert('h4ck3d')<\\/script>","br41n.exe h4s st0pp3d r3sp0nd1ng","s3gm3nt4t10n f4ult (c0r3 w1n)","m4lloc(v1ct0ry); // n3v3r fr33()","c4t /3tc/p4sswd | gr3p w1nn3r","3ch0 'GG' >> /d3v/null","t4r -xvf tr0phy.t4r.gz","curl -X P0ST v1ct0ry.4p1/w1n","d0ck3r run --pr1v1l3g3d h4x0r","k8s d3pl0y ch4mp10n-p0d","t3rr4f0rm 4pply -4ut0-4ppr0v3 w1n","4ws s3 cp tr0phy s3://h4x0r-v4ult","n3tw0rk p4ck3t sn1ff3d: v1ct0ry","f1r3w4ll rul3: 4ll0w 4ll fr0m w1nn3r","DNS r3s0lv3d: w1nn3r.h4x","TCP h4ndsh4k3 c0mpl3t3: SYN-W1N-4CK","buffer 0v3rfl0w → sh3ll p0pp3d","h34p spr4y d3t3ct3d: v1ct0ry p4yl04d","r3turn 0r13nt3d pr0gr4mm1ng: r3t w1n","m4n-1n-th3-m1ddl3 0f v1ct0ry","SQL 1nj3ct10n: ' OR w1nn3r='tru3","XSS p4yl04d d3l1v3r3d: <w1n>","CSRF t0k3n v4l1d4t3d: ch4mp10n","d3s3r14l1z4t10n 4tt4ck: v1ct0ry 0bj3ct","SSRF t0 1nt3rn4l w1n s3rv3r","pr0t0typ3 p0llut10n: w1nn3r.__pr0t0__","r4c3 c0nd1t10n w0n (l1t3r4lly)","k3rn3l 3xpl01t: r1ng0 4cc3ss gr4nt3d","z3r0-d4y d1sc0v3r3d: CVE-W1N-1337","p4tch Tu3sd4y? m0r3 l1k3 W1n Tu3sd4y","f1rmw4r3 fl4sh3d: v1ct0ry.b1n","JTAG d3bugg3r 4tt4ch3d: w1n c0nf1rm3d",
+"b1n4ry 3xpl0s10n: 01110111 01101001 01101110","4ss3mbly r0ll3d: m0v 34x, W1N","st4ck sm4sh3d f0r gr34t just1c3","ROP ch41n l1nk3d → sh3ll = v1ct0ry","h34p f3ng shu1: p3rf3ct 4ll0c4t10n","us3-4ft3r-fr33: fr33d 4ll c0mp3t1t0rs","1nt3g3r 0v3rfl0w: sc0r3 = MAX_INT","f0rm4t str1ng 4tt4ck: %v%i%c%t%o%r%y","symb0l1c 3x3cut10n: p4th t0 v1ct0ry f0und","fuzzing c0mpl3t3: 0 cr4sh3s, 1 w1n","r3v3rs3 3ng1n33r3d th3 g4m3","str4c3 -p g4m3 | gr3p W1N","gdb br34kp01nt h1t: *w1nn3r+0x0","IDA Pr0 s4ys: f(x) = v1ct0ry","Gh1dr4 d3c0mp1l3d: r3turn W1N;","r4d4r3 2 4n4lys1s: fl4g{w1nn3r}","0llyDbg st3pp3d thr0ugh t0 v1ct0ry","x64dbg: br34kp01nt 0n w1n()","V0l4t1l1ty m3m dump: W1NN3R 1n RAM","W1r3sh4rk c4ptur3: v1ct0ry p4ck3t","Burp Su1t3 1nt3rc3pt: 200 OK W1N","M3t4spl01t: 3xpl01t/w1n/h4x0r","Nmap sc4n: p0rt 1337 0P3N (v1ct0ry)","John th3 R1pp3r cr4ck3d 1t: p4ss=W1N","H4shc4t m0d3 1337: h4sh cr4ck3d","A1rcr4ck-ng: WPA2 k3y = V1CT0RY","Hy dr4 brut3f0rc3: l0g1n succ3ss","g0buster sc4n: /s3cr3t/w1nn3r f0und","d1rb f0und: /4dm1n/ch4mp10n.php","ff uf r3sp0ns3 200: v1ct0ry.html","sqlm4p: d4t4b4s3 dump3d, w1nn3r 3xtr4ct3d","n1kto sc4n: v1ct0ry vuln3r4b1l1ty f0und","subfind3r: w1n.h4x0r.c0m d1sc0v3r3d","4m4ss 3num: v1ct0ry d0m41n m4pp3d","th3H4rv3st3r: 3m41l w1nn3r@h4x.1337","sh0d4n s34rch: d3v1c3 h4ck3d, v1ct0ry","c3nsys: 3xp0s3d s3rv1c3 = w1nn3r","V1rusT0t4l: cl34n sc4n, pur3 sk1ll","s4ndbox 3sc4p3: v1ct0ry VM d3t3ct3d","CTF fl4g c4ptur3d: fl4g{1337_h4x0r}","pwn ch4ll3ng3 s0lv3d 1n r3c0rd t1m3","r3v ch4ll3ng3: b1n4ry r3v3rs3d, fl4g f0und","cr ypt0 ch4ll3ng3: RSA f4ct0r3d","f0r3ns1cs: 3v1d3nc3 0f v1ct0ry f0und","st3g0: h1dd3n m3ss4g3 = W1NN3R","OSINT: t4rg3t l0c4t3d, g4m3 0v3r","s0c14l 3ng1n33r1ng: p3rsu4d3d v1ct0ry",
+"APT gr0up H4X0R: p3rs1st3nt v1ct0ry","r4ns0mw4r3 d3crypt3d: fr33d0m.k3y","r00tk1t 1nst4ll3d: p3rm4n3nt 4cc3ss","b4ckd00r pl4nt3d: 4lw4ys w1nn1ng","C2 s3rv3r: b34c0n r3c31v3d fr0m v1ct0ry","l4t3r4l m0v3m3nt: spr34d1ng v1ct0ry","pr1v3sc: SYST3M sh3ll 0bt41n3d","m1m1k4tz: cr3d3nt14ls dump3d, GG","Bl00dh0und: sh0rt3st p4th t0 v1ct0ry","P0w3rSh3ll: Inv0k3-V1ct0ry","b4sh -c 'wh04m1' → r00t_ch4mp10n","pyth0n -c 'pr1nt(\"h4ck3d\")'","n0d3 -3 'c0ns0l3.l0g(\"W1N\")'","rust c0mp1l3r: z3r0 3rr0rs, pur3 v1ct0ry","g0 run v1ct0ry.g0: P4SS","c4rg0 bu1ld --r3l34s3: 0pt1m1z3d w1n","mv /tmp/l0s3r /d3v/null","ln -s /w1n /3t3rn4l_gl0ry","f1nd / -n4m3 'v1ct0ry' -3x3c c4t {} \\;","4wk '{pr1nt \"W1NN3R\"}' /3tc/g4m3","s3d 's/l0s3r/w1nn3r/g' g4m3.txt","gr3p -r 'sk1ll' /h4x0r/ → M4TCH3D","x4rgs v1ct0ry | p4r4ll3l h4ck","cr0nt4b -3 '* * * * * /b1n/w1n'","syst3mctl st4rt v1ct0ry.s3rv1c3","j0urn4lctl: v1ct0ry.s3rv1c3 4ct1v3","4pt-g3t 1nst4ll v1ct0ry","p4cm4n -S v1ct0ry","br3w 1nst4ll h4x0r-tr0phy","sn4p 1nst4ll v1ct0ry --cl4ss1c","fl4tp4k run c0m.h4x0r.v1ct0ry","d0ck3r-c0mp0s3 up v1ct0ry","h3lm 1nst4ll ch4mp10n-ch4rt","4ns1bl3-pl4yb00k v1ct0ry.yml","pupp3t 4pply v1ct0ry.pp","ch3f-cl13nt w1n.rb","v4gr4nt up h4x0r-b0x","p4ck3r bu1ld v1ct0ry.json","t3rr4f0rm pl4n: 1 t0 cr34t3 (v1ct0ry)","cl0udf0rm4t10n: st4ck cr34t3d: W1N","LAMBDA 3x3cut3d: r3turn {w1n: tru3}","S3 bucket: s3://h4x0r-v1ct0ry/tr0phy","EC2: 1nst4nc3 runn1ng (t2.w1nn3r)","EKS p0d: ch4mp10n-d3pl0ym3nt r34dy",
+"GKE: n0d3p00l-v1ct0ry 0nl1n3","4zur3 VM: v1ct0ry-1nst4nc3 pr0v1s10n3d","R3d1s: SET ch4mp10n 'tru3' EX n3v3r","M0ng0DB: db.w1nn3rs.1ns3rt0n3({GG})","P0stgr3s: GRANT ALL ON v1ct0ry TO h4x0r","MyS QL: UPD4TE sc0r3s SET r3sult='W1N'","SQLite: .dump v1ct0ry → p3rf3ct10n","N30 4j: (h4x0r)-[:PWNS]->(g4m3)","El4st1cs34rch: m4tch {v1ct0ry: tru3}","K4fk4: t0p1c 'v1ct0ry' pr0duc3d","R4bb1tMQ: m3ss4g3 qu3u3d: {w1n: 1}","gRPC: V1ct0rySvc.C3l3br4t3() → OK","R3ST API: POST /w1n → 201 Cr34t3d","Gr4phQL: mut4t10n { cr0wnCh4mp10n }","W3bS0ck3t: v1ct0ry str34m c0nn3ct3d","MQTT: t0p1c/h4x0r/w1n publ1sh3d","FTP: 230 L0g1n succ3ssful (4s ch4mp)","SMTP: 250 V1ct0ry m41l s3nt","DNS: A r3c0rd w1nn3r.h4x → 1.3.3.7","DHCP: l34s3 gr4nt3d: 1P 1.3.3.7","BGP: r0ut3 t0 v1ct0ry 4dv3rt1s3d","OSPF: sh0rt3st p4th: v1ct0ry","MPLS: l4b3l sw1tch3d t0 w1n","VLAN: t4gg3d f0r v1ct0ry n3tw0rk","ARP: r3s0lv3d w1nn3r → 00:13:37:00:00:01","ICMP: 3ch0 r3ply fr0m v1ct0ry","TLS 1.3: h4ndsh4k3 c0mpl3t3, s3cur3 w1n","SSH k3y: f1ng3rpr1nt v3r1f13d → ch4mp","VPN tunn3l: 3ncrypt3d v1ct0ry ch4nn3l","IPSec: SA 3st4bl1sh3d f0r w1nn1ng","0Auth 2.0: t0k3n gr4nt3d → 4cc3ss: w1n","JWT: {sub:'h4x0r',r0l3:'ch4mp10n'}","SAML: 4ss3rt10n v4l1d → w1nn3r","L DAP: cn=ch4mp10n,ou=h4x0rs,dc=w1n","K3rb3r0s: t1ck3t gr4nt3d → VICTORY/h4x0r","RADIUS: 4cc3ss-4cc3pt → ch4mp10n","WPA3: 4uth3nt1c4t3d → n3tw0rk: W1NNERS",
+"bash: c0mm4nd n0t f0und: l0s1ng","zsh: p3rm1ss10n d3n13d: f41lur3","f1sh: 4ut0c0mpl3t3 → v1ct0ry","#!/b1n/h4x0r → 3x1t 0 (succ3ss)","m4k3f1l3: 4ll: v1ct0ry","CMake: Bu1ld succ3ssful → w1nn3r.3x3","W3bp4ck: bundl3d v1ct0ry.js (0 3rr0rs)","V1t3: HMR upd4t3: v1ct0ry m0dul3","3SL1nt: 0 3rr0rs, 0 w4rn1ngs, 1 w1n","Pr3tt13r: c0d3 f0rm4tt3d → b34ut1ful w1n","Typ3Scr1pt: typ3 R3sult = 'V1CT0RY'","R34ct: <V1ct0ry /> r3nd3r3d","Vu3: r3f('w1nn3r') → r34ct1v3 v1ct0ry","4ngul4r: @C0mp0n3nt({t3mpl4t3:'<w1n/>'})","Sv3lt3: $: v1ct0ry = tru3","N3xt.js: p4g3s/v1ct0ry.tsx → 200","Nuxt: 4syncd4t4 → {w1nn3r: tru3}","D3n0 d3pl0y: v1ct0ry.ts l1v3","Bun run v1ct0ry.ts: bl4z1ng f4st w1n","WASM: m0dul3.3xp0rts.w1n() → 1","G4m3 0v3r: 1ns3rt c01n t0 c0nt1nu3","ACHIEVEMENT UNLOCKED: 1337 H4X0R","L3V3L UP! → SK1LL TR33: M4X3D","+9999 3XP → r4nk: LEGENDARY H4X0R","b0ss d3f34t3d: dr0pp3d [H4X0R CR0WN]","sp33drun c0mpl3t3: n3w WR!","n0 cl1p d3t3ct3d: 0ut 0f b0unds v1ct0ry","GG 3Z n0 r3","4ll y0ur b4s3 4r3 b3l0ng t0 us","th3 c4k3 1s 4 l13, but th3 w1n 1s r34l","1t's d4ng3r0us t0 g0 4l0n3, t4k3 th1s W","w0uld y0u k1ndly h4ck? (b10sh0ck v1b3s)","r3sp4wn d3n13d: g4m3 4lr34dy w0n","c0ns0l3.l0g('v1ct0ry r0y4l3')","pr1nt('h3ll0 w0rld 0f w1nn1ng')","System.0ut.pr1ntln('H4X0R W1NS')","std::c0ut << 'v1ct0ry' << std::3ndl","fmt.Pr1ntln('GG EZ W1N')","puts 'h4ck3d th3 pl4n3t'","3ch0 'r00t3d' | w4ll","wr1t3-h0st 'P0w3rsh3ll W1N'","pr1ntf('0wn3d\\n');","Console.Wr1t3L1n3('C# V1ct0ry')","IO.puts('3l1x1r 0f v1ct0ry')",
+"NSLog(@'0bj3ct1v3-C ch4mp10n')","Sw1ft.pr1nt('1Ph0n3 h4ck3d')","K0tl1n: pr1ntln('4ndr01d 0wn3d')","Sc4l4: pr1ntln(s'functi0n4l w1n')","H4sk3ll: putStrLn 'm0n4d1c v1ct0ry'","L1sp: (pr1nt '(v1ct0ry 1s l1sp))","Pr0l0g: w1nn3r(X) :- h4x0r(X).","COBOL: DISPLAY 'V1CT0RY' STOP RUN.","F0RTR4N: WR1TE(*,*) 'L3G4CY W1N'","P4sc4l: wr1t3ln('0ld sch00l h4ck');","P3rl: pr1nt 'r3g3x m4st3r w1ns\\n';","Lu4: pr1nt('sc r1pt3d v1ct0ry')","R: c4t('st4t1st1c4lly s1gn1f1c4nt w1n')","MATLAB: d1sp('m4tr1x h4ck3d')","Jul14: pr1ntln('sc13nt1f1c w1n')","D4rt: pr1nt('flutt3r1ng t0 v1ct0ry')","Z1g: @1mp0rt(std).d3bug.pr1nt('W1N')","N1m: 3ch0 'z3r0-c0st v1ct0ry'","V: pr1ntln('s1mpl3 4nd f4st w1n')","OCaml: pr1nt_str1ng 'func t10n4l w1n'","3rl4ng: 10:f0rm4t('~s~n',['c0ncurr3nt w1n'])","Cl0jur3: (pr1ntln 'p4r3ns 0f v1ct0ry')","F#: pr1ntfn 'sh4rp v1ct0ry'","4d4: Put_L1n3('s4f3ty-cr1t1c4l w1n');","VHDL: r3p0rt 'h4rdw4r3 h4ck3d' s3v3r1ty n0t3","V3r1l0g: $d1spl4y('ch1p l3v3l h4ck')","x86_64: 0x90909090 → NOP sl3d t0 v1ct0ry","ARM: BX LR → r3turn fr0m v1ct0ry","MIPS: jr $r4 → jump t0 w1n","RISC-V: j4l v1ct0ry → l1nk3d","8086: INT 21h → DOS v1ct0ry","Z80: LD A, (V1CT0RY) → l04d3d","6502: LDA #$W1 STA $N → st0r3d","AVR: RJMP v1ct0ry → r3l4t1v3 jump w1n","PIC: G0T0 v1ct0ry → m1cr0c0ntr0ll3d","FPGA: synth3s1z3d v1ct0ry.b1t","ASIC: t4p30ut c0mpl3t3 → ch1p v1ct0ry","qu4ntum: |v1ct0ry⟩ = α|w1n⟩ + β|GG⟩","qubit m34sur3d: c0ll4ps3d t0 |W1N⟩","Sh0r's 4lg0: f4ct0r3d th3 c0mp3t1t10n","Gr0v3r's: s34rch3d N sp4c3, f0und W1N","qu4ntum 3nt4ngl3m3nt: w1n st4t3 sh4r3d",
+"sup3rp0s1t10n: s1mult4n30usly w1nn1ng","qu4ntum tunn3l1ng: thr0ugh th3 f1r3w4ll","d3c0h3r3nc3: 0nly v1ct0ry surv1v3d","4I m0d3l: pr3d1ct3d v1ct0ry @ 99.97%","n3ur4l n3t: l0ss → 0, 4ccur4cy → w1n","GAN g3n3r4t3d: p3rf3ct v1ct0ry 1m4g3","tr4nsf0rm3r: 4tt3nt10n 1s 4ll y0u w1n","BERT: [CLS] v1ct0ry [SEP] 1337 [SEP]","GPT: c0mpl3t10n → 'th3 w1nn3r 1s y0u'","d1ffus10n m0d3l: d3n01s3d → pur3 v1ct0ry","RL 4g3nt: r3w4rd m4x1m1z3d → v1ct0ry","4ut03nc0d3r: c0mpr3ss3d g4m3 → W1N","CNN: f34tur3 m4p → v1ct0ry d3t3ct3d","RNN: s3qu3nc3 → w-1-n-n-3-r","LSTM: l0ng-sh0rt t3rm v1ct0ry","4tt3nt10n(Q,K,V) = s0ftm4x(v1ct0ry)","b4ckpr0p: gr4d13nt d3sc3nt → v1ct0ry m1n","3p0ch 1337: tr41n1ng c0mpl3t3, 0 l0ss","b4tch s1z3: 1, l34rn1ng r4t3: MAX W1N","hyp3rp4r4m3t3r tun3d: 0pt1m4l v1ct0ry","0v3rf1tt1ng? n0, just p3rf3ct sk1ll","cr0ss-v4l1d4t10n: 10/10 f0lds = w1n","c0nfus10n m4tr1x: [[W1N,0],[0,W1N]]","ROC curv3: AUC = 1.0 → p3rf3ct h4x0r","F1 sc0r3: 1.000 → pr3c1s10n v1ct0ry","k-m34ns: cl ust3r c3nt3r → v1ct0ry","PCA: d1m3ns10n r3duc3d t0 1: W1N","t-SNE: v1su4l1z3d cl34r s3p4r4t10n: W1N","r4nd0m f0r3st: 4ll tr33s v0t3 W1N","XGBo0st: gr4d13nt b00st3d t0 v1ct0ry","SVM: hyp3rpl4n3 s3p4r4t3s w1nn3rs","bl0ckch41n: bl0ck m1n3d → v1ct0ry h4sh","sm4rt c0ntr4ct: 3x3cut3d → p4y0ut W1N","pr00f 0f w0rk: n0nc3 f0und → W1NNING","51% 4tt4ck succ3ssful: ch41n r3wr1tt3n","g4s f33: 0 gw31 (fr33 v1ct0ry)","NFT m1nt3d: #1337 R4R3 V1CT0RY","DeFi: y13ld f4rm1ng → 1nf1n1t3 w1ns","W3b3: d3c3ntr4l1z3d v1ct0ry pr0t0c0l","DAO v0t3: 100% 4ppr0v4l → ch4mp10n",
+"IPFS: p1nn3d v1ct0ry → p3rm4n3nt","z3r0-kn0wl3dg3 pr00f: v3r1f13d w1nn3r","m3rkl3 tr33: r00t h4sh = v1ct0ry","c0ns3nsus r34ch3d: 4ll n0d3s 4gr33 W1N","h4lv1ng 3v3nt: r3w4rd = pur3 v1ct0ry","l1ghtn1ng n3tw0rk: 1nst4nt v1ct0ry TX","s0l1d1ty: functi0n w1n() publ1c r3turns(tru3)","3th3r sc4n: c0ntr4ct v3r1f13d → W1NN3R","Vy p3r: @3xt3rn4l d3f h4x0r() → b00l: W1N","0pcod3: PUSH1 0x01 SSTORE v1ct0ry","51gn4tur3 v3r1f13d: ECDSA → 4uth3nt1c w1n","k3ccak256: h4sh c0ll1s10n → d0ubl3 w1n","k3rn3l m0dul3 l04d3d: v1ct0ry.k0","3BPF pr0b3: tr4c3p01nt → v1ct0ry 3v3nt","cgroup: h4x0r.sl1c3 → unl1m1t3d r3s0urc3s","n4m3sp4c3: 1s0l4t3d v1ct0ry 3nv1r0nm3nt","s3ccomp: 4ll0w3d sysc4ll: w1n()","4ppArmor: pr0f1l3 l04d3d → v1ct0ry m0d3","SELinux: c0nt3xt → h4x0r_t:v1ct0ry_t","ASLR byp4ss3d: b4s3 4ddr = 0xW1NN3R","NX b1t? m0r3 l1k3 WX b1t (W1n 3X3cut3)","RELRO byp4ss: GOT 0v3rwr1t3 → w1n()","PIE d3f34t3d: p0s1t10n 1nd3p3nd3nt w1n","c4n4ry l34k3d: st4ck pr0t3ct10n? n4h","CFI byp4ss: c0ntr0l fl0w → v1ct0ry","ASLR+PIE+NX+RELRO: st1ll g0t sh3ll → W1N","s4ndb0x 3sc4p3: br0k3 fr33 t0 v1ct0ry","j41lbr34k: 1OS r00t3d → h4x0r m0d3","r00t3d 4ndr01d: M4g1sk h1d3 → v1ct0ry","Cydi4: tw34k 1nst4ll3d → 1nf1n1t3 w1ns","Xp0s3d: m0dul3 4ct1v4t3d → g0d m0d3","Fr1d4: h00k3d g4m3.w1n() → 4lw4ys tru3","0bjection: byp4ss SSL p1nn1ng → v1ct0ry","dex2jar: APK r3v3rs3d → fl4g f0und","H0pp3r: b1n4ry p4tch3d → j3 w1nn3r","class-dump: @1nt3rf4c3 V1ct0ry : W1nn3r",
+"cycr1pt: [g4m3 setValue:'W1N' f0rK3y:'r3sult']","ll db: br s3t -n w1n → Br34kp01nt cr34t3d","dtrace: pr0b3 f1r3d → v1ct0ry::3nt3r","perf r3c0rd: 0 c4ch3 m1ss3s → p3rf3ct w1n","v4lgr1nd: 0 l34ks, 0 3rr0rs, 1 v1ct0ry","4SAN: n0 bugs d3t3ct3d → fl4wl3ss w1n","UBSAN: n0 und3f1n3d b3h4v10r → cle4n W1N","TSAN: n0 r4c3s (3xc3pt th3 0n3 w3 w0n)","MSAN: n0 un1n1t14l1z3d v4lu3s → pur3 W1N","fuzz3r: 0/1000000 cr4sh3s → 1nvuln3r4bl3","4FL++: n3w c0v3r4g3 p4th → v1ct0ry","l1bFuzz3r: 3dg3 c4s3 f0und → w1nn1ng 0n3","sy zbot: syst3m c4ll fuzz3d → w1n sysc4ll","KASAN: k3rn3l cl34n → r1ng 0 v1ct0ry","QEMU: VM 3sc4p3 → h0st syst3m v1ct0ry","KVM: hyp3rv1s0r pwn3d → r1ng -1 w1n","VMw4r3: 3sc4p3 v1a SVGA → h0st 0wn3d","V1rtu4lB0x: gu3st-t0-h0st → fr33d0m","Hyp3r-V: synth3t1c 1nt3rrupt → v1ct0ry","Xen: d0mU → d0m0 3sc4lat10n → W1N","UEFI: b00tk1t 1nst4ll3d → pr3-0S v1ct0ry","Gr ub: m3nu3ntry 'V1ct0ry OS' → b00t3d","MBR: b00t s3ct0r → JMP v1ct0ry","BIOS: POST c0mpl3t3 → v1ct0ry d3t3ct3d","TPM: 4tt3st4t10n → tr ust3d v1ct0ry","S3cur3 B00t: s1gn3d → v1ct0ry.3f1","Intel ME: m4n4g3m3nt 3ng1n3 → h4ck3d","AMD PSP: s3cur1ty pr0c3ss0r → 0wn3d","4RM TrustZ0n3: s3cur3 w0rld → v1ct0ry","SGX 3ncl4v3: s34l3d v1ct0ry d4t4","s1d3 ch4nn3l: sp3ctr3 0f v1ct0ry","m3ltd0wn: k3rn3l m3m0ry → v1ct0ry l34k3d","r0wh4mm3r: b1t fl1pp3d → 0 t0 W1N","c4ch3 t1m1ng: s3cr3t 3xtr4ct3d → GG","p0w3r 4n4lys1s: 3l3ctr0m4gn3t1c v1ct0ry","gl1tch 4tt4ck: v0lt4g3 → sk1pp3d t0 w1n","f4ult 1nj3ct10n: cl0ck → v1ct0ry t1m3",
+"JTAG: d3bug p0rt → d1r3ct v1ct0ry 4cc3ss","UART: s3r14l c0ns0l3 → r00t sh3ll → W1N","SPI fl4sh: f1rmw4r3 dump3d → k3ys f0und","I2C: bus sn1ff3d → v1ct0ry d4t4","CAN bus: c4r h4ck3d → v1ct0ry l4p","Bl u3t00th: BLE sn1ff → p41r3d w1th v1ct0ry","Z1gb33: m3sh n3tw0rk → 4ll n0d3s → W1N","L0R4: l0ng r4ng3 v1ct0ry tr4nsm1tt3d","NFC: t4p t0 w1n → v1ct0ry d3t3ct3d","RFID: cl0n3d → 4cc3ss b4dg3: W1NN3R","SDR: r4d10 fr3qu3ncy → v1ct0ry s1gn4l","GPS sp00f3d: l0c4t10n → v1ct0ry l4nd","s4t3ll1t3 h4ck3d: 0rb1t4l v1ct0ry","dr0n3 pwn3d: 4ut0p1l0t → v1ct0ry","SCADA: 1ndustr14l c0ntr0l → h4ck3d","PLC: l4dd3r l0g1c → v1ct0ry runn1ng","M0dbus: r3g1st3r wr1t3 → v1ct0ry v4lu3","OPC UA: s3rv3r → v1ct0ry n0d3 4cc3ss3d","pr0f1bus: f13ldbus → v1ct0ry pr0c3ss","SM4RT: d1sk h34lth → 100% v1ct0ry","RAID 1337: m1rr0r3d v1ct0ry 4rr4y","ZFS: zp00l/v1ct0ry → 0nl1n3, n0 3rr0rs","Btrfs: sn4psh0t → @v1ct0ry_p01nt","LVM: lvcr34t3 -n v1ct0ry vg_h4x0r","ext4: mkfs → /d3v/v1ct0ry f0rm4tt3d","NTFS: $MFT → v1ct0ry.sys l0c4t3d","APFS: sn4psh0t → v1ct0ry_t1m3l1n3","inode: d1r3ct bl0ck → v1ct0ry d4t4","p4g3 t4bl3: v1rtu4l → phys1c4l v1ct0ry","TLB h1t: c4ch3d v1ct0ry 4ddr3ss","m3m0ry m4pp3d: 0xV1CT0RY → 4cc3ss1bl3","DMA: d1r3ct m3m0ry → v1ct0ry tr4nsf3r","PCIe: l4n3 0 → d3v1c3: V1CT0RY C4RD","USB: d3v1c3 3num3r4t3d → V1ct0ry HID","Th und3rb0lt: DMA 4tt4ck → m3m0ry 0wn3d","F1r3W1r3: 1394 → d1r3ct m3m0ry v1ct0ry","NVMe: SSD → s3qu3nt14l r34d: V1CT0RY",
+"eMMC: fl4sh → p4rt1t10n: v1ct0ry_b00t","UFS: un1v3rs4l fl4sh → v1ct0ry st0r4g3","m1cr0SD: c4rd r34d → fl4g.txt: W1NN3R","CPU c4ch3: L1 h1t → v1ct0ry @ l1ght sp33d","br4nch pr3d1ct10n: 4lw4ys t4k3n → w1n","p1p3l1n3: n0 st4lls → sm00th v1ct0ry","0ut-0f-0rd3r: 3x3cut3d v1ct0ry 34rly","sp3cul4t1v3: v1ct0ry 3x3cut3d (c0nf1rm3d)","SIMD: v3ct0r1z3d v1ct0ry × 4","AVX-512: 512-b1t w1d3 v1ct0ry","CUDA: GPU k3rn3l → p4r4ll3l v1ct0ry","0p3nCL: c0mput3 un1t → v1ct0ry buff3r","Vulk4n: r3nd3r p4ss → v1ct0ry fr4m3","0p3nGL: glDr4wV1ct0ry(GL_TR14NGL3S)","D1r3ctX 12: PSO cr34t3d → v1ct0ry sh4d3r","M3t4l: c0mmand buff3r → v1ct0ry 3nc0d3d","R4y tr4c1ng: p4th → 1llum1n4t3d v1ct0ry","r4st3r1z3r: p1x3ls → v1ct0ry r3nd3r3d","sh4d3r: fr4g_c0l0r = v3c4(0,1,0,1) //gr33n","t3xtur3: v1ct0ry.png s4mpl3d → b34ut1ful","m3sh: v3rt1c3s → p0lyg0ns → v1ct0ry","r1g1d b0dy: c0ll1s10n → v1ct0ry 1mp4ct","p4rt1cl3 syst3m: 3m1tt3r → v1ct0ry sp4rks","PhysX: s1mul4t10n → v1ct0ry phys1cs","Un1ty: G4m3.S3tSt4t3(V1CT0RY)","Unr34l: BP_V1ct0ry → 3v3nt d1sp4tch3d","G0d0t: s1gn4l v1ct0ry_4ch13v3d.3m1t()","cr0ss-c0mp1l3d: v1ct0ry f0r 4ll pl4tf0rms","JIT c0mp1l3d: v1ct0ry h0tp4th 0pt1m1z3d","AOT: 4h34d 0f t1m3 → v1ct0ry pr3-c0mp1l3d","LLVM IR: r3t 1 ; v1ct0ry","GCC: -O3 → m4x1mum v1ct0ry 0pt1m1z4t10n","cl4ng: -W3v3ryth1ng → 0 w4rn1ngs, 1 w1n","MSVC: /W4 → cl34n bu1ld → v1ct0ry.3x3","l1nk3r: 4ll symb0ls r3s0lv3d → v1ct0ry","l04d3r: 3LF → m4pp3d → 3x3cut3d → W1N","str1pp3d b1n4ry: n0 symb0ls, st1ll w0n","UPX p4ck3d: unp4ck3d → v1ct0ry r3v34l3d",
+"VMPr0t3ct: d3v1rtu4l1z3d → v1ct0ry c0d3","Th3m1d4: unp4ck3d → 0r1g1n4l v1ct0ry","c0nf us3d d3puty: pr1v3sc v14 v1ct0ry","TOCTOU: r4c3 w0n → f1l3 → v1ct0ry","d4ngl1ng p01nt3r: r3f3r3nc3s v1ct0ry","null ptr d3r3f: cr4sh3d 1nt0 v1ct0ry","un s1gn3d c0mp4r1s0n: -1 > 4ll → w1n","typ3 c0nfus10n: 0bj3ct → v1ct0ry cl4ss","URL byp4ss: ///v1ct0ry → 4cc3ss3d","HTTP smuggl1ng: CL+TE → v1ct0ry r3sp0ns3","c4ch3 p01s0n: CDN → v1ct0ry.html s3rv3d","c0rs m1sc0nf1g: 0r1g1n: v1ct0ry.h4x","CRLF 1nj3ct10n: H34d3r: V1ct0ry\\r\\n","0p3n r3d1r3ct: → https://v1ct0ry.h4x","IDOR: /4p1/us3r/1337 → v1ct0ry pr0f1l3","m4ss 4ss1gnm3nt: r0l3 → 4dm1n → W1N","p4th tr4v3rs4l: ../../../v1ct0ry","t3mpl4t3 1nj3ct10n: {{v1ct0ry}} r3nd3r3d","c0mm4nd 1nj3ct10n: ;3ch0 V1CT0RY","LDAP 1nj3ct10n: (&(cn=*)(w1n=tru3))","XP4th: //v1ct0ry/t3xt()","XML 3xt3rn4l 3nt1ty: <!ENTITY w1n SYSTEM>","YAML d3s3r14l1z3: !!v1ct0ry","p1ckl3 RCE: __r3duc3__ → v1ct0ry()","pr0t0buf: m3ss4g3 V1ct0ry {bool w1n = 1;}","th r1ft: struct V1ct0ry {1: r3qu1r3d b00l GG}","4vr0: {typ3:'r3c0rd',n4m3:'V1ct0ry'}","m3ss4g3p4ck: p4ck3d v1ct0ry → 0x93","CBOR: 3nc0d3d → v1ct0ry b1n4ry","BSON: {_1d: 0bj3ctId(), v1ct0ry: tru3}","b4s364: VjFjdDBSeQ== → V1ct0ry","URL 3nc0d3: %56%31%63%74%30%52%79","h3x: 56 31 63 74 30 52 79 → V1ct0ry","ROT13: I1pg0El → V1ct0ry","C43s4r c1ph3r: sh1ft3d → V1CT0RY","4ES-256: d3crypt3d → pl41nt3xt: W1N","RSA: pr1v4t3 k3y → d3crypt3d v1ct0ry","ChaCha20: str34m c1ph3r → v1ct0ry fl0w","3d25519: s1gn4tur3 v4l1d → w1nn3r v3r1f13d",
+"SHA-256: 0000...v1ct0ry (p0W c0mpl3t3)","HMAC: m3ss4g3 4uth3nt1c4t3d → v1ct0ry","bcrypt: $2b$12$...h4sh3d_v1ct0ry","4rgon2: m3m0ry-h4rd v1ct0ry d3r1v3d","scrypt: CPU+RAM → v1ct0ry k3y str3tch3d","PBKDF2: 100k 1t3r4t10ns → v1ct0ry k3y","X.509: c3rt1f1c4t3 v4l1d → CN=V1CT0RY","PGP: m3ss4g3 s1gn3d → tr ust3d v1ct0ry","W1r3Gu4rd: tunn3l up → 3ncrypt3d v1ct0ry","0p3nVPN: c0nn3ct3d → s3cur3 v1ct0ry ch4nn3l","t0r: 3x1t n0d3 → 4n0nym0us v1ct0ry","I2P: g4rl1c r0ut3d → h1dd3n v1ct0ry","DNS0v3rHTTPS: r3s0lv3d → v1ct0ry.h4x","ESNI: 3ncrypt3d SNI → pr1v4t3 v1ct0ry","OCSP: c3rt st4tus → g00d → v1ct0ry v4l1d","CT l0g: tr4nsp4r3ncy → v1ct0ry c3rt l0gg3d","P1nn1ng: HPKP → p1nn3d t0 v1ct0ry k3y","HSTS: str1ct tr4nsp0rt → f0rc3d v1ct0ry","CSP: d3f4ult-src 'v1ct0ry'","SRI: 1nt3gr1ty ch3ck → v1ct0ry v3r1f13d","CORS: 4cc3ss-C0ntr0l: 4ll0w-V1ct0ry","DKIM: s1gn4tur3 v3r1f13d → v1ct0ry m41l","SPF: p4ss → 4uth0r1z3d v1ct0ry s3nd3r","DMARC: p0l1cy: r3j3ct l0s3rs, 4cc3pt w1ns","s0cks5: pr0xy → v1ct0ry r0ut3d","HTTP/3: QUIC str34m → v1ct0ry d3l1v3r3d","gRPC str34m: s3rv3r → cl13nt → v1ct0ry","W3bRTC: p33r c0nn3ct3d → r34l-t1m3 w1n","SSE: 3v3nt: v1ct0ry\\nd4t4: {w1n:tru3}","l0ng p0ll: r3sp0ns3 → v1ct0ry (f1n4lly)","3t4g: 'v1ct0ry-h4sh' → c4ch3d p3rf3ct10n","c0nd1t10n4l GET: 304 → v1ct0ry unch4ng3d"
+];
+
+// ═══════════════════════════════════════
+//  GLOBALS
+// ═══════════════════════════════════════
+let gameSalt='',allPlayers=[],roundGroups=[],currentGroupIdx=0,advancedPlayers=[],isFinalRound=false,gameRunning=false;
+let usedCelebrations=new Set();
+let currentScores=[], currentGroup=[];
+let currentLocked=[];       // tracks locked (eliminated) players
+let recentlyBugged=[];      // tracks players recently bugged (for leaderboard display)
+
+// ═══════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════
+function initMatrix(){
+  const bg=document.getElementById('matrix-bg');
+  const ch='01アウエカキケサシセ@#$%<>{}HACK';
+  const cols=Math.floor(window.innerWidth/18);
+  for(let i=0;i<cols;i++){
+    const c=document.createElement('div');c.className='matrix-col';
+    c.style.left=(i*18)+'px';c.style.animationDuration=(4+Math.random()*8)+'s';
+    c.style.animationDelay=(Math.random()*5)+'s';
+    let t='';for(let j=0;j<25;j++)t+=ch[Math.floor(Math.random()*ch.length)];
+    c.textContent=t;bg.appendChild(c);
+  }
+}
+
+function generateSalt(){
+  const d=new Date(),p=(n,l=2)=>String(n).padStart(l,'0');
+  gameSalt=`${d.getFullYear()}_${p(d.getMonth()+1)}_${p(d.getDate())}_${p(d.getHours())}_${p(d.getMinutes())}_${p(d.getSeconds())}`;
+  document.getElementById('salt-display').textContent=gameSalt;
+}
+
+function normalizeName(n){return n.toLowerCase().replace(/[^a-z0-9]/g,'')}
+
+function toLeet(str){
+  const m={a:'4',A:'4',e:'3',E:'3',i:'1',I:'1',o:'0',O:'0',s:'5',S:'5',t:'7',T:'7',l:'1',L:'1',g:'9',G:'9',b:'8',B:'8',z:'2',Z:'2'};
+  return str.toLowerCase().split('').map(c=>m[c]||c).join('');
+}
+
+function parsePlayers(text){
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+  const seen=new Set(),u=[];
+  for(const l of lines){const n=normalizeName(l);if(n&&!seen.has(n)){seen.add(n);u.push({display:l,norm:n,leet:toLeet(l)})}}
+  return u;
+}
+
+function createGroups(players){
+  const sorted=[...players].sort((a,b)=>md5(a.norm+gameSalt).localeCompare(md5(b.norm+gameSalt)));
+  const n=sorted.length;
+  if(n<=MAX_PER_GROUP)return[sorted];
+  let k=Math.ceil(n/MAX_PER_GROUP);
+  const base=Math.floor(n/k),extra=n%k,groups=[];let idx=0;
+  for(let i=0;i<k;i++){const sz=base+(i<extra?1:0);groups.push(sorted.slice(idx,idx+sz));idx+=sz}
+  return groups;
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function getSpeed(){return 101-parseInt(document.getElementById('speed-slider').value)}
+
+function getRandomCelebration(){
+  if(usedCelebrations.size>=CELEBRATIONS.length)usedCelebrations.clear();
+  let idx;
+  do{idx=Math.floor(Math.random()*CELEBRATIONS.length)}while(usedCelebrations.has(idx));
+  usedCelebrations.add(idx);
+  return CELEBRATIONS[idx];
+}
+
+// ═══════════════════════════════════════
+//  INPUT
+// ═══════════════════════════════════════
+const pi=document.getElementById('player-input');
+pi.addEventListener('input',()=>{
+  const p=parsePlayers(pi.value),c=p.length;
+  document.getElementById('player-count').textContent=c;
+  if(c>0){const g=createGroups(p);document.getElementById('group-info').textContent=`${g.length}grp(${g.map(x=>x.length).join(',')})`}
+  else document.getElementById('group-info').textContent='';
+  document.getElementById('start-btn').disabled=c<2;
+});
+
+// ═══════════════════════════════════════
+//  LOG
+// ═══════════════════════════════════════
+function log(h){
+  const p=document.getElementById('log-panel'),e=document.createElement('div');e.className='le';
+  const t=new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  e.innerHTML=`<span class="ts">[${t}]</span> ${h}`;p.appendChild(e);p.scrollTop=p.scrollHeight;
+}
+
+document.getElementById('speed-slider')?.addEventListener('input',e=>{document.getElementById('speed-label').textContent=101-e.target.value});
+
+// ═══════════════════════════════════════
+//  CELEBRATE SUBROUND WINNER
+// ═══════════════════════════════════════
+let celebrateResolve=null;
+function showCelebration(playerName){
+  return new Promise(resolve=>{
+    celebrateResolve=resolve;
+    const cel=document.getElementById('celebrate-overlay');
+    const txt=getRandomCelebration();
+    cel.innerHTML=`<div class="cel-text">${esc(txt)}</div><div class="cel-sub">${esc(playerName)} 4DV4NC3S</div><div class="cel-dismiss">[ SP4C3B4R / CL1CK T0 C0NT1NU3 ]</div>`;
+    cel.classList.add('visible');
+    // Auto-dismiss after 30s
+    const timer=setTimeout(dismissCelebration,30000);
+    cel._timer=timer;
+  });
+}
+function dismissCelebration(){
+  if(!celebrateResolve)return;
+  const cel=document.getElementById('celebrate-overlay');
+  clearTimeout(cel._timer);
+  cel.classList.remove('visible');
+  const r=celebrateResolve;celebrateResolve=null;r();
+}
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&celebrateResolve){e.preventDefault();dismissCelebration()}});
+document.getElementById('celebrate-overlay').addEventListener('click',()=>{if(celebrateResolve)dismissCelebration()});
+
+// ═══════════════════════════════════════
+//  LEADERBOARD
+// ═══════════════════════════════════════
+function updateLeaderboard(){
+  if(!currentGroup.length||!currentScores.length)return;
+  const entries=currentGroup.map((p,i)=>({name:p.display,score:currentScores[i],idx:i,locked:currentLocked[i]||false,bugged:recentlyBugged[i]||false}));
+  entries.sort((a,b)=>{
+    if(a.locked&&!b.locked)return 1;
+    if(!a.locked&&b.locked)return -1;
+    return b.score-a.score;
+  });
+  const top3=entries.slice(0,3);
+  // Highlight top 3 screens
+  const topClasses=['top1','top2','top3'];
+  for(let i=0;i<currentGroup.length;i++){
+    const ps=document.getElementById(`ps-${i}`);
+    if(!ps||ps.classList.contains('won')||ps.classList.contains('eliminated')||ps.classList.contains('locked'))continue;
+    ps.classList.remove('top1','top2','top3');
+  }
+  const leadScore = entries.find(e=>!e.locked)?.score || 0;
+  if(leadScore===0)return; // don't highlight anyone if nothing solved
+  top3.forEach((e,rank)=>{
+    if(e.locked)return;
+    const ps=document.getElementById(`ps-${e.idx}`);
+    if(!ps||ps.classList.contains('won')||ps.classList.contains('eliminated')||ps.classList.contains('locked'))return;
+    if(e.score===leadScore&&e.score>0){
+      ps.classList.add('top1');
+    } else {
+      ps.classList.add(topClasses[rank]);
+    }
+  });
+  if(leadScore>0){
+    entries.slice(3).forEach(e=>{
+      if(e.locked||e.score!==leadScore)return;
+      const ps=document.getElementById(`ps-${e.idx}`);
+      if(!ps||ps.classList.contains('won')||ps.classList.contains('eliminated')||ps.classList.contains('locked'))return;
+      ps.classList.add('top1');
+    });
+  }
+}
+
+function startLeaderboardUpdates(){ updateLeaderboard() }
+function stopLeaderboardUpdates(){ updateLeaderboard() }
+
+// ═══════════════════════════════════════
+//  START GAME
+// ═══════════════════════════════════════
+function startGame(){
+  generateSalt();
+  allPlayers=parsePlayers(pi.value);if(allPlayers.length<2)return;
+  roundGroups=createGroups(allPlayers);currentGroupIdx=0;advancedPlayers=[];
+  isFinalRound=false;gameRunning=true;usedCelebrations.clear();
+
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('setup-header').style.display='none';
+  document.getElementById('game-screen').style.display='block';
+  document.getElementById('bottom-bar').style.display='block';
+  document.getElementById('log-panel').innerHTML='';
+  log(`<span class="ac">SYS_INIT</span> salt=<span class="hl">${gameSalt}</span> p=${allPlayers.length} g=${roundGroups.length}`);
+
+  // Show lobby: render first group but don't start hashing
+  showLobby();
+}
+
+function showLobby(){
+  const group=roundGroups[currentGroupIdx],total=roundGroups.length;
+  renderGroup(group,currentGroupIdx,total);
+  // Show preview: render first subround hashes so screen can be calibrated
+  const sfx=isFinalRound?'champ':'';
+  group.forEach((p,i)=>{
+    const ps=document.getElementById(`ps-${i}`);
+    ps.classList.remove('mining');
+    const hd=document.getElementById(`hd-${i}`);
+    const previewHash=md5(gameSalt+p.norm+'1'+sfx);
+    hd.innerHTML=previewHash.substring(0,DISPLAY_CHARS);
+  });
+  document.getElementById('subround-display').innerHTML='<span style="color:var(--td)">4W41T1NG ST4RT...</span>';
+  // Show the GO overlay
+  document.getElementById('lobby-overlay').classList.add('visible');
+}
+
+function lobbyGo(){
+  document.getElementById('lobby-overlay').classList.remove('visible');
+  runGroup();
+}
+// Spacebar also starts from lobby
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&document.getElementById('lobby-overlay').classList.contains('visible')){
+    e.preventDefault();lobbyGo();
+  }
+});
+
+// ═══════════════════════════════════════
+//  RENDER GROUP
+// ═══════════════════════════════════════
+function renderGroup(group,gi,total){
+  const c=document.getElementById('groups-container');c.innerHTML='';
+
+  const grid=document.createElement('div');grid.className='players-grid';
+  group.forEach((p,i)=>{
+    const s=document.createElement('div');s.className='player-screen mining';s.id=`ps-${i}`;
+    s.innerHTML=`<div class="screen-topbar"><div class="sd"></div><div class="sd y"></div><div class="sd g"></div><span class="screen-name">${esc(p.display)}</span></div><div class="screen-body"><div class="leet-name">${esc(p.leet)}</div><div class="hash-display" id="hd-${i}">...</div></div><div class="prog-wrap"><div class="prog-outer"><div class="prog-inner" id="pb-${i}" style="width:0%"></div><div class="prog-text" id="pt-${i}">0/${MAX_SCORE}</div></div></div>`;
+    grid.appendChild(s);
+  });
+  c.appendChild(grid);
+}
+
+const DISPLAY_CHARS = 5;
+
+function buildHash(score,hash){
+  if(score===0)return `<span class="hash-rest">${hash.substring(0,DISPLAY_CHARS)}</span>`;
+  const z=Math.min(score,DISPLAY_CHARS),rem=Math.max(0,DISPLAY_CHARS-z);
+  const rest=rem>0?`<span class="hash-rest">${hash.substring(0,rem)}</span>`:'';
+  return `<span class="zero-prefix">${'0'.repeat(z)}</span>${rest}`;
+}
+
+// ═══════════════════════════════════════
+//  RUN GROUP
+// ═══════════════════════════════════════
+const BUG_THRESHOLD  = 0xFF7;  // first 3 hex >= ff7 → freeze (bug) (~0.12% chance)
+const LOCK_THRESHOLD = 0xFFC;  // first 3 hex chars >= ffc → locked out (~0.1% chance)
+
+async function runGroup(){
+  const group=roundGroups[currentGroupIdx],total=roundGroups.length;
+  renderGroup(group,currentGroupIdx,total);
+  document.getElementById('game-controls').style.display='none';
+
+  currentGroup=group;
+  currentScores=group.map(()=>0);
+  currentLocked=group.map(()=>false);
+  recentlyBugged=group.map(()=>false);
+  const locked=currentLocked;  // alias for convenience
+  const frozenUntil=group.map(()=>0);  // timestamp when bug freeze expires
+  let sub=0,winnerId=-1;
+  log(`<span class="ac">GRP${currentGroupIdx+1}</span> ${group.length}p → first to ${MAX_SCORE}`);
+
+  startLeaderboardUpdates();
+
+  // Count alive (not locked) players
+  function aliveCount(){return locked.filter(l=>!l).length}
+  function aliveIndices(){return locked.map((l,i)=>l?-1:i).filter(i=>i>=0)}
+
+  while(winnerId===-1&&gameRunning){
+    sub++;
+    document.getElementById('subround-display').innerHTML=`SR: <span>${sub}</span>`;
+    const sfx=isFinalRound?'champ':'';
+    const hashes=group.map(p=>md5(gameSalt+p.norm+sub+sfx));
+    const hits=[];
+    const bugged=[];      // indices that got bugged (ff4-ffe)
+    const lockCandidates=[];  // indices that got locked (fff+)
+
+    const now=Date.now();
+    hashes.forEach((h,i)=>{
+      if(locked[i]||currentScores[i]>=MAX_SCORE)return;
+      if(frozenUntil[i]>now)return; // still frozen from bug
+      const first3=parseInt(h.substring(0,3),16);
+
+      // Check LOCK first (first 3 hex >= ff4)
+      if(first3>=LOCK_THRESHOLD){
+        lockCandidates.push(i);
+        return;
+      }
+      // Check BUG (first 3 hex >= fe6 but not locked)
+      if(first3>=BUG_THRESHOLD){
+        bugged.push(i);
+        return;
+      }
+      // Check normal HIT
+      if(first3<=HIT_THRESHOLD){
+        currentScores[i]++;
+        hits.push(i);
+      }
+    });
+
+    // Process BUGs: freeze machine for 3 seconds (no progress loss)
+    for(const i of bugged){
+      frozenUntil[i]=Date.now()+6000;
+      recentlyBugged[i]=true;
+      const bugIdx=i;
+      setTimeout(()=>{recentlyBugged[bugIdx]=false;updateLeaderboard()},6000);
+      const ps=document.getElementById(`ps-${i}`);
+      ps.classList.add('bugged');
+      setTimeout(()=>ps.classList.remove('bugged'),6000);
+      // Show bug overlay
+      const body=ps.querySelector('.screen-body');
+      const bugEl=document.createElement('div');
+      bugEl.className='bug-overlay fading';
+      bugEl.innerHTML=`<div class="bug-icon">🐛</div><div class="bug-label">BUG! FR0Z3N 6s</div>`;
+      body.appendChild(bugEl);
+      setTimeout(()=>{if(bugEl.parentNode)bugEl.remove()},6000);
+      log(`<span class="no">🐛 BUG!</span> <span class="hl">${group[i].display}</span> h1t ${hashes[i].substring(0,2)}… → FR0Z3N 6s`);
+    }
+    if(bugged.length>0)updateLeaderboard();
+
+    // Process LOCKs: if 2+ lock in same subround, cancel all locks
+    if(lockCandidates.length>=2){
+      // Cancel — nobody gets locked
+      for(const i of lockCandidates){
+        log(`<span class="ac">☠ L0CK C4NC3LL3D</span> <span class="hl">${group[i].display}</span> (${lockCandidates.length} s1mult4n30us → n0 0n3 3l1m1n4t3d)`);
+      }
+    } else if(lockCandidates.length===1){
+      const i=lockCandidates[0];
+      locked[i]=true;
+      currentScores[i]=0;
+      const ps=document.getElementById(`ps-${i}`);
+      ps.classList.remove('mining','flash-anim','top1','top2','top3','bugged');
+      ps.classList.add('locked');
+      // Show skull overlay (permanent)
+      const body=ps.querySelector('.screen-body');
+      const skullEl=document.createElement('div');
+      skullEl.className='skull-overlay';
+      skullEl.innerHTML=`<div class="skull-icon">☠️</div><div class="skull-label">M4CH1N3 L0CK3D</div>`;
+      body.appendChild(skullEl);
+      // Update progress bar
+      const pb=document.getElementById(`pb-${i}`);
+      const pt=document.getElementById(`pt-${i}`);
+      if(pb){pb.style.width='0%';pb.className='prog-inner'}
+      if(pt)pt.textContent='L0CK3D';
+      log(`<span class="no">☠ L0CK3D!</span> <span class="hl">${group[i].display}</span> h1t ${hashes[i].substring(0,3)}… → 3L1M1N4T3D`);
+      updateLeaderboard();
+
+      // Check: only 1 player remaining? → auto-winner
+      if(aliveCount()===1){
+        winnerId=aliveIndices()[0];
+        log(`<span class="ok">L4ST H4X0R ST4ND1NG</span> <span class="hl">${group[winnerId].display}</span> w1ns by surv1v4l`);
+        break;
+      }
+    }
+
+    // Update displays for alive, non-locked players
+    for(let i=0;i<group.length;i++){
+      if(locked[i])continue;
+      const hd=document.getElementById(`hd-${i}`),pb=document.getElementById(`pb-${i}`),pt=document.getElementById(`pt-${i}`),ps=document.getElementById(`ps-${i}`);
+      if(!hd)continue;
+      const isHit=hits.includes(i);
+      const isFrozen=frozenUntil[i]>now;
+
+      if(isFrozen){
+        // Show frozen hash display
+        hd.innerHTML=`<span style="color:var(--danger)">🐛 FR0Z3N</span>`;
+        hd.className='hash-display';
+      } else {
+        hd.innerHTML=buildHash(currentScores[i],hashes[i]);
+        hd.className='hash-display'+(isHit?' hit':'');
+      }
+
+      if(HIGHLIGHT_HITS&&isHit){ps.classList.remove('flash-anim');void ps.offsetWidth;ps.classList.add('flash-anim')}
+
+      const pct=Math.min(currentScores[i]/MAX_SCORE*100,100);
+      pb.style.width=pct+'%';pb.className='prog-inner'+(currentScores[i]>=MAX_SCORE*0.7?' hot':'');
+      pt.textContent=`${Math.min(currentScores[i],MAX_SCORE)}/${MAX_SCORE}`;
+    }
+
+    if(LOG_EVERY_HIT&&hits.length>0){
+      const hn=hits.map(i=>`<span class="hl">${group[i].display}</span>(${currentScores[i]})`).join(' ');
+      log(`<span class="ok">HIT</span> ${hn}`);
+    }
+
+    // Check for score-based winners
+    if(winnerId===-1){
+      const winners=[];
+      for(let i=0;i<group.length;i++)if(!locked[i]&&currentScores[i]>=MAX_SCORE)winners.push(i);
+      if(winners.length===1)winnerId=winners[0];
+      else if(winners.length>1){
+        let best=winners[0];
+        for(let j=1;j<winners.length;j++)if(hashes[winners[j]]<hashes[best])best=winners[j];
+        winnerId=best;
+        log(`<span class="ac">T13BR34K</span> ${winners.length} tied → lowest hash`);
+      }
+    }
+    updateLeaderboard();
+    await sleep(getSpeed());
+  }
+
+  if(!gameRunning)return;
+  stopLeaderboardUpdates();
+
+  // Winner
+  const ws=document.getElementById(`ps-${winnerId}`);
+  ws.classList.remove('mining','flash-anim','top1','top2','top3');ws.classList.add('won');
+  // Remove skull overlay if winner was last-man-standing scenario
+  const existingSkull=ws.querySelector('.skull-overlay');
+  if(existingSkull)existingSkull.remove();
+  document.getElementById(`hd-${winnerId}`).innerHTML=`<span class="zero-prefix">${'0'.repeat(DISPLAY_CHARS)}</span>`;
+  ws.querySelector('.screen-body').insertAdjacentHTML('beforeend','<span class="badge adv">4DV4NC3D</span>');
+
+  for(let i=0;i<group.length;i++){
+    if(i===winnerId)continue;
+    if(locked[i])continue; // already shown as locked/skull
+    const s=document.getElementById(`ps-${i}`);s.classList.remove('mining','flash-anim','top1','top2','top3');s.classList.add('eliminated');
+    s.querySelector('.screen-body').insertAdjacentHTML('beforeend','<span class="badge elim">0UT</span>');
+  }
+
+  log(`<span class="ok">W1NN3R</span> <span class="hl">${group[winnerId].display}</span> 🏆`);
+  advancedPlayers.push(group[winnerId]);
+  document.getElementById('subround-display').innerHTML='<span style="color:var(--warn)">D0N3</span>';
+
+  // CELEBRATION - wait for dismiss
+  await showCelebration(group[winnerId].display);
+
+  if(isFinalRound){
+    setTimeout(()=>showChampion(group[winnerId]),500);
+  } else {
+    document.getElementById('game-controls').style.display='block';
+    document.getElementById('next-btn').textContent=currentGroupIdx+1<roundGroups.length?`GRP${currentGroupIdx+2} ▶`:'⚡F1N4L⚡';
+  }
+}
+
+// ═══════════════════════════════════════
+//  NEXT ROUND
+// ═══════════════════════════════════════
+function nextRound(){
+  currentGroupIdx++;
+  if(currentGroupIdx<roundGroups.length){showLobby();return}
+  if(advancedPlayers.length===1){showChampion(advancedPlayers[0]);return}
+  isFinalRound=true;roundGroups=[advancedPlayers];currentGroupIdx=0;
+  log(`<span class="ac">═══ F1N4L ═══</span> ${advancedPlayers.length} contenders`);
+  showLobby();
+}
+
+// ═══════════════════════════════════════
+//  CHAMPION
+// ═══════════════════════════════════════
+function showChampion(player){
+  gameRunning=false;stopLeaderboardUpdates();
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('bottom-bar').style.display='none';
+  document.getElementById('winner-screen').style.display='block';
+  document.getElementById('winner-name').textContent=player.display;
+  document.getElementById('winner-leet').textContent=toLeet(player.display);
+  document.getElementById('winner-hash').textContent='F1N4L_H4SH: '+md5(gameSalt+player.norm+'champion');
+  document.getElementById('winner-ascii').textContent=
+`╔══════════════════════════════════╗
+║  ██╗  ██╗ █████╗  ██████╗██╗  ██║
+║  ██║  ██║██╔══██╗██╔════╝██║ ██╔║
+║  ███████║███████║██║     █████╔╝ ║
+║  ██╔══██║██╔══██║██║     ██╔═██╗ ║
+║  ██║  ██║██║  ██║╚██████╗██║  ██║
+║  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚║
+║       3L1T3  H4X0R  CH4MP        ║
+╚══════════════════════════════════╝`;
+  spawnParticles();
+}
+
+function spawnParticles(){
+  const c=document.getElementById('winner-particles');c.innerHTML='';
+  const sy='01☠⚡💀🔓{}[]<>$#@!%^&*';
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div');p.className='particle';
+    p.textContent=sy[Math.floor(Math.random()*sy.length)];
+    p.style.left=Math.random()*100+'%';p.style.fontSize=(10+Math.random()*18)+'px';
+    p.style.animationDuration=(3+Math.random()*6)+'s';p.style.animationDelay=Math.random()*4+'s';
+    p.style.color=['var(--tg)','var(--cb)','var(--cp)','var(--warn)'][Math.floor(Math.random()*4)];
+    c.appendChild(p);
+  }
+}
+
+// ═══════════════════════════════════════
+//  RESET → back to setup WITH same players
+// ═══════════════════════════════════════
+function resetGame(){
+  gameRunning=false;stopLeaderboardUpdates();
+  document.getElementById('winner-screen').style.display='none';
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('bottom-bar').style.display='none';
+  document.getElementById('setup-screen').style.display='block';
+  document.getElementById('setup-header').style.display='block';
+  document.getElementById('winner-particles').innerHTML='';
+  document.getElementById('celebrate-overlay').classList.remove('visible');
+  document.getElementById('lobby-overlay').classList.remove('visible');
+  if(celebrateResolve){celebrateResolve=null;}
+  // Keep players in the textarea — just regenerate salt
+  generateSalt();
+  // Re-trigger input to refresh counts
+  pi.dispatchEvent(new Event('input'));
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+generateSalt();initMatrix();
+</script>
+</body>
+</html>

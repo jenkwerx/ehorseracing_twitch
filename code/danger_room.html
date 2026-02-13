@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danger Room</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #2d0a0a 0%, #5a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 10px;
+            font-size: 13px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(20, 0, 0, 0.7);
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ff3333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 0 0 15px rgba(255, 51, 51, 0.8);
+            transition: all 0.3s;
+        }
+        
+        h1.collapsed {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h1.collapsed {
+                font-size: 1.2em;
+            }
+            
+            .round-info {
+                font-size: 1.1em;
+                padding: 15px;
+                flex-direction: column;
+            }
+            
+            .round-info button {
+                width: 100%;
+            }
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: #3a0a0a;
+            color: #fff;
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+            touch-action: manipulation;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+        }
+        
+        button:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.8);
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        @media (max-width: 768px) {
+            button {
+                padding: 12px 30px;
+                font-size: 16px;
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .team-card {
+            background: rgba(40, 10, 10, 0.9);
+            border: 2px solid #ff6600;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        
+        .team-card.critical {
+            background: rgba(120, 50, 30, 1);
+            border-color: #ffcc00;
+            border-width: 3px;
+            box-shadow: 0 0 25px rgba(255, 200, 0, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 25px rgba(255, 200, 0, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(255, 200, 0, 0.9);
+            }
+        }
+        
+        .team-card.eliminated {
+            background: rgba(80, 0, 0, 0.6);
+            border-color: #ffaa00;
+            opacity: 0.85;
+        }
+        
+        .team-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+        }
+        
+        .player {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(100, 30, 0, 0.6);
+            border-radius: 5px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 100, 0, 0.3);
+        }
+        
+        .player-name {
+            font-weight: bold;
+            color: #ffee00;
+        }
+        
+        .player-icon {
+            font-size: 1.3em;
+            margin-left: 10px;
+        }
+        
+        .player.eliminated {
+            text-decoration: line-through;
+            opacity: 0.4;
+        }
+        
+        .round-info {
+            background: rgba(255, 50, 0, 0.3);
+            border: 2px solid #ff3300;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.3em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 0 15px rgba(255, 51, 0, 0.4);
+        }
+        
+        .round-info .round-text {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .round-info button {
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .round-info {
+                font-size: 1.1em;
+                padding: 15px;
+            }
+        }
+        
+        .splash-screen {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .splash-teams {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .splash-teams {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .relegated-list {
+            background: rgba(100, 20, 0, 0.5);
+            border: 2px solid #ff6600;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .winner-celebration {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 1.5em;
+        }
+        
+        @media (max-width: 768px) {
+            .winner-celebration {
+                font-size: 1.2em;
+                padding: 20px 10px;
+            }
+        }
+        
+        .winner-team {
+            font-size: 2em;
+            color: #ffd700;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .winner-team {
+                font-size: 1.5em;
+            }
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 20px;
+                max-height: 90vh;
+            }
+        }
+        
+        .modal-title {
+            font-size: 2em;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .modal-title {
+                font-size: 1.5em;
+            }
+        }
+        
+        .modal-team-name {
+            font-size: 1.5em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .modal-player {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+        
+        .weakness-legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(50, 20, 0, 0.6);
+            border-top: 2px solid #ff6600;
+            border-bottom: 2px solid #ff6600;
+            text-align: center;
+        }
+        
+        .weakness-legend-title {
+            color: #ff3333;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+        }
+        
+        .weakness-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .weakness-item {
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+        
+        .weakness-item.used {
+            text-decoration: line-through;
+            opacity: 0.4;
+        }
+        
+        .eliminated-divider {
+            margin: 30px 0 20px 0;
+            padding-top: 20px;
+            border-top: 2px solid #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app"></div>
+    <div id="modal"></div>
+
+    <script>
+        const BOTS = Array.from({length: 40}, (_, i) => `BOT${String(i+1).padStart(2, '0')}`);
+
+const TNAME1 = [
+  // Greek-ish & classic (trimmed to avoid overlap)
+  'Alpha','Beta','Gamma','Delta','Epsilon','Zeta','Eta','Theta','Iota','Kappa','Lambda','Sigma','Tau','Phi','Psi',
+
+  // Creatures & critters
+  'Phoenix','Dragon','Griffin','Wyvern','Hydra','Kraken','Basilisk','Chimera','Manticore',
+  'Wolf','Fox','Otter','Badger','Raccoon','Hedgehog','Ferret',
+  'Eagle','Falcon','Kestrel','Osprey','Raven','Crow','Magpie',
+  'Tiger','Panther','Leopard','Jaguar','Lynx',
+  'Viper','Python','Anaconda',
+  'Mantis','Scarab','Hornet','Wasp',
+
+  // Elements & phenomena
+  'Storm','Tempest','Cyclone','Monsoon','Blizzard','Frost','Glacier','Ember','Cinder','Flare',
+  'Lightning','Static','Aurora','Eclipse','Comet','Meteor','Nebula','Quasar',
+  'Echo','Pulse','Ripple','Surge','Drift','Flux',
+
+  // Sci-fi / tech flavor
+  'Nova','Ion','Plasma','Photon','Vector','Vertex','Circuit','Kernel','Beacon','Relay',
+  'Firewall','Hardline','Datastream','Overclock','Mainframe',
+
+  // Edgy but safe
+  'Shadow','Phantom','Specter','Wraith','Mirage','Vortex','Obsidian','Onyx','Midnight',
+  'Iron','Chrome','Titanium','Carbon',
+
+  // Occasional silliness
+  'Wobble','Noodle','Biscuit','Popcorn','Rubberduck','Spork','Marshmallow','Toaster',
+ 
+'Waffles',
+'Pancake',
+'Noodlebrain',
+'Cheeseball',
+'Pickles',
+'Spaghetti',
+'Meatball',
+'Bananahammock',
+'TofuCube',
+'Gizmo',
+'Doodad',
+'Thingamajig',
+'Whatsit',
+'Doohickey',
+'Squeaky',
+'Fluffernut',
+'Wiggle',
+'Bonk',
+'Zigzag',
+'Bloop'
+];
+
+ 
+
+const TNAME2 = [
+  // Military / organizational
+  'Squad','Team','Unit','Division','Legion','Battalion','Regiment','Company','Platoon','Brigade',
+  'Corps','Detachment','Command','Wing','Fleet','Armada',
+
+  // Tactical / elite-ish
+  'Vanguard','Spearhead','Overwatch','Skirmish','Blitz','Hammer','Shield','Sentinel',
+  'Watch','Ward','Patrol','Rangers','Wardens','Guardians',
+
+  // Abstract collectives
+  'Alliance','Coalition','Consortium','Syndicate','Cabal','Circle','Assembly','Council',
+  'Conclave','Federation','Union','Compact','Accord',
+
+  // Sci-fi / project-y
+  'Protocol','Directive','Initiative','Framework','Matrix','Continuum','Array','Network',
+  'Nexus','Pipeline','Lattice','Archive','Repository','Subsystem',
+
+  // Explorer / adventure vibes
+  'Expedition','Venture','Odyssey','Voyage','Survey','Reconnaissance','Foray',
+  'Pathfinders','Trailblazers','Seekers','Scouts',
+
+  // Defensive / support flavored
+  'Custodians','Protectors','Keepers','Observers','Monitors','Responders',
+  'Stabilizers','Anchors','Balancers',
+
+  // Slightly silly, sprinkled in
+  'Crew','Gang','Posse','Outfit','Huddle','Bunch','Pack','Swarm',
+  'Committee','BookClub','ThinkTank','BrainTrust',
+  'PizzaParty','SnackForce','Lunchtime','CoffeeBreak',
+  // --- extra silly TNAME2 additions ---
+'Congregation',
+'Gathering',
+'Meetup',
+'Shindig',
+'Hangout',
+'Pile',
+'Cluster',
+'GroupChat',
+'Spreadsheet',
+'SlackChannel',
+'EmailThread',
+'MeetingThatCouldHaveBeenAnEmail',
+'Brainstorm',
+'Workshop',
+'Roundtable',
+'JamSession',
+'HappyHour',
+'Potluck',
+'Afterparty',
+'SideQuest'
+];
+ const WEAKNESSES = [
+
+/* =======================
+   ORIGINAL (TAGGED)
+   ======================= */
+{name:'wet floor',icon:'💧',tier:'real'},
+{name:'loud music',icon:'🔊',tier:'absurd-real'},
+{name:'bright lights',icon:'💡',tier:'absurd-real'},
+{name:'spicy food',icon:'🌶️',tier:'absurd-real'},
+{name:'cold temperature',icon:'❄️',tier:'real'},
+{name:'heights',icon:'🏔️',tier:'real'},
+{name:'enclosed spaces',icon:'📦',tier:'real'},
+{name:'darkness',icon:'🌑',tier:'absurd-real'},
+{name:'water',icon:'🌊',tier:'real'},
+{name:'fire',icon:'🔥',tier:'real'},
+{name:'electricity',icon:'⚡',tier:'real'},
+{name:'sharp objects',icon:'🔪',tier:'real'},
+{name:'moving platforms',icon:'⬆️',tier:'real'},
+{name:'laser beams',icon:'🔴',tier:'real'},
+{name:'toxic gas',icon:'☠️',tier:'real'},
+{name:'radiation',icon:'☢️',tier:'real'},
+{name:'magnetic fields',icon:'🧲',tier:'absurd-real'},
+{name:'extreme heat',icon:'🔥',tier:'real'},
+{name:'ice',icon:'🧊',tier:'real'},
+{name:'wind',icon:'💨',tier:'absurd-real'},
+{name:'gravity shifts',icon:'🌀',tier:'real'},
+{name:'sonic waves',icon:'〰️',tier:'real'},
+{name:'smoke',icon:'🌫️',tier:'real'},
+
+/* =======================
+   REAL THREATS
+   ======================= */
+{name:'acid rain',icon:'🌧️',tier:'real'},
+{name:'falling debris',icon:'🪨',tier:'real'},
+{name:'quicksand',icon:'🏜️',tier:'real'},
+{name:'sinkholes',icon:'🕳️',tier:'real'},
+{name:'vacuum exposure',icon:'🪐',tier:'real'},
+{name:'pressure implosion',icon:'📉',tier:'real'},
+{name:'volcanic ash',icon:'🌋',tier:'real'},
+{name:'lightning strike',icon:'🌩️',tier:'real'},
+{name:'oxygen deprivation',icon:'🫁',tier:'real'},
+{name:'industrial crushers',icon:'🏭',tier:'real'},
+{name:'hydraulic press',icon:'🗜️',tier:'real'},
+{name:'saw blades',icon:'🪚',tier:'real'},
+{name:'trip wires',icon:'🧵',tier:'real'},
+{name:'explosive barrels',icon:'🛢️',tier:'real'},
+{name:'toxic sludge',icon:'🟢',tier:'real'},
+{name:'cryogenic mist',icon:'🥶',tier:'real'},
+{name:'unstable reactor',icon:'⚛️',tier:'real'},
+{name:'poison darts',icon:'🎯',tier:'real'},
+{name:'razor wire',icon:'🪤',tier:'real'},
+{name:'electric fence',icon:'🚧',tier:'real'},
+{name:'falling elevator',icon:'🛗',tier:'real'},
+{name:'spike pit',icon:'📍',tier:'real'},
+{name:'acid pools',icon:'🧪',tier:'real'},
+{name:'electromagnetic pulse exposure',icon:'📡',tier:'real'},
+{name:'plasma burns',icon:'🟣',tier:'real'},
+{name:'time disorientation',icon:'⏳',tier:'absurd-real'},
+{name:'superheated steam',icon:'♨️',tier:'real'},
+{name:'black ice',icon:'⚫',tier:'real'},
+{name:'toxic spores',icon:'🍄',tier:'real'},
+{name:'hostile vines',icon:'🌿',tier:'real'},
+{name:'pressure doors',icon:'🚪',tier:'real'},
+{name:'corrosive fog',icon:'🌁',tier:'real'},
+{name:'sudden decompression',icon:'📤',tier:'real'},
+{name:'energy surges',icon:'🔋',tier:'real'},
+{name:'unstable catwalks',icon:'🪜',tier:'real'},
+{name:'machine malfunctions',icon:'⚙️',tier:'real'},
+{name:'thermal shock',icon:'🌡️',tier:'real'},
+{name:'seismic tremors',icon:'🌎',tier:'real'},
+{name:'reactor meltdown',icon:'☢️',tier:'real'},
+{name:'biohazard exposure',icon:'🧫',tier:'real'},
+{name:'structural collapse',icon:'🏗️',tier:'real'},
+
+/* =======================
+   ABSURD BUT REAL
+   ======================= */
+{name:'weaponized office chairs',icon:'🪑',tier:'absurd-real'},
+{name:'hostile vending machines',icon:'🏪',tier:'absurd-real'},
+{name:'maintenance drones collision',icon:'🛠️',tier:'absurd-real'},
+{name:'malfunctioning holograms',icon:'📽️',tier:'absurd-real'},
+{name:'auto-locking doors',icon:'🔒',tier:'absurd-real'},
+{name:'looping corridors',icon:'🔁',tier:'absurd-real'},
+{name:'gravity hiccups',icon:'🤢',tier:'absurd-real'},
+{name:'teleporter nausea',icon:'🧬',tier:'absurd-real'},
+{name:'infinite staircases',icon:'🪜',tier:'absurd-real'},
+{name:'unlabeled buttons',icon:'🔘',tier:'absurd-real'},
+{name:'overactive alarms',icon:'📢',tier:'absurd-real'},
+{name:'random hazard activation',icon:'🎲',tier:'absurd-real'},
+
+/* =======================
+   TOTALLY ABSURD
+   ======================= */
+{name:'dog allergies',icon:'🐕',tier:'absurd'},
+{name:'fear of sandwiches',icon:'🥪',tier:'absurd'},
+{name:'unskippable cutscenes',icon:'🎬',tier:'absurd'},
+{name:'bad wifi',icon:'📶',tier:'absurd'},
+{name:'expired coupons',icon:'🏷️',tier:'absurd'},
+{name:'awkward silence',icon:'😶',tier:'absurd'},
+{name:'eye contact',icon:'👀',tier:'absurd'},
+{name:'public speaking',icon:'🎤',tier:'absurd'},
+{name:'clowns',icon:'🤡',tier:'absurd'},
+{name:'rubber ducks',icon:'🦆',tier:'absurd'},
+{name:'tax forms',icon:'🧾',tier:'absurd'},
+{name:'alarm clocks',icon:'⏰',tier:'absurd'},
+{name:'email replies',icon:'📧',tier:'absurd'},
+{name:'small talk',icon:'💬',tier:'absurd'},
+{name:'mystery leftovers',icon:'🍱',tier:'absurd'},
+{name:'pineapple pizza',icon:'🍍',tier:'absurd'},
+{name:'low battery anxiety',icon:'🔋',tier:'absurd'},
+{name:'printer jams',icon:'🖨️',tier:'absurd'},
+{name:'captcha tests',icon:'🔐',tier:'absurd'},
+{name:'unexpected phone calls',icon:'📞',tier:'absurd'},
+{name:'wet socks',icon:'🧦',tier:'absurd'},
+{name:'fork scraping plates',icon:'🍽️',tier:'absurd'},
+{name:'squeaky shoes',icon:'👟',tier:'absurd'},
+{name:'velcro noises',icon:'🪢',tier:'absurd'},
+{name:'microwave beeping',icon:'📻',tier:'absurd'},
+{name:'slow elevators',icon:'🐢',tier:'absurd'},
+{name:'mystery smells',icon:'👃',tier:'absurd'},
+{name:'decaf coffee',icon:'☕',tier:'absurd'},
+{name:'burnt popcorn',icon:'🍿',tier:'absurd'},
+{name:'broken promises',icon:'💔',tier:'absurd'},
+{name:'boss music',icon:'🎶',tier:'absurd'},
+{name:'ominous chanting',icon:'🗣️',tier:'absurd'},
+{name:'plot twists',icon:'🔀',tier:'absurd'},
+{name:'fourth wall awareness',icon:'🧠',tier:'absurd'},
+{name:'permadeath mode',icon:'☠️',tier:'absurd'},
+
+/* =======================
+   REAL THREATS
+   ======================= */
+{name:'arterial bleeding',icon:'🩸',tier:'real'},
+{name:'bone fractures',icon:'🦴',tier:'real'},
+{name:'puncture wounds',icon:'📌',tier:'real'},
+{name:'concussion',icon:'🤕',tier:'real'},
+{name:'heat exhaustion',icon:'🥵',tier:'real'},
+{name:'hypothermia onset',icon:'🥶',tier:'real'},
+{name:'dehydration',icon:'🚱',tier:'real'},
+{name:'drowning risk',icon:'🏊‍♂️',tier:'real'},
+{name:'lung collapse',icon:'🫀',tier:'real'},
+{name:'cardiac stress',icon:'❤️‍🔥',tier:'real'},
+{name:'nerve damage',icon:'🧠',tier:'real'},
+{name:'vision impairment',icon:'👁️‍🗨️',tier:'real'},
+{name:'hearing damage',icon:'🦻',tier:'real'},
+{name:'toxic ingestion',icon:'🥤',tier:'real'},
+{name:'chemical burns',icon:'🧴',tier:'real'},
+{name:'blood loss shock',icon:'🩺',tier:'real'},
+{name:'crushing injuries',icon:'🧱',tier:'real'},
+{name:'muscle tearing',icon:'💪',tier:'real'},
+{name:'joint dislocation',icon:'🦵',tier:'real'},
+{name:'spinal injury',icon:'🦴',tier:'real'},
+{name:'severe lacerations',icon:'✂️',tier:'real'},
+{name:'organ trauma',icon:'🫁',tier:'real'},
+{name:'internal bleeding',icon:'🫀',tier:'real'},
+{name:'infection exposure',icon:'🦠',tier:'real'},
+{name:'contaminated surfaces',icon:'🧽',tier:'real'},
+{name:'restricted airflow',icon:'😮‍💨',tier:'real'},
+{name:'panic-induced collapse',icon:'😰',tier:'real'},
+{name:'loss of balance',icon:'🤸',tier:'real'},
+{name:'disorientation',icon:'🧭',tier:'real'},
+{name:'reaction time failure',icon:'⏱️',tier:'real'},
+{name:'equipment recoil',icon:'🔫',tier:'real'},
+{name:'structural instability',icon:'🏢',tier:'real'},
+{name:'slipping hazards',icon:'👞',tier:'real'},
+{name:'overexertion',icon:'🏋️',tier:'real'},
+{name:'impact trauma',icon:'💢',tier:'real'},
+{name:'environmental collapse',icon:'🌆',tier:'real'},
+{name:'thermal burns',icon:'🫕',tier:'real'},
+{name:'restricted visibility',icon:'🕶️',tier:'real'},
+{name:'suffocation hazard',icon:'🫧',tier:'real'},
+{name:'mechanical entrapment',icon:'⛓️',tier:'real'},
+{name:'pressure injuries',icon:'🪜',tier:'real'},
+{name:'shockwave impact',icon:'🫨',tier:'real'},
+{name:'fall acceleration',icon:'🪂',tier:'real'},
+{name:'loss of grip',icon:'✋',tier:'real'},
+{name:'uneven terrain',icon:'🥾',tier:'real'},
+{name:'sensory overload',icon:'🎇',tier:'real'},
+
+/* =======================
+   ABSURD BUT REAL
+   ======================= */
+{name:'vertigo spirals',icon:'🌀',tier:'absurd-real'},
+{name:'stress hallucinations',icon:'👁️',tier:'absurd-real'},
+{name:'adrenaline crash',icon:'⚡️',tier:'absurd-real'},
+{name:'misjudged distance',icon:'📐',tier:'absurd-real'},
+{name:'false sense of safety',icon:'🛟',tier:'absurd-real'},
+{name:'attention tunnel vision',icon:'🎯',tier:'absurd-real'},
+{name:'startle paralysis',icon:'😳',tier:'absurd-real'},
+{name:'decision hesitation',icon:'🤔',tier:'absurd-real'},
+{name:'overconfidence spike',icon:'📈',tier:'absurd-real'},
+{name:'coordination breakdown',icon:'🧩',tier:'absurd-real'},
+{name:'fatigue tremors',icon:'🫳',tier:'absurd-real'},
+{name:'misheard instructions',icon:'📣',tier:'absurd-real'},
+{name:'sensory lag',icon:'🐌',tier:'absurd-real'},
+{name:'situational blindness',icon:'🙈',tier:'absurd-real'},
+{name:'delayed reflexes',icon:'🐢',tier:'absurd-real'},
+{name:'muscle lockup',icon:'🔒',tier:'absurd-real'},
+{name:'balance illusion',icon:'⚖️',tier:'absurd-real'},
+{name:'rhythm disruption',icon:'🥁',tier:'absurd-real'},
+{name:'breathing misalignment',icon:'🌬️',tier:'absurd-real'},
+{name:'directional confusion',icon:'↔️',tier:'absurd-real'},
+
+/* =======================
+   TOTALLY ABSURD
+   ======================= */
+{name:'existential doubt',icon:'🫥',tier:'absurd'},
+{name:'sudden self-awareness',icon:'🪞',tier:'absurd'},
+{name:'fear of being watched',icon:'👁️‍🗨️',tier:'absurd'},
+{name:'dramatic timing',icon:'🎭',tier:'absurd'},
+{name:'main character syndrome',icon:'🌟',tier:'absurd'},
+{name:'background music anxiety',icon:'🎼',tier:'absurd'},
+{name:'vibes suddenly off',icon:'🫠',tier:'absurd'},
+{name:'cosmic irony',icon:'🪐',tier:'absurd'},
+{name:'narrative tension',icon:'📖',tier:'absurd'},
+{name:'foreshadowing',icon:'🔮',tier:'absurd'},
+{name:'symbolism overload',icon:'🪬',tier:'absurd'},
+{name:'metaphorical weight',icon:'🪨',tier:'absurd'},
+{name:'dramatic pause',icon:'⏸️',tier:'absurd'},
+{name:'off-screen consequences',icon:'📺',tier:'absurd'},
+{name:'implied danger',icon:'🫢',tier:'absurd'},
+{name:'genre shift',icon:'🎞️',tier:'absurd'},
+{name:'unreliable narrator',icon:'🗣️',tier:'absurd'},
+{name:'plot armor failure',icon:'🛡️',tier:'absurd'},
+{name:'ominous silence',icon:'🔇',tier:'absurd'},
+{name:'fourth-wall pressure',icon:'🧱',tier:'absurd'}
+
+];
+
+
+        
+        let gameState = {
+            phase: 'input',
+            hashSalt: '',
+            teams: [],
+            relegated: [],
+            currentRound: 0,
+            usedWeaknesses: [],
+            gameLog: [],
+            newlyEliminatedTeams: [],
+            savedInput: '',
+            lastEliminatedPlayers: [],
+            activeWeaknesses: [],
+            isLastRound: false,
+            relegatedWinners: []
+        };
+        
+        function normalizeEntry(entry) {
+            return entry.toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+        
+        function createHashSalt() {
+            const now = new Date();
+            return `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+        }
+        
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
+        
+        function md5Hash(str) {
+            function rotateLeft(n, s) {
+                return (n << s) | (n >>> (32 - s));
+            }
+            
+            function addUnsigned(x, y) {
+                const lsw = (x & 0xFFFF) + (y & 0xFFFF);
+                const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+                return (msw << 16) | (lsw & 0xFFFF);
+            }
+            
+            function F(x, y, z) { return (x & y) | ((~x) & z); }
+            function G(x, y, z) { return (x & z) | (y & (~z)); }
+            function H(x, y, z) { return x ^ y ^ z; }
+            function I(x, y, z) { return y ^ (x | (~z)); }
+            
+            function FF(a, b, c, d, x, s, ac) {
+                a = addUnsigned(a, addUnsigned(addUnsigned(F(b, c, d), x), ac));
+                return addUnsigned(rotateLeft(a, s), b);
+            }
+            
+            function GG(a, b, c, d, x, s, ac) {
+                a = addUnsigned(a, addUnsigned(addUnsigned(G(b, c, d), x), ac));
+                return addUnsigned(rotateLeft(a, s), b);
+            }
+            
+            function HH(a, b, c, d, x, s, ac) {
+                a = addUnsigned(a, addUnsigned(addUnsigned(H(b, c, d), x), ac));
+                return addUnsigned(rotateLeft(a, s), b);
+            }
+            
+            function II(a, b, c, d, x, s, ac) {
+                a = addUnsigned(a, addUnsigned(addUnsigned(I(b, c, d), x), ac));
+                return addUnsigned(rotateLeft(a, s), b);
+            }
+            
+            const x = [];
+            let k, AA, BB, CC, DD, a, b, c, d;
+            const S11=7, S12=12, S13=17, S14=22;
+            const S21=5, S22=9, S23=14, S24=20;
+            const S31=4, S32=11, S33=16, S34=23;
+            const S41=6, S42=10, S43=15, S44=21;
+            
+            const msg = unescape(encodeURIComponent(str));
+            const msgLen = msg.length;
+            const wordCount = (((msgLen + 8) >>> 6) + 1) << 4;
+            
+            for (let i = 0; i < wordCount; i++) x[i] = 0;
+            for (let i = 0; i < msgLen; i++) {
+                x[i >>> 2] |= (msg.charCodeAt(i) & 0xFF) << ((i % 4) << 3);
+            }
+            
+            x[msgLen >>> 2] |= 0x80 << ((msgLen % 4) << 3);
+            x[wordCount - 2] = msgLen << 3;
+            x[wordCount - 1] = msgLen >>> 29;
+            
+            a = 0x67452301;
+            b = 0xEFCDAB89;
+            c = 0x98BADCFE;
+            d = 0x10325476;
+            
+            for (k = 0; k < wordCount; k += 16) {
+                AA = a; BB = b; CC = c; DD = d;
+                
+                a = FF(a, b, c, d, x[k+0], S11, 0xD76AA478);
+                d = FF(d, a, b, c, x[k+1], S12, 0xE8C7B756);
+                c = FF(c, d, a, b, x[k+2], S13, 0x242070DB);
+                b = FF(b, c, d, a, x[k+3], S14, 0xC1BDCEEE);
+                a = FF(a, b, c, d, x[k+4], S11, 0xF57C0FAF);
+                d = FF(d, a, b, c, x[k+5], S12, 0x4787C62A);
+                c = FF(c, d, a, b, x[k+6], S13, 0xA8304613);
+                b = FF(b, c, d, a, x[k+7], S14, 0xFD469501);
+                a = FF(a, b, c, d, x[k+8], S11, 0x698098D8);
+                d = FF(d, a, b, c, x[k+9], S12, 0x8B44F7AF);
+                c = FF(c, d, a, b, x[k+10], S13, 0xFFFF5BB1);
+                b = FF(b, c, d, a, x[k+11], S14, 0x895CD7BE);
+                a = FF(a, b, c, d, x[k+12], S11, 0x6B901122);
+                d = FF(d, a, b, c, x[k+13], S12, 0xFD987193);
+                c = FF(c, d, a, b, x[k+14], S13, 0xA679438E);
+                b = FF(b, c, d, a, x[k+15], S14, 0x49B40821);
+                
+                a = GG(a, b, c, d, x[k+1], S21, 0xF61E2562);
+                d = GG(d, a, b, c, x[k+6], S22, 0xC040B340);
+                c = GG(c, d, a, b, x[k+11], S23, 0x265E5A51);
+                b = GG(b, c, d, a, x[k+0], S24, 0xE9B6C7AA);
+                a = GG(a, b, c, d, x[k+5], S21, 0xD62F105D);
+                d = GG(d, a, b, c, x[k+10], S22, 0x2441453);
+                c = GG(c, d, a, b, x[k+15], S23, 0xD8A1E681);
+                b = GG(b, c, d, a, x[k+4], S24, 0xE7D3FBC8);
+                a = GG(a, b, c, d, x[k+9], S21, 0x21E1CDE6);
+                d = GG(d, a, b, c, x[k+14], S22, 0xC33707D6);
+                c = GG(c, d, a, b, x[k+3], S23, 0xF4D50D87);
+                b = GG(b, c, d, a, x[k+8], S24, 0x455A14ED);
+                a = GG(a, b, c, d, x[k+13], S21, 0xA9E3E905);
+                d = GG(d, a, b, c, x[k+2], S22, 0xFCEFA3F8);
+                c = GG(c, d, a, b, x[k+7], S23, 0x676F02D9);
+                b = GG(b, c, d, a, x[k+12], S24, 0x8D2A4C8A);
+                
+                a = HH(a, b, c, d, x[k+5], S31, 0xFFFA3942);
+                d = HH(d, a, b, c, x[k+8], S32, 0x8771F681);
+                c = HH(c, d, a, b, x[k+11], S33, 0x6D9D6122);
+                b = HH(b, c, d, a, x[k+14], S34, 0xFDE5380C);
+                a = HH(a, b, c, d, x[k+1], S31, 0xA4BEEA44);
+                d = HH(d, a, b, c, x[k+4], S32, 0x4BDECFA9);
+                c = HH(c, d, a, b, x[k+7], S33, 0xF6BB4B60);
+                b = HH(b, c, d, a, x[k+10], S34, 0xBEBFBC70);
+                a = HH(a, b, c, d, x[k+13], S31, 0x289B7EC6);
+                d = HH(d, a, b, c, x[k+0], S32, 0xEAA127FA);
+                c = HH(c, d, a, b, x[k+3], S33, 0xD4EF3085);
+                b = HH(b, c, d, a, x[k+6], S34, 0x4881D05);
+                a = HH(a, b, c, d, x[k+9], S31, 0xD9D4D039);
+                d = HH(d, a, b, c, x[k+12], S32, 0xE6DB99E5);
+                c = HH(c, d, a, b, x[k+15], S33, 0x1FA27CF8);
+                b = HH(b, c, d, a, x[k+2], S34, 0xC4AC5665);
+                
+                a = II(a, b, c, d, x[k+0], S41, 0xF4292244);
+                d = II(d, a, b, c, x[k+7], S42, 0x432AFF97);
+                c = II(c, d, a, b, x[k+14], S43, 0xAB9423A7);
+                b = II(b, c, d, a, x[k+5], S44, 0xFC93A039);
+                a = II(a, b, c, d, x[k+12], S41, 0x655B59C3);
+                d = II(d, a, b, c, x[k+3], S42, 0x8F0CCC92);
+                c = II(c, d, a, b, x[k+10], S43, 0xFFEFF47D);
+                b = II(b, c, d, a, x[k+1], S44, 0x85845DD1);
+                a = II(a, b, c, d, x[k+8], S41, 0x6FA87E4F);
+                d = II(d, a, b, c, x[k+15], S42, 0xFE2CE6E0);
+                c = II(c, d, a, b, x[k+6], S43, 0xA3014314);
+                b = II(b, c, d, a, x[k+13], S44, 0x4E0811A1);
+                a = II(a, b, c, d, x[k+4], S41, 0xF7537E82);
+                d = II(d, a, b, c, x[k+11], S42, 0xBD3AF235);
+                c = II(c, d, a, b, x[k+2], S43, 0x2AD7D2BB);
+                b = II(b, c, d, a, x[k+9], S44, 0xEB86D391);
+                
+                a = addUnsigned(a, AA);
+                b = addUnsigned(b, BB);
+                c = addUnsigned(c, CC);
+                d = addUnsigned(d, DD);
+            }
+            
+            const temp = [a, b, c, d];
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    result += ((temp[i] >> (j * 8)) & 0xFF).toString(16).padStart(2, '0');
+                }
+            }
+            return result;
+        }
+        
+        function shuffleWithSeed(array, seed) {
+            const arr = [...array];
+            let currentIndex = arr.length;
+            const random = () => {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+            
+            while (currentIndex != 0) {
+                let randomIndex = Math.floor(random() * currentIndex);
+                currentIndex--;
+                [arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]];
+            }
+            return arr;
+        }
+        
+        function processEntrants() {
+            const input = document.getElementById('entrantInput').value;
+            gameState.savedInput = input;
+            const lines = input.split('\n').map(l => l.trim()).filter(l => l);
+            
+            const uniqueMap = new Map();
+            lines.forEach(line => {
+                const normalized = normalizeEntry(line);
+                if (!uniqueMap.has(normalized)) {
+                    uniqueMap.set(normalized, line);
+                }
+            });
+            
+            let entrants = Array.from(uniqueMap.values());
+            gameState.relegated = [];
+            
+            if (entrants.length > 40) {
+                gameState.relegated = entrants.slice(40);
+                entrants = entrants.slice(0, 40);
+            }
+            
+            gameState.hashSalt = createHashSalt();
+            
+            const totalPlayers = entrants.length;
+            const maxDangers = Math.min(totalPlayers + 10, WEAKNESSES.length);
+            
+            const realDangers = WEAKNESSES.filter(w => w.tier === 'real');
+            const absurdRealDangers = WEAKNESSES.filter(w => w.tier === 'absurd-real');
+            const absurdDangers = WEAKNESSES.filter(w => w.tier === 'absurd');
+            
+            const numAbsurd = Math.min(Math.floor(maxDangers * 0.1), absurdDangers.length);
+            const numAbsurdReal = Math.min(Math.floor(maxDangers * 0.2), absurdRealDangers.length);
+            const numReal = maxDangers - numAbsurd - numAbsurdReal;
+            
+            const dangerSeed = simpleHash(gameState.hashSalt + 'dangers');
+            const selectedReal = shuffleWithSeed(realDangers, dangerSeed).slice(0, numReal);
+            const selectedAbsurdReal = shuffleWithSeed(absurdRealDangers, dangerSeed + 1).slice(0, numAbsurdReal);
+            const selectedAbsurd = shuffleWithSeed(absurdDangers, dangerSeed + 2).slice(0, numAbsurd);
+            
+            gameState.activeWeaknesses = [...selectedReal, ...selectedAbsurdReal, ...selectedAbsurd];
+            
+            let groupSize;
+            if (entrants.length <= 24) groupSize = 2;
+            else if (entrants.length <= 36) groupSize = 3;
+            else groupSize = 4;
+            
+            const numTeams = Math.ceil(entrants.length / groupSize);
+            
+            const sortedEntrants = entrants.map(e => ({
+                original: e,
+                hash: simpleHash(normalizeEntry(e) + '-' + gameState.hashSalt)
+            })).sort((a, b) => a.hash - b.hash).map(e => e.original);
+            
+            const usedBots = new Set();
+            const availableBots = [...BOTS];
+            const botSeed = simpleHash(gameState.hashSalt);
+            const shuffledBots = shuffleWithSeed(availableBots, botSeed);
+            
+            const usedTname1 = new Set();
+            const usedTname2 = new Set();
+            const availableTname1 = [...TNAME1];
+            const availableTname2 = [...TNAME2];
+            const tname1Shuffled = shuffleWithSeed(availableTname1, botSeed + 1);
+            const tname2Shuffled = shuffleWithSeed(availableTname2, botSeed + 2);
+            
+            gameState.teams = [];
+            
+            const teamsNeedingExtra = entrants.length % numTeams;
+            const baseSize = Math.floor(entrants.length / numTeams);
+            
+            let playerIndex = 0;
+            let botIndex = 0;
+            
+            for (let i = 0; i < numTeams; i++) {
+                const teamPlayers = [];
+                const targetSize = i < teamsNeedingExtra ? baseSize + 1 : baseSize;
+                
+                for (let j = 0; j < targetSize && playerIndex < sortedEntrants.length; j++) {
+                    teamPlayers.push(sortedEntrants[playerIndex]);
+                    playerIndex++;
+                }
+                
+                while (teamPlayers.length < groupSize) {
+                    if (botIndex < shuffledBots.length) {
+                        teamPlayers.push('🤖 ' + shuffledBots[botIndex]);
+                        usedBots.add(shuffledBots[botIndex]);
+                        botIndex++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                if (teamPlayers.length > 0) {
+                    let teamName = '';
+                    let t1Idx = 0, t2Idx = 0;
+                    
+                    while (t1Idx < tname1Shuffled.length && usedTname1.has(tname1Shuffled[t1Idx])) {
+                        t1Idx++;
+                    }
+                    while (t2Idx < tname2Shuffled.length && usedTname2.has(tname2Shuffled[t2Idx])) {
+                        t2Idx++;
+                    }
+                    
+                    const useDoubleFirst = Math.random() < 0.25;
+                    
+                    if (useDoubleFirst && t1Idx < tname1Shuffled.length - 1) {
+                        let t1SecondIdx = t1Idx + 1;
+                        while (t1SecondIdx < tname1Shuffled.length && usedTname1.has(tname1Shuffled[t1SecondIdx])) {
+                            t1SecondIdx++;
+                        }
+                        
+                        if (t1SecondIdx < tname1Shuffled.length && t2Idx < tname2Shuffled.length) {
+                            teamName = `${tname1Shuffled[t1Idx]} ${tname1Shuffled[t1SecondIdx]} ${tname2Shuffled[t2Idx]}`;
+                            usedTname1.add(tname1Shuffled[t1Idx]);
+                            usedTname1.add(tname1Shuffled[t1SecondIdx]);
+                            usedTname2.add(tname2Shuffled[t2Idx]);
+                        } else if (t1Idx < tname1Shuffled.length && t2Idx < tname2Shuffled.length) {
+                            teamName = `${tname1Shuffled[t1Idx]} ${tname2Shuffled[t2Idx]}`;
+                            usedTname1.add(tname1Shuffled[t1Idx]);
+                            usedTname2.add(tname2Shuffled[t2Idx]);
+                        } else {
+                            teamName = `Team ${i + 1}`;
+                        }
+                    } else {
+                        if (t1Idx < tname1Shuffled.length && t2Idx < tname2Shuffled.length) {
+                            teamName = `${tname1Shuffled[t1Idx]} ${tname2Shuffled[t2Idx]}`;
+                            usedTname1.add(tname1Shuffled[t1Idx]);
+                            usedTname2.add(tname2Shuffled[t2Idx]);
+                        } else {
+                            teamName = `Team ${i + 1}`;
+                        }
+                    }
+                    
+                    const weaknessSeed = simpleHash(teamName + gameState.hashSalt);
+                    const shuffledWeaknesses = shuffleWithSeed([...gameState.activeWeaknesses], weaknessSeed);
+                    
+                    const usedInTeam = new Set();
+                    const teamWeaknesses = [];
+                    
+                    for (let pIdx = 0; pIdx < teamPlayers.length; pIdx++) {
+                        let selectedWeakness = null;
+                        
+                        for (let attempt = 0; attempt < shuffledWeaknesses.length; attempt++) {
+                            const weakness = shuffledWeaknesses[(pIdx + attempt) % shuffledWeaknesses.length];
+                            
+                            if (usedInTeam.has(weakness.name)) continue;
+                            
+                            if (weakness.tier === 'real') {
+                                const usedCount = gameState.teams.reduce((count, t) => {
+                                    return count + t.players.filter(p => p.weakness === weakness.name).length;
+                                }, 0);
+                                
+                                if (usedCount === 0) {
+                                    selectedWeakness = weakness;
+                                    break;
+                                } else if (attempt === 0 && usedCount > 0) {
+                                    continue;
+                                } else {
+                                    selectedWeakness = weakness;
+                                    break;
+                                }
+                            } else {
+                                const alreadyUsed = gameState.teams.some(t => 
+                                    t.players.some(p => p.weakness === weakness.name)
+                                );
+                                
+                                if (!alreadyUsed) {
+                                    selectedWeakness = weakness;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (!selectedWeakness) {
+                            selectedWeakness = shuffledWeaknesses[pIdx % shuffledWeaknesses.length];
+                        }
+                        
+                        usedInTeam.add(selectedWeakness.name);
+                        teamWeaknesses.push(selectedWeakness);
+                    }
+                    
+                    gameState.teams.push({
+                        name: teamName,
+                        players: teamPlayers.map((p, idx) => ({
+                            name: p,
+                            weakness: teamWeaknesses[idx].name,
+                            weaknessIcon: teamWeaknesses[idx].icon,
+                            eliminated: false
+                        })),
+                        eliminated: false
+                    });
+                }
+            }
+            
+            gameState.phase = 'splash';
+            render();
+        }
+        
+        function showEliminatedModal(teams, callback) {
+            const modal = document.getElementById('modal');
+            const lastWeakness = gameState.usedWeaknesses[gameState.usedWeaknesses.length - 1];
+            const weaknessObj = gameState.activeWeaknesses.find(w => w.name === lastWeakness);
+            
+            let html = '<div class="modal-overlay">';
+            html += '<div class="modal-content">';
+            html += '<div class="modal-title">💀 TEAM ELIMINATED 💀</div>';
+            html += `<div style="text-align: center; font-size: 1.3em; margin-bottom: 20px; color: #ffd700;">`;
+            html += `${weaknessObj ? weaknessObj.icon : '⚠️'} ${lastWeakness.toUpperCase()} ${weaknessObj ? weaknessObj.icon : '⚠️'}`;
+            html += `</div>`;
+            
+            teams.forEach(team => {
+                html += `<div class="modal-team-name">${team.name}</div>`;
+                team.players.forEach(p => {
+                    html += `<div class="modal-player">${p.name}</div>`;
+                });
+            });
+            
+            html += '<div class="center" style="margin-top: 30px;"><button onclick="window.closeModalCallback()">CONTINUE</button></div>';
+            html += '<div style="text-align: center; margin-top: 10px; color: #aaa; font-size: 0.9em;">Press SPACE or ENTER to continue</div>';
+            html += '</div></div>';
+            
+            modal.innerHTML = html;
+            window.closeModalCallback = callback;
+            
+            const keyHandler = (e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    document.removeEventListener('keydown', keyHandler);
+                    callback();
+                }
+            };
+            document.addEventListener('keydown', keyHandler);
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').innerHTML = '';
+            render();
+        }
+        
+        function renderInput() {
+            const savedInput = gameState.savedInput || '';
+            return `
+                <h1>⚡ DANGER ROOM ⚡</h1>
+                <div>
+                    <h2 style="margin-bottom: 15px;">Enter Entrants (one per line):</h2>
+                    <textarea id="entrantInput" placeholder="Player 1\nPlayer 2\nPlayer 3\n...">${savedInput}</textarea>
+                    <div class="center">
+                        <button onclick="processEntrants()">START GAME</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderSplash() {
+            let html = '<div class="splash-screen"><h1>⚡ DANGER ROOM TEAMS ⚡</h1>';
+            
+            if (gameState.relegated.length > 0) {
+                html += '<div class="relegated-list">';
+                html += '<h2 style="color: #ff6b6b; margin-bottom: 15px;">COULDN\'T HACK IT:</h2>';
+                html += '<p>' + gameState.relegated.join(', ') + '</p>';
+                html += '</div>';
+            }
+            
+            html += '<div class="splash-teams">';
+            gameState.teams.forEach(team => {
+                html += `<div class="team-card">
+                    <div class="team-name">${team.name}</div>`;
+                team.players.forEach(p => {
+                    html += `<div class="player">${p.name}</div>`;
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '<div class="center"><button onclick="startGame()">BEGIN DANGER ROOM</button></div>';
+            html += '</div>';
+            return html;
+        }
+        
+        function startGame() {
+            gameState.phase = 'playing';
+            gameState.currentRound = 0;
+            gameState.usedWeaknesses = [];
+            gameState.isLastRound = false;
+            nextRound();
+        }
+        
+        function nextRound() {
+            if (gameState.newlyEliminatedTeams.length > 0) {
+                showEliminatedModal(gameState.newlyEliminatedTeams, () => {
+                    gameState.newlyEliminatedTeams = [];
+                    
+                    gameState.teams.sort((a, b) => {
+                        const aActive = a.players.filter(p => !p.eliminated).length;
+                        const bActive = b.players.filter(p => !p.eliminated).length;
+                        return bActive - aActive;
+                    });
+                    
+                    closeModal();
+                });
+                return;
+            }
+            
+            if (gameState.isLastRound) {
+                gameState.phase = 'winner';
+                gameState.isLastRound = false;
+                render();
+                return;
+            }
+            
+            continueNextRound();
+        }
+        
+        function continueNextRound() {
+            const activeTeams = gameState.teams.filter(t => !t.eliminated);
+            
+            if (activeTeams.length === 0) {
+                if (gameState.relegated.length === 0) {
+                    const teamHashes = gameState.teams.map(team => {
+                        const playerStr = team.players.map(p => normalizeEntry(p.name)).join('');
+                        const hashStr = gameState.hashSalt + team.name + playerStr;
+                        return {
+                            team: team,
+                            hash: md5Hash(hashStr)
+                        };
+                    }).sort((a, b) => a.hash.localeCompare(b.hash));
+                    
+                    const winningTeam = teamHashes[0].team;
+                    winningTeam.eliminated = false;
+                    winningTeam.players.forEach(p => p.eliminated = false);
+                    
+                    gameState.gameLog.push(`ALL TEAMS ELIMINATED! Random winner selected: ${winningTeam.name}`);
+                    gameState.phase = 'winner';
+                    render();
+                    return;
+                } else {
+                    let groupSize;
+                    if (gameState.relegated.length + gameState.teams.reduce((sum, t) => sum + t.players.length, 0) <= 24) groupSize = 2;
+                    else if (gameState.relegated.length + gameState.teams.reduce((sum, t) => sum + t.players.length, 0) <= 36) groupSize = 3;
+                    else groupSize = 4;
+                    
+                    const numWinners = Math.min(groupSize, gameState.relegated.length);
+                    
+                    const relegatedWithHash = gameState.relegated.map(player => {
+                        const normalized = normalizeEntry(player);
+                        const hashStr = gameState.hashSalt + normalized + gameState.currentRound;
+                        return {
+                            name: player,
+                            hash: md5Hash(hashStr)
+                        };
+                    }).sort((a, b) => a.hash.localeCompare(b.hash));
+                    
+                    const winners = relegatedWithHash.slice(0, numWinners).map(w => w.name);
+                    
+                    gameState.gameLog.push(`ALL TEAMS ELIMINATED! Winners selected from "Couldn't Hack It" group: ${winners.join(', ')}`);
+                    gameState.relegatedWinners = winners;
+                    gameState.phase = 'winner';
+                    render();
+                    return;
+                }
+            }
+            
+            if (activeTeams.length === 1) {
+                gameState.isLastRound = true;
+                render();
+                return;
+            }
+            
+            const availableWeaknesses = gameState.activeWeaknesses.filter(w => !gameState.usedWeaknesses.includes(w.name));
+            
+            if (availableWeaknesses.length === 0) {
+                gameState.isLastRound = true;
+                render();
+                return;
+            }
+            
+            const weaknessIdx = Math.floor(Math.random() * availableWeaknesses.length);
+            const chosenWeakness = availableWeaknesses[weaknessIdx].name;
+            gameState.usedWeaknesses.push(chosenWeakness);
+            gameState.currentRound++;
+            
+            let eliminatedThisRound = 0;
+            gameState.newlyEliminatedTeams = [];
+            gameState.lastEliminatedPlayers = [];
+            
+            gameState.teams.forEach(team => {
+                const wasEliminated = team.eliminated;
+                
+                team.players.forEach(player => {
+                    if (!player.eliminated && player.weakness === chosenWeakness) {
+                        player.eliminated = true;
+                        eliminatedThisRound++;
+                        gameState.lastEliminatedPlayers.push(`${player.name} (${team.name})`);
+                    }
+                });
+                
+                const allEliminated = team.players.every(p => p.eliminated);
+                if (allEliminated && !wasEliminated) {
+                    team.eliminated = true;
+                    gameState.newlyEliminatedTeams.push(team);
+                }
+            });
+            
+            const remainingActivePlayers = [];
+            gameState.teams.forEach(team => {
+                team.players.forEach(player => {
+                    if (!player.eliminated) {
+                        remainingActivePlayers.push(player);
+                    }
+                });
+            });
+            
+            if (remainingActivePlayers.length === 0) {
+                gameState.gameLog.push(`TIE BREAKER! All remaining players eliminated on round ${gameState.currentRound}!`);
+                
+                gameState.teams.forEach(team => {
+                    team.players.forEach(player => {
+                        if (player.eliminated && player.weakness === chosenWeakness) {
+                            const unusedWeaknesses = gameState.activeWeaknesses.filter(w => !gameState.usedWeaknesses.includes(w.name));
+                            if (unusedWeaknesses.length > 0) {
+                                const newWeaknessIdx = Math.floor(Math.random() * unusedWeaknesses.length);
+                                player.weakness = unusedWeaknesses[newWeaknessIdx].name;
+                                player.weaknessIcon = unusedWeaknesses[newWeaknessIdx].icon;
+                                player.eliminated = false;
+                            }
+                        }
+                    });
+                    
+                    const stillAllEliminated = team.players.every(p => p.eliminated);
+                    if (!stillAllEliminated) {
+                        team.eliminated = false;
+                    }
+                });
+            }
+            
+            const stillActiveTeams = gameState.teams.filter(t => !t.eliminated);
+            if (stillActiveTeams.length === 1) {
+                gameState.isLastRound = true;
+            }
+            
+            if (gameState.newlyEliminatedTeams.length > 0) {
+                showEliminatedModal(gameState.newlyEliminatedTeams, () => {
+                    gameState.newlyEliminatedTeams = [];
+                    
+                    gameState.teams.sort((a, b) => {
+                        const aActive = a.players.filter(p => !p.eliminated).length;
+                        const bActive = b.players.filter(p => !p.eliminated).length;
+                        return bActive - aActive;
+                    });
+                    
+                    closeModal();
+                });
+            } else {
+                render();
+            }
+        }
+        
+        function renderGame() {
+            const lastWeakness = gameState.usedWeaknesses[gameState.usedWeaknesses.length - 1];
+            const weaknessObj = gameState.activeWeaknesses.find(w => w.name === lastWeakness);
+            let html = '<div>';
+            
+            if (gameState.gameLog.length > 0) {
+                html += '<div class="round-info" style="background: rgba(255, 165, 0, 0.2); border-color: #ffa500;">';
+                html += `<strong>⚠️ ${gameState.gameLog[gameState.gameLog.length - 1]}</strong>`;
+                html += '</div>';
+            }
+            
+            html += '<div class="round-info">';
+            html += `<div class="round-text"><strong>ROUND ${gameState.currentRound}</strong><br>`;
+            html += `EXPOSED WEAKNESS: <span style="color: #ffee00;">${weaknessObj ? weaknessObj.icon : '⚠️'} ${lastWeakness.toUpperCase()}</span>`;
+            if (gameState.lastEliminatedPlayers.length > 0) {
+                html += `<br><span style="font-size: 0.8em; color: #ff6666;">(ELIMINATED: ${gameState.lastEliminatedPlayers.join(', ')})</span>`;
+            } else if (gameState.currentRound > 0) {
+                html += `<br><span style="font-size: 0.8em; color: #88ff88;">(No Eliminations)</span>`;
+            }
+            html += `</div>`;
+            html += `<button onclick="nextRound()">${gameState.isLastRound ? 'WINNER!' : 'NEXT ROUND'}</button>`;
+            html += '</div>';
+            
+            const activeTeams = gameState.teams.filter(t => !t.eliminated);
+            const eliminatedTeams = gameState.teams.filter(t => t.eliminated);
+            
+            html += '<div class="team-grid">';
+            activeTeams.forEach(team => {
+                const activeCount = team.players.filter(p => !p.eliminated).length;
+                const isCritical = activeCount === 1 && !team.eliminated;
+                html += `<div class="team-card ${isCritical ? 'critical' : ''}">
+                    <div class="team-name">${team.name} (${activeCount}/${team.players.length})</div>`;
+                team.players.forEach(p => {
+                    html += `<div class="player ${p.eliminated ? 'eliminated' : ''}">
+                        <span class="player-name">${p.name}</span>
+                        <span class="player-icon" title="${p.weakness}">${p.weaknessIcon}</span>
+                    </div>`;
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            
+            html += '<div class="weakness-legend">';
+            html += '<div class="weakness-legend-title">ACTIVE DANGERS</div>';
+            html += '<div class="weakness-list">';
+            gameState.activeWeaknesses.forEach(w => {
+                const isUsed = gameState.usedWeaknesses.includes(w.name);
+                html += `<div class="weakness-item ${isUsed ? 'used' : ''}">${w.icon} ${w.name.toUpperCase()}</div>`;
+            });
+            html += '</div>';
+            html += '</div>';
+            
+            if (eliminatedTeams.length > 0) {
+                html += '<div class="eliminated-divider"></div>';
+                html += '<h2 style="color: #ff6600; margin-top: 20px; text-align: center;">ELIMINATED TEAMS:</h2>';
+                html += '<div class="team-grid">';
+                eliminatedTeams.forEach(team => {
+                    html += `<div class="team-card eliminated">
+                        <div class="team-name">${team.name}</div>`;
+                    team.players.forEach(p => {
+                        html += `<div class="player eliminated">
+                            <span class="player-name">${p.name}</span>
+                            <span class="player-icon" title="${p.weakness}">${p.weaknessIcon}</span>
+                        </div>`;
+                    });
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderWinner() {
+            const winningTeam = gameState.teams.find(t => !t.eliminated);
+            const survivors = winningTeam ? winningTeam.players.filter(p => !p.eliminated) : [];
+            const eliminated = winningTeam ? winningTeam.players.filter(p => p.eliminated) : [];
+            
+            let html = '<div class="winner-celebration">';
+            html += '<h1>🏆 VICTORY 🏆</h1>';
+            
+            if (gameState.gameLog.length > 0 && (gameState.gameLog[gameState.gameLog.length - 1].includes('ALL TEAMS ELIMINATED') || gameState.gameLog[gameState.gameLog.length - 1].includes('COULDN\'T HACK IT'))) {
+                html += '<div class="round-info" style="background: rgba(255, 165, 0, 0.3); margin: 20px 0;">';
+                html += `<strong>${gameState.gameLog[gameState.gameLog.length - 1]}</strong>`;
+                html += '</div>';
+            }
+            
+            if (gameState.relegatedWinners && gameState.relegatedWinners.length > 0) {
+                html += '<div class="winner-team">Relegated Winners!</div>';
+                html += '<h2 style="margin: 30px 0;">WINNERS FROM "COULDN\'T HACK IT":</h2>';
+                gameState.relegatedWinners.forEach(p => {
+                    html += `<div style="font-size: 1.3em; color: #ffd700; margin: 10px 0;">⭐ ${p}</div>`;
+                });
+            } else if (winningTeam) {
+                html += `<div class="winner-team">${winningTeam.name}</div>`;
+                html += '<h2 style="margin: 30px 0;">SURVIVORS:</h2>';
+                survivors.forEach(p => {
+                    html += `<div style="font-size: 1.3em; color: #ffd700; margin: 10px 0;">⭐ ${p.name}</div>`;
+                });
+                
+                if (eliminated.length > 0) {
+                    html += '<h2 style="margin: 30px 0; color: #ff6600;">ELIMINATED FROM WINNING TEAM:</h2>';
+                    eliminated.forEach(p => {
+                        html += `<div style="font-size: 1.1em; color: #ff6b6b; margin: 8px 0; opacity: 0.7;">💀 ${p.name}</div>`;
+                    });
+                }
+            } else {
+                html += '<div class="winner-team">NO SURVIVORS</div>';
+                html += '<p>The Danger Room claimed everyone...</p>';
+            }
+            
+            html += '<div class="center" style="margin-top: 40px;"><button onclick="restartGame()">NEW GAME</button></div>';
+            html += '</div>';
+            return html;
+        }
+        
+        function restartGame() {
+            const savedInput = gameState.savedInput;
+            gameState = {
+                phase: 'input',
+                hashSalt: '',
+                teams: [],
+                relegated: [],
+                currentRound: 0,
+                usedWeaknesses: [],
+                gameLog: [],
+                newlyEliminatedTeams: [],
+                savedInput: savedInput,
+                lastEliminatedPlayers: [],
+                activeWeaknesses: [],
+                isLastRound: false,
+                relegatedWinners: []
+            };
+            render();
+        }
+        
+        function render() {
+            const app = document.getElementById('app');
+            
+            switch(gameState.phase) {
+                case 'input':
+                    app.innerHTML = renderInput();
+                    break;
+                case 'splash':
+                    app.innerHTML = renderSplash();
+                    break;
+                case 'playing':
+                    app.innerHTML = renderGame();
+                    break;
+                case 'winner':
+                    app.innerHTML = renderWinner();
+                    break;
+            }
+        }
+        
+        render();
+    </script>
+</body>
+</html>
