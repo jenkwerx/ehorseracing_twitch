@@ -4,442 +4,549 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barnyard Rumble</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Nunito', sans-serif;
+            background: #1a0e2e;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(120, 40, 200, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 100, 50, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(50, 200, 150, 0.1) 0%, transparent 50%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: #e0d6f0;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1400px; margin: 0 auto; }
 
         .entry-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 700px;
+            margin: 60px auto 0;
+            background: linear-gradient(145deg, #2a1a4e, #1e1040);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 40px 36px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
         h1 {
             text-align: center;
-            color: white;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Lilita One', cursive;
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 2.8em;
+            letter-spacing: 1px;
         }
+        h1 .emoji-glow { filter: drop-shadow(0 0 8px rgba(255,200,50,0.6)); }
 
         h2 {
             text-align: center;
-            color: white;
+            color: #c4a0ff;
             margin-bottom: 20px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-        }
-
-        .entry-container h1 {
-            color: #667eea;
-            text-shadow: none;
+            font-family: 'Lilita One', cursive;
+            font-weight: 400;
         }
 
         .subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+            color: #9080b0;
+            margin-bottom: 24px;
             font-style: italic;
+            font-size: 1.05em;
         }
 
         textarea {
             width: 100%;
             min-height: 200px;
-            padding: 15px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
+            padding: 16px;
+            border: 2px solid rgba(180, 140, 255, 0.3);
+            border-radius: 12px;
             font-size: 16px;
-            font-family: inherit;
+            font-family: 'Nunito', sans-serif;
             resize: vertical;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.3);
+            color: #e0d6f0;
+            transition: border-color 0.3s;
+        }
+        textarea::placeholder { color: #6a5a8a; }
+        textarea:focus {
+            outline: none;
+            border-color: #b48cff;
+            box-shadow: 0 0 20px rgba(180, 140, 255, 0.15);
         }
 
         button {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #ff6b35 0%, #e84393 50%, #b44cff 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 900;
+            font-family: 'Nunito', sans-serif;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(228, 67, 147, 0.4);
+        }
+        button:active { transform: translateY(0); }
 
         #battle-button {
             align-self: center;
-            min-width: 150px;
+            min-width: 180px;
+            font-size: 18px;
+            padding: 16px 32px;
         }
 
-        .entry-container button {
-            width: 100%;
-            max-width: 400px;
-            display: block;
-            margin: 0 auto;
-        }
-
+        .entry-container button,
         #winner-screen button {
             width: 100%;
             max-width: 400px;
             display: block;
             margin: 0 auto;
         }
+        #winner-screen button { margin-top: 20px; }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        /* ARENA LAYOUT - ring center, players as spectators */
+        .arena-layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 12px;
         }
 
-        button:active {
-            transform: translateY(0);
+        .arena-center {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .arena-right {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .player-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        @media (min-width: 1400px) {
-            .player-list {
-                grid-template-columns: repeat(5, 1fr);
-            }
-        }
-
-        @media (min-width: 1100px) and (max-width: 1399px) {
-            .player-list {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        @media (min-width: 800px) and (max-width: 1099px) {
-            .player-list {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (min-width: 500px) and (max-width: 799px) {
-            .player-list {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 499px) {
-            .player-list {
-                grid-template-columns: 1fr;
-            }
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-content: flex-start;
         }
 
         .player-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            font-size: 0.95em;
-            padding: 8px 10px;
-            background: white;
+            gap: 3px;
+            font-size: 0.78em;
+            padding: 3px 6px;
+            background: rgba(240, 235, 255, 0.85);
+            border: 1px solid rgba(200, 180, 240, 0.4);
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s;
+            transition: all 0.4s;
+            flex: 0 0 auto;
         }
-
         .player-item.eliminated {
-            opacity: 0.3;
-            text-decoration: line-through;
+            opacity: 0.35;
+            transform: scale(0.95);
+            background: rgba(200, 195, 215, 0.5);
         }
-
         .player-item.winner {
             font-weight: bold;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, rgba(255, 225, 50, 0.9), rgba(255, 245, 150, 0.85));
+            border-color: rgba(255, 200, 0, 0.7);
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.35);
         }
-
         .player-item .animal {
-            font-size: 1.2em;
+            font-size: 0.95em;
             position: relative;
             display: inline-block;
+            transition: all 0.3s;
         }
-
+        .player-item .animal.eliminated {
+            opacity: 0.4;
+            filter: grayscale(80%);
+        }
         .player-item .animal.eliminated::after {
-            content: '✖';
+            content: '✕';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 1.8em;
-            color: #ff0000;
-            font-weight: bold;
-            text-shadow: 0 0 3px white, 0 0 3px white;
+            font-size: 2.2em;
+            color: #990000;
+            font-weight: 900;
+            text-shadow: 0 0 2px rgba(150,0,0,0.8), 1px 1px 0 rgba(0,0,0,0.3);
+            line-height: 1;
+            -webkit-text-stroke: 2px #770000;
         }
-
         .player-item .player-name {
-            font-weight: bold;
-            color: #667eea;
+            font-weight: 900;
+            color: #2a1a4e;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
         .player-item.eliminated .player-name {
-            color: #999;
+            color: #888;
+            text-decoration: line-through;
         }
 
+        /* GAME HEADER */
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 10px;
         }
-
-        .game-header h1 {
-            margin: 0;
-            font-size: 2em;
+        .game-header h1 { margin: 0; font-size: 2em; }
+        .round-badge {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(180,140,255,0.3);
+            border-radius: 20px;
+            padding: 6px 20px;
+            font-family: 'Lilita One', cursive;
+            color: #c4a0ff;
+            font-size: 1.2em;
         }
 
-        .game-header h2 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        .casualties-section {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 10px 15px;
-            margin-bottom: 15px;
-        }
-
-        .casualties-title {
-            font-weight: bold;
-            color: white;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-        }
-
-        .casualties-list {
-            color: white;
-            font-size: 0.95em;
+        /* ACTION ROW */
+        .action-row {
             display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
-            gap: 15px;
         }
-
-        .casualty-item {
-            white-space: nowrap;
+        .casualties-section {
+            background: rgba(255, 50, 80, 0.08);
+            border: 1px solid rgba(255, 50, 80, 0.15);
+            border-radius: 12px;
+            padding: 6px 14px;
+            flex: 1;
+            min-width: 0;
         }
-
-        .casualty-animal {
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
-
-        .eliminated-player {
+        .casualties-title {
+            font-weight: 900;
             color: #ff6b6b;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline;
+            margin-right: 8px;
+        }
+        .casualties-list {
+            color: #e0d6f0;
+            font-size: 0.88em;
+            display: inline;
+        }
+        .casualties-list .casualty-item { margin-right: 10px; }
+        .casualty-item { white-space: nowrap; }
+        .casualty-animal { text-decoration: line-through; opacity: 0.7; }
+        .eliminated-player {
+            color: #ff3b3b;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(255, 60, 60, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .animal {
-            font-size: 2em;
+        /* RING ROSTER - replaces casualties during battle */
+        .ring-roster {
+            display: inline;
+        }
+        .ring-roster-title {
+            font-weight: 900;
+            color: #c4a0ff;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline;
+            margin-right: 8px;
+        }
+        .roster-animal {
+            font-size: 1.1em;
+            margin: 0 3px;
             transition: all 0.3s;
+            display: inline-block;
         }
-
-        .animal.eliminated {
+        .roster-animal.roster-dead {
             text-decoration: line-through;
             opacity: 0.3;
             filter: grayscale(100%);
+            position: relative;
+        }
+        .roster-animal.roster-alive {
+            filter: drop-shadow(0 0 4px rgba(255,200,50,0.4));
         }
 
-        .battle-container-wrapper {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        /* NOTIFICATION BAR */
+        .notification-bar {
+            background: linear-gradient(135deg, rgba(50, 200, 150, 0.15), rgba(50, 150, 255, 0.1));
+            border: 1px solid rgba(50, 200, 150, 0.25);
+            border-radius: 12px;
+            padding: 10px 18px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            color: #7fdfb0;
+            font-weight: 700;
+            display: none;
+        }
+        .notification-bar.show {
+            display: block;
+            animation: slideDown 0.4s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .battle-arena {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            border-radius: 15px;
-            padding: 15px 20px;
-            text-align: center;
-            flex: 0 1 auto;
-            min-width: 280px;
+        /* BATTLE RING */
+        .battle-ring {
+            position: relative;
+            width: 270px;
+            height: 270px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(100, 60, 140, 0.7) 0%, rgba(65, 35, 95, 0.85) 70%);
+            border: 3px solid rgba(255, 100, 150, 0.35);
+            box-shadow: 0 0 30px rgba(255, 60, 100, 0.1), inset 0 0 40px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .battle-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 70%; height: 70%;
+            transform: translate(-50%, -50%);
+            border: 2px dashed rgba(255, 150, 200, 0.2);
+            border-radius: 50%;
         }
 
-        .battle-title {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #c62368;
-            margin-bottom: 10px;
-        }
-
-        .combatants {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin: 10px 0;
-            flex-wrap: wrap;
-        }
-
-        .combatant {
-            font-size: 2.5em;
-            animation: bounce 0.5s ease-in-out infinite alternate;
-        }
-
-        .combatant.loser {
-            animation: shake 0.5s;
-            opacity: 0.5;
-        }
-
-        .combatant.winner {
-            animation: victory 0.5s;
-            filter: drop-shadow(0 0 10px gold);
-        }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        @keyframes victory {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
-
-        .vs {
+        .ring-animal {
+            position: absolute;
             font-size: 2em;
-            font-weight: bold;
-            color: #c62368;
+            transition: opacity 0.3s;
+            z-index: 2;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+            pointer-events: none;
+        }
+        .ring-animal.knocked-out {
+            opacity: 0;
+            transition: opacity 0.4s, transform 0.4s;
+        }
+        .ring-animal.champion {
+            z-index: 10;
         }
 
-        .battle-result {
-            font-size: 1em;
-            margin-top: 10px;
-            color: #c62368;
-            font-weight: bold;
+        /* ELIMINATION POPOVER */
+        .popover-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            min-height: 0;
         }
 
-        .info-text {
-            text-align: center;
-            color: #666;
-            margin: 15px 0;
+        .elim-popover {
+            background: linear-gradient(135deg, rgba(40, 10, 60, 0.95), rgba(80, 20, 50, 0.95));
+            border: 2px solid rgba(255, 100, 100, 0.5);
+            border-radius: 10px;
+            padding: 5px 12px;
+            white-space: nowrap;
+            font-size: 0.88em;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 12px rgba(255, 60, 60, 0.15);
+            animation: popoverIn 0.35s ease-out;
+            pointer-events: none;
+        }
+        .elim-popover .killer-name { color: #ffd700; }
+        .elim-popover .victim-name { color: #ff6b6b; }
+        .elim-popover .elim-arrow { color: #ff4060; margin: 0 4px; }
+
+        @keyframes popoverIn {
+            0% { opacity: 0; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .ring-narration {
+            text-align: left;
+            font-size: 1.05em;
+            font-weight: 900;
+            color: #ffd700;
+            min-height: 1.4em;
+            margin-top: 6px;
+        }
+
+        .ring-result {
+            font-family: 'Lilita One', cursive;
+            color: #ffd700;
+            font-size: 1.05em;
+            text-align: left;
+            min-height: 1.4em;
+            margin-top: 2px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+        .ring-result .defeated-list {
+            color: #ffa0a0;
             font-size: 0.9em;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
         }
 
+        .impact-flash {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,100,0.9), transparent 70%);
+            pointer-events: none;
+            z-index: 5;
+            animation: flashPop 0.3s ease-out forwards;
+        }
+        @keyframes flashPop {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .ko-text {
+            position: absolute;
+            font-family: 'Lilita One', cursive;
+            font-size: 1em;
+            color: #ff3b3b;
+            text-shadow: 0 0 8px rgba(255,50,50,0.8), 2px 2px 0 rgba(0,0,0,0.5);
+            pointer-events: none;
+            z-index: 20;
+            animation: koFloat 0.8s ease-out forwards;
+        }
+        @keyframes koFloat {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(1.5); }
+        }
+
+        /* WINNER SCREEN */
         .game-over {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-radius: 15px;
-            padding: 40px;
+            background: linear-gradient(145deg, #2a1a4e, #1e1040);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px 30px;
             text-align: center;
             margin: 20px auto;
-            max-width: 600px;
+            max-width: 420px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
         }
-
         .game-over h2 {
-            font-size: 2.5em;
-            color: #c62368;
-            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-family: 'Lilita One', cursive;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+        .winner-name {
+            font-size: 1.6em;
+            font-weight: 900;
+            color: #c4a0ff;
+            margin-top: 8px;
+        }
+        .winner-animal-display {
+            font-size: 2.8em;
+            margin: 12px 0;
+            filter: drop-shadow(0 0 15px rgba(255,200,50,0.6));
         }
 
-        .winner-name {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
+        .hidden { display: none; }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @media (max-width: 700px) {
+            .arena-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            .player-list, .ring-narration, .ring-result {
+                justify-content: center;
+                text-align: center;
+            }
+            .popover-container {
+                justify-content: center;
+            }
         }
 
         @media (max-width: 600px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            .container {
-                padding: 20px;
-            }
-
-            .player-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .combatant {
-                font-size: 3em;
-            }
-        }
-
-        .hidden {
-            display: none;
+            h1 { font-size: 2em; }
+            .battle-ring { width: 220px; height: 220px; }
+            .ring-animal { font-size: 1.7em; }
+            .entry-container { padding: 24px 20px; margin-top: 30px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Entry Screen -->
         <div id="entry-screen">
             <div class="entry-container">
-                <h1>🐄 Barnyard Rumble 🐷</h1>
+                <h1><span class="emoji-glow">🐄</span> Barnyard Rumble <span class="emoji-glow">🐷</span></h1>
                 <p class="subtitle">Enter your fighters, one per line!</p>
                 <textarea id="player-input" placeholder="Enter player names (one per line)&#10;Example:&#10;Player 1&#10;Player 2&#10;Player 3"></textarea>
                 <button onclick="startGame()">Start the Rumble!</button>
             </div>
         </div>
 
-        <!-- Game Screen -->
         <div id="game-screen" class="hidden">
             <div class="game-header">
-                <h1>🐄 Barnyard Rumble 🐷</h1>
-                <h2 id="round-title">Round 1</h2>
+                <h1><span class="emoji-glow">🐄</span> Barnyard Rumble <span class="emoji-glow">🐷</span></h1>
+                <span class="round-badge" id="round-title">Round 1</span>
             </div>
 
-            <div class="casualties-section" id="casualties-section">
-                <div class="casualties-title">Casualties This Round:</div>
-                <div class="casualties-list" id="casualties-list">No battles yet</div>
-            </div>
-            
-            <div class="battle-container-wrapper">
-                <div id="battle-container"></div>
+            <div class="notification-bar" id="notification-bar"></div>
+
+            <div class="action-row">
+                <div class="casualties-section" id="casualties-section">
+                    <span class="casualties-title">☠️ Casualties:</span>
+                    <span class="casualties-list" id="casualties-list">No battles yet</span>
+                </div>
                 <button id="battle-button" onclick="nextBattle()">Start Battle!</button>
             </div>
 
-            <div class="player-list" id="player-list"></div>
+            <div class="arena-layout">
+                <div class="arena-center">
+                    <div class="battle-ring" id="battle-ring"></div>
+                </div>
+                <div class="arena-right">
+                    <div class="player-list" id="player-list"></div>
+                    <div class="popover-container" id="popover-container"></div>
+                    <div class="ring-narration" id="ring-narration"></div>
+                    <div class="ring-result" id="ring-result"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Winner Screen -->
         <div id="winner-screen" class="hidden">
-            <h1>🐄 Barnyard Rumble 🐷</h1>
+            <canvas id="confetti-canvas"></canvas>
+            <h1><span class="emoji-glow">🐄</span> Barnyard Rumble <span class="emoji-glow">🐷</span></h1>
             <div class="game-over">
                 <h2>🏆 Winner! 🏆</h2>
                 <div class="winner-name" id="winner-name"></div>
-                <div style="font-size: 3em; margin: 20px 0;" id="winner-animal"></div>
+                <div class="winner-animal-display" id="winner-animal"></div>
             </div>
             <button onclick="location.reload()">Play Again</button>
         </div>
@@ -447,102 +554,38 @@
 
     <script>
         const ANIMALS = [
-            { emoji: '🐶', name: 'Dog' },
-            { emoji: '🐱', name: 'Cat' },
-            { emoji: '🐭', name: 'Mouse' },
-            { emoji: '🐹', name: 'Hamster' },
-            { emoji: '🐰', name: 'Rabbit' },
-            { emoji: '🦊', name: 'Fox' },
-            { emoji: '🐻', name: 'Bear' },
-            { emoji: '🐼', name: 'Panda' },
-            { emoji: '🐨', name: 'Koala' },
-            { emoji: '🐯', name: 'Tiger' },
-            { emoji: '🦁', name: 'Lion' },
-            { emoji: '🐮', name: 'Cow' },
-            { emoji: '🐷', name: 'Pig' },
-            { emoji: '🐸', name: 'Frog' },
-            { emoji: '🐵', name: 'Monkey' },
-            { emoji: '🐔', name: 'Chicken' },
-            { emoji: '🐧', name: 'Penguin' },
-            { emoji: '🐦', name: 'Bird' },
-            { emoji: '🐤', name: 'Chick' },
-            { emoji: '🦆', name: 'Duck' },
-            { emoji: '🦅', name: 'Eagle' },
-            { emoji: '🦉', name: 'Owl' },
-            { emoji: '🦇', name: 'Bat' },
-            { emoji: '🐺', name: 'Wolf' },
-            { emoji: '🐗', name: 'Boar' },
-            { emoji: '🐴', name: 'Horse' },
-            { emoji: '🦄', name: 'Unicorn' },
-            { emoji: '🐝', name: 'Bee' },
-            { emoji: '🦋', name: 'Butterfly' },
-            { emoji: '🐌', name: 'Snail' },
-            { emoji: '🐞', name: 'Ladybug' },
-            { emoji: '🐜', name: 'Ant' },
-            { emoji: '🦗', name: 'Cricket' },
-            { emoji: '🕷️', name: 'Spider' },
-            { emoji: '🦂', name: 'Scorpion' },
-            { emoji: '🐢', name: 'Turtle' },
-            { emoji: '🐍', name: 'Snake' },
-            { emoji: '🦎', name: 'Lizard' },
-            { emoji: '🦖', name: 'T-Rex' },
-            { emoji: '🦕', name: 'Brontosaurus' },
-            { emoji: '🐙', name: 'Octopus' },
-            { emoji: '🦑', name: 'Squid' },
-            { emoji: '🦐', name: 'Shrimp' },
-            { emoji: '🦞', name: 'Lobster' },
-            { emoji: '🦀', name: 'Crab' },
-            { emoji: '🐡', name: 'Pufferfish' },
-            { emoji: '🐠', name: 'Tropical Fish' },
-            { emoji: '🐟', name: 'Salmon' },
-            { emoji: '🐬', name: 'Dolphin' },
-            { emoji: '🐳', name: 'Sperm Whale' },
-            { emoji: '🐋', name: 'Blue Whale' },
-            { emoji: '🦈', name: 'Shark' },
-            { emoji: '🐊', name: 'Crocodile' },
-            { emoji: '🐅', name: 'Bengal Tiger' },
-            { emoji: '🐆', name: 'Leopard' },
-            { emoji: '🦓', name: 'Zebra' },
-            { emoji: '🦍', name: 'Gorilla' },
-            { emoji: '🦧', name: 'Orangutan' },
-            { emoji: '🐘', name: 'Elephant' },
-            { emoji: '🦛', name: 'Hippo' },
-            { emoji: '🦏', name: 'Rhino' },
-            { emoji: '🐪', name: 'Camel' },
-            { emoji: '🐫', name: 'Bactrian Camel' },
-            { emoji: '🦒', name: 'Giraffe' },
-            { emoji: '🦘', name: 'Kangaroo' },
-            { emoji: '🦬', name: 'Bison' },
-            { emoji: '🐃', name: 'Water Buffalo' },
-            { emoji: '🐂', name: 'Ox' },
-            { emoji: '🐄', name: 'Dairy Cow' },
-            { emoji: '🐎', name: 'Stallion' },
-            { emoji: '🐖', name: 'Hog' },
-            { emoji: '🐏', name: 'Ram' },
-            { emoji: '🐑', name: 'Sheep' },
-            { emoji: '🐐', name: 'Goat' },
-            { emoji: '🦌', name: 'Deer' },
-            { emoji: '🐕', name: 'Hound' },
-            { emoji: '🐩', name: 'Poodle' },
-            { emoji: '🦮', name: 'Guide Dog' },
-            { emoji: '🐈', name: 'Kitty' },
-            { emoji: '🐈‍⬛', name: 'Black Cat' },
-            { emoji: '🐓', name: 'Rooster' },
-            { emoji: '🦃', name: 'Turkey' },
-            { emoji: '🦚', name: 'Peacock' },
-            { emoji: '🦜', name: 'Parrot' },
-            { emoji: '🦢', name: 'Swan' },
-            { emoji: '🦩', name: 'Flamingo' },
-            { emoji: '🕊️', name: 'Dove' },
-            { emoji: '🐇', name: 'Bunny' },
-            { emoji: '🦝', name: 'Raccoon' },
-            { emoji: '🦨', name: 'Skunk' },
-            { emoji: '🦡', name: 'Badger' },
-            { emoji: '🦦', name: 'Otter' },
-            { emoji: '🦥', name: 'Sloth' },
-            { emoji: '🐁', name: 'Rat' },
-            { emoji: '🐀', name: 'Sewer Rat' },
-            { emoji: '🐿️', name: 'Squirrel' },
+            { emoji: '🐶', name: 'Dog' }, { emoji: '🐱', name: 'Cat' }, { emoji: '🐭', name: 'Mouse' },
+            { emoji: '🐹', name: 'Hamster' }, { emoji: '🐰', name: 'Rabbit' }, { emoji: '🦊', name: 'Fox' },
+            { emoji: '🐻', name: 'Bear' }, { emoji: '🐼', name: 'Panda' }, { emoji: '🐨', name: 'Koala' },
+            { emoji: '🐯', name: 'Tiger' }, { emoji: '🦁', name: 'Lion' }, { emoji: '🐮', name: 'Cow' },
+            { emoji: '🐷', name: 'Pig' }, { emoji: '🐸', name: 'Frog' }, { emoji: '🐵', name: 'Monkey' },
+            { emoji: '🐔', name: 'Chicken' }, { emoji: '🐧', name: 'Penguin' }, { emoji: '🐦', name: 'Bird' },
+            { emoji: '🐤', name: 'Chick' }, { emoji: '🦆', name: 'Duck' }, { emoji: '🦅', name: 'Eagle' },
+            { emoji: '🦉', name: 'Owl' }, { emoji: '🦇', name: 'Bat' }, { emoji: '🐺', name: 'Wolf' },
+            { emoji: '🐗', name: 'Boar' }, { emoji: '🐴', name: 'Horse' }, { emoji: '🦄', name: 'Unicorn' },
+            { emoji: '🐝', name: 'Bee' }, { emoji: '🦋', name: 'Butterfly' }, { emoji: '🐌', name: 'Snail' },
+            { emoji: '🐞', name: 'Ladybug' }, { emoji: '🐜', name: 'Ant' }, { emoji: '🦗', name: 'Cricket' },
+            { emoji: '🕷️', name: 'Spider' }, { emoji: '🦂', name: 'Scorpion' }, { emoji: '🐢', name: 'Turtle' },
+            { emoji: '🐍', name: 'Snake' }, { emoji: '🦎', name: 'Lizard' }, { emoji: '🦖', name: 'T-Rex' },
+            { emoji: '🦕', name: 'Brontosaurus' }, { emoji: '🐙', name: 'Octopus' }, { emoji: '🦑', name: 'Squid' },
+            { emoji: '🦐', name: 'Shrimp' }, { emoji: '🦞', name: 'Lobster' }, { emoji: '🦀', name: 'Crab' },
+            { emoji: '🐡', name: 'Pufferfish' }, { emoji: '🐠', name: 'Tropical Fish' }, { emoji: '🐟', name: 'Salmon' },
+            { emoji: '🐬', name: 'Dolphin' }, { emoji: '🐳', name: 'Sperm Whale' }, { emoji: '🐋', name: 'Blue Whale' },
+            { emoji: '🦈', name: 'Shark' }, { emoji: '🐊', name: 'Crocodile' }, { emoji: '🐅', name: 'Bengal Tiger' },
+            { emoji: '🐆', name: 'Leopard' }, { emoji: '🦓', name: 'Zebra' }, { emoji: '🦍', name: 'Gorilla' },
+            { emoji: '🦧', name: 'Orangutan' }, { emoji: '🐘', name: 'Elephant' }, { emoji: '🦛', name: 'Hippo' },
+            { emoji: '🦏', name: 'Rhino' }, { emoji: '🐪', name: 'Camel' }, { emoji: '🐫', name: 'Bactrian Camel' },
+            { emoji: '🦒', name: 'Giraffe' }, { emoji: '🦘', name: 'Kangaroo' }, { emoji: '🦬', name: 'Bison' },
+            { emoji: '🐃', name: 'Water Buffalo' }, { emoji: '🐂', name: 'Ox' }, { emoji: '🐄', name: 'Dairy Cow' },
+            { emoji: '🐎', name: 'Stallion' }, { emoji: '🐖', name: 'Hog' }, { emoji: '🐏', name: 'Ram' },
+            { emoji: '🐑', name: 'Sheep' }, { emoji: '🐐', name: 'Goat' }, { emoji: '🦌', name: 'Deer' },
+            { emoji: '🐕', name: 'Hound' }, { emoji: '🐩', name: 'Poodle' }, { emoji: '🦮', name: 'Guide Dog' },
+            { emoji: '🐈', name: 'Kitty' }, { emoji: '🐈‍⬛', name: 'Black Cat' }, { emoji: '🐓', name: 'Rooster' },
+            { emoji: '🦃', name: 'Turkey' }, { emoji: '🦚', name: 'Peacock' }, { emoji: '🦜', name: 'Parrot' },
+            { emoji: '🦢', name: 'Swan' }, { emoji: '🦩', name: 'Flamingo' }, { emoji: '🕊️', name: 'Dove' },
+            { emoji: '🐇', name: 'Bunny' }, { emoji: '🦝', name: 'Raccoon' }, { emoji: '🦨', name: 'Skunk' },
+            { emoji: '🦡', name: 'Badger' }, { emoji: '🦦', name: 'Otter' }, { emoji: '🦥', name: 'Sloth' },
+            { emoji: '🐁', name: 'Rat' }, { emoji: '🐀', name: 'Sewer Rat' }, { emoji: '🐿️', name: 'Squirrel' },
             { emoji: '🦔', name: 'Hedgehog' }
         ];
 
@@ -550,287 +593,458 @@
         let eliminatedAnimals = new Set();
         let roundNumber = 1;
         let roundCasualties = [];
+        let battleAnimating = false;
 
         function normalizePlayerName(name) {
             return name.toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
+        function getContestantsCount() {
+            const activeCount = players.filter(p => !p.eliminated).length;
+            if (activeCount >= 40) return 8;
+            if (activeCount >= 30) return 7;
+            if (activeCount >= 20) return 6;
+            if (activeCount >= 15) return 5;
+            if (activeCount >= 10) return 4;
+            if (activeCount >= 5) return 3;
+            return 2;
+        }
+
         function startGame() {
             const input = document.getElementById('player-input').value;
             const rawPlayers = input.split('\n').map(p => p.trim()).filter(p => p);
-            
-            if (rawPlayers.length < 2) {
-                alert('Please enter at least 2 players!');
-                return;
-            }
+            if (rawPlayers.length < 2) { alert('Please enter at least 2 players!'); return; }
 
-            // Remove duplicates
             const seen = new Set();
             const uniquePlayers = [];
             for (let name of rawPlayers) {
                 const normalized = normalizePlayerName(name);
-                if (!seen.has(normalized)) {
-                    seen.add(normalized);
-                    uniquePlayers.push(name);
-                }
+                if (!seen.has(normalized)) { seen.add(normalized); uniquePlayers.push(name); }
             }
 
-            // Determine number of animals per player - always 2
-            const playerCount = uniquePlayers.length;
-            const animalsPerPlayer = 2;
-
-            // Assign animal sets to each player (duplicates across players are fine)
             const shuffledAnimals = [...ANIMALS].sort(() => Math.random() - 0.5);
-            players = uniquePlayers.map((name, index) => {
-                const playerAnimals = [];
-                
-                // Pick 2 random animals
-                for (let i = 0; i < animalsPerPlayer; i++) {
-                    const animal = shuffledAnimals[Math.floor(Math.random() * shuffledAnimals.length)];
-                    playerAnimals.push({ ...animal, eliminated: false });
-                }
+            const poolSize = Math.max(20, Math.min(uniquePlayers.length * 3, ANIMALS.length));
+            const animalPool = shuffledAnimals.slice(0, poolSize);
 
-                return {
-                    name,
-                    animals: playerAnimals,
-                    eliminated: false
-                };
+            const usedCombos = new Set();
+            players = uniquePlayers.map(name => {
+                let combo, comboKey, attempts = 0;
+                do {
+                    const a1 = animalPool[Math.floor(Math.random() * animalPool.length)];
+                    let a2 = animalPool[Math.floor(Math.random() * animalPool.length)];
+                    while (a2.emoji === a1.emoji) a2 = animalPool[Math.floor(Math.random() * animalPool.length)];
+                    combo = [a1, a2];
+                    comboKey = [a1.emoji, a2.emoji].sort().join('|');
+                    attempts++;
+                    if (attempts > 500) break;
+                } while (usedCombos.has(comboKey));
+                usedCombos.add(comboKey);
+                return { name, animals: combo.map(a => ({ ...a, eliminated: false })), eliminated: false };
             });
 
             document.getElementById('entry-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
-            
             renderPlayers();
         }
 
         function renderPlayers() {
             const list = document.getElementById('player-list');
             list.innerHTML = '';
-
+            const activePlayers = players.filter(p => !p.eliminated);
             players.forEach(player => {
                 const item = document.createElement('div');
                 item.className = 'player-item';
-                
-                if (player.eliminated) {
-                    item.classList.add('eliminated');
-                }
-                
+                if (player.eliminated) item.classList.add('eliminated');
                 const activeAnimals = player.animals.filter(a => !a.eliminated);
-                const activePlayers = players.filter(p => !p.eliminated);
-                
-                if (activeAnimals.length >= 1 && activePlayers.length === 1) {
-                    item.classList.add('winner');
-                }
-
-                // One animal on each side of name
-                const animal1 = player.animals[0];
-                const animal2 = player.animals[1];
-
+                if (activeAnimals.length >= 1 && activePlayers.length === 1 && !player.eliminated) item.classList.add('winner');
+                const a1 = player.animals[0], a2 = player.animals[1];
                 item.innerHTML = `
-                    <span class="animal ${animal1.eliminated ? 'eliminated' : ''}">${animal1.emoji}</span>
+                    <span class="animal ${a1.eliminated ? 'eliminated' : ''}">${a1.emoji}</span>
                     <span class="player-name">${player.name}</span>
-                    <span class="animal ${animal2.eliminated ? 'eliminated' : ''}">${animal2.emoji}</span>
-                `;
-                
+                    <span class="animal ${a2.eliminated ? 'eliminated' : ''}">${a2.emoji}</span>`;
                 list.appendChild(item);
             });
         }
 
-        function getActiveAnimalsFromPlayers() {
-            const activeAnimals = new Set();
-            players.forEach(player => {
-                if (!player.eliminated) {
-                    player.animals.forEach(animal => {
-                        if (!animal.eliminated) {
-                            activeAnimals.add(animal.emoji);
-                        }
-                    });
-                }
-            });
-            return Array.from(activeAnimals);
+        function getActiveAnimalEmojis() {
+            const s = new Set();
+            players.forEach(p => { if (!p.eliminated) p.animals.forEach(a => { if (!a.eliminated) s.add(a.emoji); }); });
+            return [...s];
         }
 
         function getUnusedAnimals() {
-            const usedEmojis = new Set();
-            players.forEach(player => {
-                player.animals.forEach(animal => {
-                    usedEmojis.add(animal.emoji);
-                });
-            });
-            
-            return ANIMALS.filter(a => 
-                !usedEmojis.has(a.emoji) && 
-                !eliminatedAnimals.has(a.emoji)
-            );
+            const used = new Set();
+            players.forEach(p => p.animals.forEach(a => used.add(a.emoji)));
+            return ANIMALS.filter(a => !used.has(a.emoji) && !eliminatedAnimals.has(a.emoji));
         }
 
-        function selectBattleAnimals() {
-            const activePlayerAnimals = getActiveAnimalsFromPlayers();
-            const unusedAnimals = getUnusedAnimals();
-            
-            // Always pick at least one animal that a player owns
-            const firstAnimal = activePlayerAnimals[Math.floor(Math.random() * activePlayerAnimals.length)];
-            
-            // 33% chance to pick an unused animal for second combatant
-            let secondAnimal;
-            if (Math.random() < 0.33 && unusedAnimals.length > 0) {
-                secondAnimal = unusedAnimals[Math.floor(Math.random() * unusedAnimals.length)].emoji;
-            } else {
-                // Pick another animal from active players
-                const otherAnimals = activePlayerAnimals.filter(a => a !== firstAnimal);
-                if (otherAnimals.length > 0) {
-                    secondAnimal = otherAnimals[Math.floor(Math.random() * otherAnimals.length)];
-                } else {
-                    // Only one animal type left, use an unused one
-                    if (unusedAnimals.length > 0) {
-                        secondAnimal = unusedAnimals[Math.floor(Math.random() * unusedAnimals.length)].emoji;
-                    } else {
-                        return null; // No battle possible
-                    }
+        function selectRingContestants() {
+            const activePlayers = players.filter(p => !p.eliminated);
+            const count = getContestantsCount();
+            const activeEmojis = getActiveAnimalEmojis();
+            const unused = getUnusedAnimals();
+
+            if (activePlayers.length <= 10) {
+                // Only active player animals — no wild cards, every KO matters
+                const shuffled = [...activeEmojis].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, Math.min(count, shuffled.length));
+            }
+
+            // Start with shuffled active player animals
+            const shuffledActive = [...activeEmojis].sort(() => Math.random() - 0.5);
+            const picked = new Set();
+            const result = [];
+
+            for (const e of shuffledActive) {
+                if (result.length >= count) break;
+                if (!picked.has(e)) { picked.add(e); result.push(e); }
+            }
+
+            // Fill remaining slots from unused animals if needed
+            if (result.length < count && unused.length > 0) {
+                const shuffledUnused = [...unused].sort(() => Math.random() - 0.5);
+                for (const a of shuffledUnused) {
+                    if (result.length >= count) break;
+                    if (!picked.has(a.emoji)) { picked.add(a.emoji); result.push(a.emoji); }
                 }
             }
 
-            return [firstAnimal, secondAnimal];
+            // Maybe swap one active for a wild card (25% chance, if we have enough)
+            if (unused.length > 0 && result.length >= 3 && Math.random() < 0.25) {
+                const availWild = unused.filter(a => !picked.has(a.emoji));
+                if (availWild.length > 0) {
+                    const wild = availWild[Math.floor(Math.random() * availWild.length)];
+                    const replaceIdx = Math.floor(Math.random() * result.length);
+                    result[replaceIdx] = wild.emoji;
+                }
+            }
+
+            return result;
         }
+
+        function handleDuplicateAnimals() {
+            const activePlayers = players.filter(p => !p.eliminated);
+            if (activePlayers.length < 2) return false;
+            const allSame = activePlayers.every(p => p.animals.filter(a => !a.eliminated).length === 1);
+            if (!allSame) return false;
+            const firstEmoji = activePlayers[0].animals.find(a => !a.eliminated).emoji;
+            if (!activePlayers.every(p => { const a = p.animals.find(x => !x.eliminated); return a && a.emoji === firstEmoji; })) return false;
+
+            const unusedAnimals = getUnusedAnimals();
+            const shuffled = [...unusedAnimals].sort(() => Math.random() - 0.5);
+            const swaps = [];
+            activePlayers.forEach((player, i) => {
+                if (i < shuffled.length) {
+                    const old = player.animals.find(a => !a.eliminated);
+                    old.emoji = shuffled[i].emoji;
+                    old.name = shuffled[i].name;
+                    swaps.push(`${player.name} → ${shuffled[i].emoji} ${shuffled[i].name}`);
+                }
+            });
+            const animalName = ANIMALS.find(a => a.emoji === firstEmoji)?.name || 'Unknown';
+            const notif = document.getElementById('notification-bar');
+            notif.innerHTML = `⚡ All remaining players had <strong>${firstEmoji} ${animalName}</strong>! New animals drawn: ${swaps.join(' • ')}`;
+            notif.classList.add('show');
+            renderPlayers();
+            return true;
+        }
+
+        // ===================== RING BATTLE =====================
+
+        let pendingContestants = null;
 
         function nextBattle() {
+            if (battleAnimating) return;
             const activePlayers = players.filter(p => !p.eliminated);
-            
-            // Check for winner
-            if (activePlayers.length === 1) {
-                showWinner(activePlayers[0]);
-                return;
-            }
+            if (activePlayers.length === 1) { showWinner(activePlayers[0]); return; }
+            if (activePlayers.length === 0) return;
 
-            // Check if all remaining players have same single animal
-            if (activePlayers.every(p => {
-                const active = p.animals.filter(a => !a.eliminated);
-                return active.length === 1;
-            })) {
-                const firstActive = activePlayers[0].animals.find(a => !a.eliminated);
-                if (activePlayers.every(p => {
-                    const active = p.animals.find(a => !a.eliminated);
-                    return active.emoji === firstActive.emoji;
-                })) {
-                    // Give each player a new unique animal
-                    const unusedAnimals = getUnusedAnimals();
-                    activePlayers.forEach((player, index) => {
-                        if (index < unusedAnimals.length) {
-                            player.animals.push({ ...unusedAnimals[index], eliminated: false });
-                        }
-                    });
+            handleDuplicateAnimals();
+
+            // If no pending contestants, this is the preview phase
+            if (!pendingContestants) {
+                const contestants = selectRingContestants();
+                if (contestants.length < 2) {
+                    const remaining = players.filter(p => !p.eliminated);
+                    if (remaining.length === 1) showWinner(remaining[0]);
+                    return;
                 }
-            }
 
-            const battleAnimals = selectBattleAnimals();
-            if (!battleAnimals) {
-                showWinner(activePlayers[0]);
+                pendingContestants = contestants;
+
+                // Show preview roster in casualties bar
+                const casualtiesSection = document.getElementById('casualties-section');
+                const rosterAnimals = contestants.map(e => {
+                    const a = ANIMALS.find(x => x.emoji === e);
+                    return `<span class="roster-animal roster-alive" id="roster-${e}" data-emoji="${e}">${e} ${a?.name || ''}</span>`;
+                }).join(' ');
+                casualtiesSection.innerHTML = `<span class="ring-roster-title">⚔️ Entering the Ring:</span><span class="ring-roster">${rosterAnimals}</span>`;
+
+                // Update button to "Fight!"
+                const btn = document.getElementById('battle-button');
+                btn.style.visibility = 'visible';
+                btn.textContent = 'FIGHT!';
+
+                // Clear previous results
+                document.getElementById('ring-result').innerHTML = '';
+                document.getElementById('ring-narration').innerHTML = '';
+                document.getElementById('popover-container').innerHTML = '';
                 return;
             }
 
-            const [animal1, animal2] = battleAnimals;
-            
-            // Determine winner (random)
-            const loserEmoji = Math.random() < 0.5 ? animal1 : animal2;
-            const winnerEmoji = loserEmoji === animal1 ? animal2 : animal1;
+            // Fight phase — use the pending contestants
+            const contestants = pendingContestants;
+            pendingContestants = null;
 
-            const loserAnimal = ANIMALS.find(a => a.emoji === loserEmoji);
-            const winnerAnimal = ANIMALS.find(a => a.emoji === winnerEmoji);
+            startFight(contestants);
+        }
 
-            // Show battle
-            const battleContainer = document.getElementById('battle-container');
-            battleContainer.innerHTML = `
-                <div class="battle-arena">
-                    <div class="battle-title">Round ${roundNumber} - Battle!</div>
-                    <div class="combatants">
-                        <div class="combatant" id="combatant1">${animal1}</div>
-                        <div class="vs">VS</div>
-                        <div class="combatant" id="combatant2">${animal2}</div>
-                    </div>
-                    <div class="battle-result" id="battle-result"></div>
-                </div>
-            `;
-
+        function startFight(contestants) {
+            battleAnimating = true;
             document.getElementById('battle-button').style.visibility = 'hidden';
 
-            // Animate result
-            setTimeout(() => {
-                document.getElementById('combatant1').classList.add(animal1 === winnerEmoji ? 'winner' : 'loser');
-                document.getElementById('combatant2').classList.add(animal2 === winnerEmoji ? 'winner' : 'loser');
-                
-                const loserName = loserAnimal ? loserAnimal.name : 'Unknown';
-                const winnerName = winnerAnimal ? winnerAnimal.name : 'Unknown';
-                
-                document.getElementById('battle-result').textContent = 
-                    `${winnerName} defeats ${loserName}!`;
+            // Update roster title to "In the Ring"
+            const casualtiesSection = document.getElementById('casualties-section');
+            const titleEl = casualtiesSection.querySelector('.ring-roster-title');
+            if (titleEl) titleEl.textContent = '⚔️ In the Ring:';
 
-                // Track casualties for this round
-                roundCasualties = [];
-                const eliminatedPlayers = [];
-                
-                // Update game state
+            const ring = document.getElementById('battle-ring');
+            ring.innerHTML = '';
+
+            const ringW = ring.offsetWidth || 320;
+            const ringH = ring.offsetHeight || 320;
+            const cx = ringW / 2, cy = ringH / 2;
+            const orbitR = ringW * 0.28;
+
+            const bodies = contestants.map((emoji, i) => {
+                const angle = (2 * Math.PI * i) / contestants.length;
+                const el = document.createElement('div');
+                el.className = 'ring-animal';
+                el.textContent = emoji;
+                const x = cx + Math.cos(angle) * orbitR - 20;
+                const y = cy + Math.sin(angle) * orbitR - 20;
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                ring.appendChild(el);
+
+                const toCenterX = cx - x - 20, toCenterY = cy - y - 20;
+                const mag = Math.sqrt(toCenterX * toCenterX + toCenterY * toCenterY) || 1;
+                return {
+                    el, emoji, i, x, y,
+                    vx: (toCenterX / mag) * 2.5 + (Math.random() - 0.5) * 2,
+                    vy: (toCenterY / mag) * 2.5 + (Math.random() - 0.5) * 2,
+                    alive: true, size: 20
+                };
+            });
+
+            // Randomize elimination order; last one = winner
+            const elimOrder = [...contestants].sort(() => Math.random() - 0.5);
+            const winnerEmoji = elimOrder.pop();
+            // Build kill pairings: each loser is "eliminated by" the next alive animal in the order
+            // We'll determine the killer dynamically based on who's closest at elimination time
+
+            let elimIndex = 0;
+            let frame = 0;
+            const elimInterval = 95;
+            const firstElimFrame = 85;
+
+            function getAnimalName(emoji) {
+                return ANIMALS.find(a => a.emoji === emoji)?.name || '???';
+            }
+
+            function tick() {
+                const alive = bodies.filter(b => b.alive);
+
+                alive.forEach(b => {
+                    b.x += b.vx;
+                    b.y += b.vy;
+
+                    const dx = b.x + b.size - cx, dy = b.y + b.size - cy;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const maxR = ringW / 2 - 28;
+                    if (dist > maxR) {
+                        const nx = dx / dist, ny = dy / dist;
+                        b.x = cx + nx * maxR - b.size;
+                        b.y = cy + ny * maxR - b.size;
+                        const dot = b.vx * nx + b.vy * ny;
+                        b.vx -= 2 * dot * nx + (Math.random() - 0.5) * 1.5;
+                        b.vy -= 2 * dot * ny + (Math.random() - 0.5) * 1.5;
+                    }
+
+                    b.vx += (cx - b.x - b.size) * 0.003;
+                    b.vy += (cy - b.y - b.size) * 0.003;
+
+                    const spd = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+                    if (spd > 5.5) { b.vx = (b.vx / spd) * 5.5; b.vy = (b.vy / spd) * 5.5; }
+                });
+
+                // Collisions
+                for (let i = 0; i < alive.length; i++) {
+                    for (let j = i + 1; j < alive.length; j++) {
+                        const a = alive[i], b2 = alive[j];
+                        const cdx = (a.x + a.size) - (b2.x + b2.size);
+                        const cdy = (a.y + a.size) - (b2.y + b2.size);
+                        const cd = Math.sqrt(cdx * cdx + cdy * cdy);
+                        if (cd < 38) {
+                            const nx = cdx / (cd || 1), ny = cdy / (cd || 1);
+                            a.vx += nx * 2.5; a.vy += ny * 2.5;
+                            b2.vx -= nx * 2.5; b2.vy -= ny * 2.5;
+                            spawnFlash(ring, (a.x + b2.x) / 2 + a.size, (a.y + b2.y) / 2 + a.size);
+                        }
+                    }
+                }
+
+                // Eliminations
+                if (frame >= firstElimFrame && elimIndex < elimOrder.length && (frame - firstElimFrame) % elimInterval === 0) {
+                    const loserEmoji = elimOrder[elimIndex];
+                    const loserBody = bodies.find(b => b.emoji === loserEmoji && b.alive);
+                    if (loserBody) {
+                        // Pick a random alive animal as the killer
+                        const aliveOthers = bodies.filter(b => b.alive && b.emoji !== loserEmoji);
+                        const killer = aliveOthers.length > 0 
+                            ? aliveOthers[Math.floor(Math.random() * aliveOthers.length)] 
+                            : null;
+                        
+                        loserBody.alive = false;
+                        loserBody.el.classList.add('knocked-out');
+                        const ko = document.createElement('div');
+                        ko.className = 'ko-text';
+                        ko.textContent = 'KO!';
+                        ko.style.left = (loserBody.x + loserBody.size - 15) + 'px';
+                        ko.style.top = loserBody.y + 'px';
+                        ring.appendChild(ko);
+                        setTimeout(() => ko.remove(), 800);
+                        spawnFlash(ring, loserBody.x + loserBody.size, loserBody.y + loserBody.size);
+
+                        // Spawn popover card
+                        const loserName = getAnimalName(loserEmoji);
+                        const killerName = killer ? getAnimalName(killer.emoji) : '???';
+                        const killerE = killer ? killer.emoji : '❓';
+                        spawnPopover(killerE, killerName, loserEmoji, loserName, elimIndex);
+
+                        // Update ring roster
+                        const rosterEl = document.getElementById(`roster-${loserEmoji}`);
+                        if (rosterEl) {
+                            rosterEl.classList.remove('roster-alive');
+                            rosterEl.classList.add('roster-dead');
+                        }
+                    }
+                    elimIndex++;
+                }
+
+                // Update positions
+                bodies.forEach(b => {
+                    if (b.alive) {
+                        b.el.style.left = b.x + 'px';
+                        b.el.style.top = b.y + 'px';
+                    }
+                });
+
+                frame++;
+
+                if (bodies.filter(b => b.alive).length === 1) {
+                    const champ = bodies.filter(b => b.alive)[0];
+                    champ.el.classList.add('champion');
+                    const champName = getAnimalName(champ.emoji);
+                    document.getElementById('ring-narration').innerHTML = 
+                        `👑 <strong>${champ.emoji} ${champName}</strong> is the last one standing!`;
+                    finishRound(winnerEmoji, elimOrder);
+                    return;
+                }
+
+                if (frame < 800) requestAnimationFrame(tick);
+                else finishRound(winnerEmoji, elimOrder);
+            }
+
+            requestAnimationFrame(tick);
+        }
+
+        function spawnPopover(killerEmoji, killerName, victimEmoji, victimName, index) {
+            const container = document.getElementById('popover-container');
+            const pop = document.createElement('div');
+            pop.className = 'elim-popover';
+            pop.innerHTML = `<span class="killer-name">${killerEmoji} ${killerName}</span><span class="elim-arrow">⚔️</span><span class="victim-name">${victimEmoji} ${victimName}</span>`;
+            container.appendChild(pop);
+        }
+
+        function spawnFlash(container, x, y) {
+            const flash = document.createElement('div');
+            flash.className = 'impact-flash';
+            flash.style.left = (x - 20) + 'px';
+            flash.style.top = (y - 20) + 'px';
+            container.appendChild(flash);
+            setTimeout(() => flash.remove(), 300);
+        }
+
+        function finishRound(winnerEmoji, losers) {
+            const winnerAnimal = ANIMALS.find(a => a.emoji === winnerEmoji);
+            const loserRecap = losers.map(e => {
+                const a = ANIMALS.find(x => x.emoji === e);
+                return `${e} ${a?.name || '???'}`;
+            }).join(' &bull; ');
+            document.getElementById('ring-result').innerHTML = 
+                `🏆 ${winnerAnimal?.name || '???'} ${winnerEmoji} wins!<br><span class="defeated-list">Defeated: ${loserRecap}</span>`;
+
+            roundCasualties = [];
+            const allEliminatedPlayers = [];
+
+            losers.forEach(loserEmoji => {
                 eliminatedAnimals.add(loserEmoji);
+                const loserAnimal = ANIMALS.find(a => a.emoji === loserEmoji);
+                const loserName = loserAnimal ? loserAnimal.name : 'Unknown';
                 players.forEach(player => {
-                    let lostAnimalThisRound = false;
+                    let lost = false;
                     player.animals.forEach(animal => {
                         if (animal.emoji === loserEmoji && !animal.eliminated) {
                             animal.eliminated = true;
-                            lostAnimalThisRound = true;
+                            lost = true;
                         }
                     });
-
-                    if (lostAnimalThisRound) {
-                        roundCasualties.push({
-                            playerName: player.name,
-                            animalEmoji: loserEmoji,
-                            animalName: loserName
-                        });
-                    }
-
-                    // Check if player is eliminated
+                    if (lost) roundCasualties.push({ playerName: player.name, animalEmoji: loserEmoji, animalName: loserName });
                     if (player.animals.every(a => a.eliminated) && !player.eliminated) {
                         player.eliminated = true;
-                        eliminatedPlayers.push(player.name);
+                        allEliminatedPlayers.push(player.name);
                     }
                 });
+            });
 
-                // Update casualties display
-                updateCasualties(eliminatedPlayers);
-                
-                renderPlayers();
-                roundNumber++;
-                document.getElementById('round-title').textContent = `Round ${roundNumber}`;
+            updateCasualties(allEliminatedPlayers);
+            renderPlayers();
+            roundNumber++;
+            document.getElementById('round-title').textContent = `Round ${roundNumber}`;
 
-                setTimeout(() => {
+            setTimeout(() => {
+                battleAnimating = false;
+                const remaining = players.filter(p => !p.eliminated);
+                if (remaining.length === 1) showWinner(remaining[0]);
+                else if (remaining.length === 0) showWinner(players[players.length - 1]);
+                else {
                     document.getElementById('battle-button').style.visibility = 'visible';
-                    document.getElementById('battle-button').textContent = 'Next Battle!';
-                }, 2000);
-            }, 1000);
+                    const next = getContestantsCount();
+                    document.getElementById('battle-button').textContent = `Next Round! (${next} enter the ring)`;
+                }
+            }, 1500);
         }
 
         function updateCasualties(eliminatedPlayers = []) {
-            const casualtiesList = document.getElementById('casualties-list');
+            // Restore casualties section structure (was replaced by ring roster)
+            const section = document.getElementById('casualties-section');
+            section.innerHTML = `<span class="casualties-title">☠️ Casualties:</span><span class="casualties-list" id="casualties-list"></span>`;
             
-            if (roundCasualties.length === 0) {
-                casualtiesList.textContent = 'No battles yet';
-                return;
-            }
-
-            const items = roundCasualties.map(casualty => {
-                const isEliminated = eliminatedPlayers.includes(casualty.playerName);
-                if (isEliminated) {
-                    return `<span class="casualty-item">
-                        <span class="casualty-animal">${casualty.animalEmoji}</span> 
-                        <span class="eliminated-player">${casualty.playerName} ELIMINATED!</span>
-                    </span>`;
-                } else {
-                    return `<span class="casualty-item">
-                        <span class="casualty-animal">${casualty.animalEmoji}</span> 
-                        <strong>${casualty.playerName}</strong>
-                    </span>`;
-                }
+            const casualtiesList = document.getElementById('casualties-list');
+            if (roundCasualties.length === 0) { casualtiesList.textContent = 'No battles yet'; return; }
+            const grouped = {};
+            roundCasualties.forEach(c => {
+                if (!grouped[c.playerName]) grouped[c.playerName] = [];
+                grouped[c.playerName].push(c.animalEmoji);
             });
-
+            const items = Object.entries(grouped).map(([name, emojis]) => {
+                const isElim = eliminatedPlayers.includes(name);
+                const spans = emojis.map(e => `<span class="casualty-animal">${e}</span>`).join(' ');
+                return isElim
+                    ? `<span class="casualty-item">${spans} <span class="eliminated-player">${name} ELIMINATED!</span></span>`
+                    : `<span class="casualty-item">${spans} <strong>${name}</strong></span>`;
+            });
             casualtiesList.innerHTML = items.join('');
         }
 
@@ -838,8 +1052,44 @@
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('winner-screen').classList.remove('hidden');
             document.getElementById('winner-name').textContent = winner.name;
-            const remainingAnimal = winner.animals.find(a => !a.eliminated);
-            document.getElementById('winner-animal').textContent = remainingAnimal ? remainingAnimal.emoji : '🏆';
+            const remaining = winner.animals.find(a => !a.eliminated);
+            document.getElementById('winner-animal').textContent = remaining ? remaining.emoji : '🏆';
+            launchConfetti();
+        }
+
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const pieces = [];
+            const colors = ['#ff6b35', '#e84393', '#b44cff', '#ffd700', '#00d2d3', '#ff3b3b', '#54a0ff', '#5f27cd'];
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 10 + 5, h: Math.random() * 6 + 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 2,
+                    rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+            let frame = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.vy; p.x += p.vx; p.rot += p.rotSpeed;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+                frame++;
+                if (frame < 300) requestAnimationFrame(animate);
+            }
+            animate();
         }
     </script>
 </body>
