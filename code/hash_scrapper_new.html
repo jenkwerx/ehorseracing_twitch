@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,220 +5,536 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hash Scrapper!</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
     <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        --ring-red: #c0392b;
+        --ring-red-light: #e74c3c;
+        --gold: #d4a017;
+        --bg: #f0ece4;
+        --bg-card: #ffffff;
+        --bg-card-alt: #f8f6f1;
+        --text: #1a1a2e;
+        --text-muted: #777;
+        --border: #ddd;
+      }
       body {
-        font-family: Arial, sans-serif;
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Oswald', sans-serif;
+        background: var(--bg);
         min-height: 100vh;
+        color: var(--text);
+        overflow-x: hidden;
       }
-      .container {
-        background: white;
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      }
-      h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 30px;
-        font-size: 36px;
-      }
-
-      textarea {
-        width: 60%;
-        height: 200px;
-        padding: 15px;
-        border: 2px solid #667eea;
-        border-radius: 5px;
-        font-size: 16px;
-        resize: vertical;
-        background: white;
-        font-family: "Courier New", monospace;
-        display: block;
+      .main-wrapper {
+        position: relative;
+        max-width: 1100px;
         margin: 0 auto;
+        padding: 12px 16px;
       }
 
-      button {
-        background: #c0392b;
-        color: white;
+      #setup {
+        max-width: 560px;
+        margin: 50px auto;
+        text-align: center;
+      }
+      #setup .setup-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 52px;
+        letter-spacing: 4px;
+        color: var(--ring-red);
+        margin-bottom: 8px;
+      }
+      #setup .instructions {
+        font-size: 16px;
+        color: var(--text-muted);
+        margin-bottom: 14px;
+        letter-spacing: 1px;
+      }
+      #setup textarea {
+        width: 100%;
+        height: 200px;
+        padding: 14px;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 15px;
+        resize: vertical;
+        background: #fff;
+        color: var(--text);
+        font-family: 'Courier New', monospace;
+        outline: none;
+      }
+      #setup textarea:focus { border-color: var(--ring-red); }
+      .start-btn {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 14px 44px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 26px;
+        letter-spacing: 3px;
+        background: linear-gradient(180deg, var(--ring-red-light), var(--ring-red));
+        color: #fff;
         border: none;
-        padding: 15px 35px;
-        font-size: 18px;
-        border-radius: 5px;
+        border-radius: 6px;
         cursor: pointer;
-        margin: 10px 5px;
-        transition: all 0.3s;
-        font-weight: bold;
+        transition: all 0.2s;
+        box-shadow: 0 4px 16px rgba(192,57,43,0.3);
+      }
+      .start-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(192,57,43,0.4);
+      }
+
+      .game-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 750px) {
+        .game-grid { grid-template-columns: 1fr; }
+      }
+
+      .ring-panel {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      }
+      .ring-visual {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 14/10;
+        overflow: hidden;
+      }
+      .ring-floor {
+        position: absolute;
+        inset: 14% 4% 4% 4%;
+        background: linear-gradient(135deg, #6a8cba 0%, #5a7ca8 40%, #6a8cba 100%);
+        border: 4px solid #8aacda;
+        border-radius: 4px;
+        transform: rotateX(12deg);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15), inset 0 0 30px rgba(255,255,255,0.1);
+      }
+      .ring-floor::after {
+        content: 'HS';
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 48px;
+        letter-spacing: 6px;
+        color: rgba(255,255,255,0.12);
+      }
+      .rope { position: absolute; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+      .rope-top { top: 13%; left: 4%; right: 4%; height: 3px; background: #c0392b; }
+      .rope-mid { top: 20%; left: 4%; right: 4%; height: 2px; background: #ddd; }
+      .rope-bot { top: 27%; left: 4%; right: 4%; height: 2px; background: #2980b9; }
+      .rope-left { top: 13%; left: 4%; width: 3px; height: 83%; background: linear-gradient(180deg, #c0392b, #ddd, #2980b9, #ddd); }
+      .rope-right { top: 13%; right: 4%; width: 3px; height: 83%; background: linear-gradient(180deg, #c0392b, #ddd, #2980b9, #ddd); }
+      .turnbuckle {
+        position: absolute;
+        width: 14px; height: 14px;
+        background: #ddd;
+        border-radius: 50%;
+        border: 2px solid #aaa;
+        z-index: 2;
+      }
+      .tb-tl { top: 11%; left: 3%; }
+      .tb-tr { top: 11%; right: 3%; }
+      .tb-bl { bottom: 2%; left: 3%; }
+      .tb-br { bottom: 2%; right: 3%; }
+      .ring-apron {
+        position: absolute;
+        bottom: 0; left: 3%; right: 3%; height: 6%;
+        background: linear-gradient(180deg, #1a1a2e, #111);
+        border-radius: 0 0 3px 3px;
+      }
+
+      .ring-wrestlers {
+        position: absolute;
+        inset: 30% 6% 10% 6%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        z-index: 3;
+      }
+      .ring-wrestler {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: width 0.3s ease;
+      }
+      .ring-wrestler.entering { animation: wEnter 0.5s ease-out; }
+      .ring-wrestler .emoji {
+        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        animation: wBounce 3s ease-in-out infinite;
+        transition: transform 0.2s;
+      }
+      .ring-wrestler .name-tag {
+        font-weight: 700;
+        color: #1a2a5e;
+        background: rgba(255,255,255,0.92);
+        padding: 1px 6px;
+        border-radius: 3px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        border: 1px solid rgba(0,0,0,0.08);
+      }
+      @keyframes wEnter {
+        0% { transform: translateX(-80px) scale(0.5); opacity: 0; }
+        60% { transform: translateX(8px) scale(1.05); }
+        100% { transform: translateX(0) scale(1); opacity: 1; }
+      }
+      @keyframes wBounce {
+        0%,100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+      }
+      .ring-wrestler.attacking .emoji {
+        animation: attackSwell 0.6s ease-in-out !important;
+      }
+      @keyframes attackSwell {
+        0% { transform: scale(1); }
+        35% { transform: scale(1.45); }
+        65% { transform: scale(1.45); }
+        100% { transform: scale(1); }
+      }
+      .ring-wrestler.eliminated-anim {
+        animation: flyOut 0.7s ease-in forwards !important;
+        pointer-events: none;
+      }
+      @keyframes flyOut {
+        0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+        30% { transform: translate(10px, -20px) rotate(-15deg) scale(1.1); opacity: 1; }
+        100% { transform: translate(250px, 120px) rotate(360deg) scale(0.2); opacity: 0; }
+      }
+      .ring-visual.impact::after {
+        content: '💥';
+        position: absolute;
+        top: 40%; left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 60px;
+        z-index: 10;
+        animation: impactFlash 0.5s ease-out forwards;
+        pointer-events: none;
+      }
+      @keyframes impactFlash {
+        0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+      }
+
+      .right-col { display: flex; flex-direction: column; gap: 10px; }
+
+      .panel {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      }
+      .panel-header {
+        padding: 8px 12px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 16px;
+        letter-spacing: 3px;
+        color: var(--ring-red);
+        background: var(--bg-card-alt);
+        border-bottom: 1px solid var(--border);
+      }
+      .action-log-list {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 6px;
+      }
+      .action-log-list::-webkit-scrollbar { width: 4px; }
+      .action-log-list::-webkit-scrollbar-track { background: #f5f5f5; }
+      .action-log-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+      .event-entry {
+        padding: 6px 8px;
+        margin-bottom: 4px;
+        border-radius: 4px;
+        font-size: 12px;
+        animation: eSlide 0.3s ease-out;
+        line-height: 1.4;
+        cursor: pointer;
+      }
+      @keyframes eSlide {
+        from { transform: translateX(-12px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      .event-entry.enter-event { background: #e8f5e9; border-left: 3px solid #27ae60; }
+      .event-entry.elimination-event { background: #fce4ec; border-left: 3px solid var(--ring-red); font-weight: 700; }
+      .event-entry.no-event { background: #fafafa; border-left: 3px solid #ddd; color: #aaa; }
+      .event-entry.winner-event {
+        background: #fff8e1;
+        border-left: 3px solid var(--gold);
+        font-size: 15px;
+        font-family: 'Bebas Neue', sans-serif;
+        letter-spacing: 2px;
+        text-align: center;
+        padding: 10px;
+        color: var(--ring-red);
+      }
+
+      .hash-detail {
+        display: none;
+        font-size: 9px;
+        font-family: 'Courier New', monospace;
+        color: #aaa;
+        margin-top: 2px;
+        word-break: break-all;
+        padding: 3px 6px;
+        background: rgba(0,0,0,0.03);
+        border-radius: 3px;
+      }
+      .hash-detail.open { display: block; }
+
+      .info-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      .info-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 6px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      }
+      .info-card .label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+      }
+      .info-card .value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 22px;
+        color: var(--ring-red);
+      }
+      .info-card.salt-card .value {
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        color: #999;
+      }
+
+      .elim-section { margin-top: 14px; }
+      .elim-list {
+        padding: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+      .elim-list::-webkit-scrollbar { width: 4px; }
+      .elim-list::-webkit-scrollbar-track { background: #f5f5f5; }
+      .elim-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+      .elim-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #fce4ec;
+        border: 1px solid #f8bbd0;
+        padding: 3px 10px;
+        border-radius: 14px;
+        font-size: 12px;
+        color: #888;
+        text-decoration: line-through;
+      }
+      .elim-chip .chip-num {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 14px;
+        color: var(--ring-red);
+        text-decoration: none;
+      }
+      .elim-empty {
+        color: #ccc;
+        font-size: 12px;
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .action-bar { text-align: center; padding: 8px 0 2px; }
+      .continue-btn {
+        padding: 10px 36px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 20px;
+        letter-spacing: 3px;
+        background: linear-gradient(180deg, var(--ring-red-light), var(--ring-red));
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 16px rgba(192,57,43,0.25);
+      }
+      .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(192,57,43,0.35); }
+      .continue-btn.disabled { opacity: 0.5; pointer-events: none; }
+      .restart-btn {
+        padding: 10px 36px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 20px;
+        letter-spacing: 3px;
+        background: linear-gradient(180deg, #2ecc71, #27ae60);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: none;
+        box-shadow: 0 4px 16px rgba(39,174,96,0.25);
+      }
+      .restart-btn:hover { transform: translateY(-2px); }
+
+      .bottom-logo {
+        text-align: center;
+        padding: 20px 0 10px;
+        opacity: 0.35;
+      }
+      .bottom-logo h2 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 24px;
+        letter-spacing: 4px;
+        color: var(--ring-red);
+      }
+      .bottom-logo .sub {
+        font-size: 8px;
+        letter-spacing: 5px;
+        color: #bbb;
         text-transform: uppercase;
       }
-      button:hover {
-        background: #e74c3c;
-        transform: scale(1.05);
-      }
-      button:disabled {
-        background: #95a5a6;
-        cursor: not-allowed;
-        transform: none;
-      }
-      .ring {
+
+      .winner-overlay {
         display: none;
-        margin-top: 20px;
+        position: fixed;
+        inset: 0;
+        background: rgba(240,236,228,0.95);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
       }
-      .active-wrestlers {
-        position: relative;
-        background: #2c3e50;
-        padding: 40px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        border: 8px solid #c0392b;
-      }
-      .active-wrestlers::before {
-        content: "";
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        right: 15px;
-        bottom: 15px;
-        border: 3px solid #e74c3c;
-        border-radius: 5px;
-        pointer-events: none;
-      }
-      .active-wrestlers::after {
-        content: "";
-        position: absolute;
-        top: 25px;
-        left: 25px;
-        right: 25px;
-        bottom: 25px;
-        border: 2px solid #e67e22;
-        border-radius: 5px;
-        pointer-events: none;
-      }
-      .active-wrestlers h3 {
-        position: relative;
-        z-index: 1;
-        color: white;
-        margin-top: 0;
-      }
-      .wrestler {
-        display: inline-block;
-        background: #667eea;
-        color: white;
-        padding: 8px 15px;
-        margin: 5px;
-        border-radius: 20px;
-        font-weight: bold;
-        position: relative;
-        z-index: 1;
-      }
-      .info {
-        background: #e8f4f8;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        border-left: 4px solid #667eea;
-      }
-      .entrant-info {
-        background: #d4edda;
-        color: #155724;
-        padding: 15px;
-        border-radius: 5px;
-        margin: 15px 0;
-        border-left: 4px solid #28a745;
-      }
-      .elimination {
-        background: #c0392b;
-        color: white;
-        padding: 20px;
-        border-radius: 5px;
-        margin: 20px 0;
-        font-size: 18px;
-        font-weight: bold;
-        text-align: center;
-        animation: pulse 0.5s;
-        border: 3px solid #e74c3c;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.05);
-        }
-      }
-      .winner {
-        background: gold;
-        color: #333;
-        padding: 30px;
-        border-radius: 10px;
-        margin: 20px 0;
-        font-size: 28px;
-        font-weight: bold;
-        text-align: center;
-        border: 5px solid #ff8800;
-        animation: pulse 1s infinite;
-      }
-      .stats {
-        font-size: 11px;
-        color: #666;
-        margin-top: 5px;
-        font-family: "Courier New", monospace;
-      }
-      .hash-details {
-        background: #f8f9fa;
-        padding: 10px;
-        border-radius: 3px;
+      .winner-overlay.show { display: flex; animation: fadeIn 0.5s; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .winner-card { text-align: center; animation: wPop 0.6s ease-out; }
+      @keyframes wPop { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+      .winner-emoji { font-size: 90px; animation: wFloat 2s ease-in-out infinite; }
+      @keyframes wFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+      .winner-name {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(36px, 6vw, 60px);
+        color: var(--ring-red);
+        letter-spacing: 4px;
         margin-top: 8px;
-        font-size: 11px;
-        font-family: "Courier New", monospace;
-        border-left: 3px solid #6c757d;
-        color: inherit;
       }
+      .winner-subtitle { font-size: 16px; color: var(--gold); letter-spacing: 5px; text-transform: uppercase; margin-top: 6px; }
+      .winner-close-btn {
+        margin-top: 24px;
+        padding: 10px 36px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 18px;
+        letter-spacing: 3px;
+        background: linear-gradient(180deg, #2ecc71, #27ae60);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .confetti {
+        position: fixed;
+        z-index: 101;
+        animation: cFall linear forwards;
+        pointer-events: none;
+      }
+      @keyframes cFall {
+        0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+      #ring { display: none; }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>⚡ HASH SCRAPPER! ⚡</h1>
-
+    <div class="main-wrapper">
       <div id="setup">
-        <p><strong>Enter competitor names (one per line):</strong></p>
-        <textarea
-          id="nameInput"
-          placeholder="Billy Bob&#10;Tommy Sue&#10;Cletus Ray&#10;Daisy Mae&#10;Bubba Joe&#10;..."
-        ></textarea>
-        <center>
-          <button onclick="startRumble()">🔥 START SCRAPPER! 🔥</button>
-        </center>
+        <div class="setup-title">⚡ HASH SCRAPPER ⚡</div>
+        <p class="instructions">Enter competitor names — one per line</p>
+        <textarea id="nameInput" placeholder="Billy Bob&#10;Tommy Sue&#10;Cletus Ray&#10;Daisy Mae&#10;Bubba Joe&#10;..."></textarea>
+        <br>
+        <button class="start-btn" onclick="startRumble()">🔥 START THE SCRAPPER 🔥</button>
       </div>
 
-      <div id="ring" class="ring">
-        <div class="info">
-          <strong>Minute:</strong> <span id="round">1</span><br />
-          <strong>Static Salt:</strong> <span id="salt"></span><br />
-          <strong>Remaining Entrants:</strong> <span id="remaining">0</span>
+      <div id="ring">
+        <div class="game-grid">
+          <div class="ring-panel">
+            <div class="ring-visual" id="ringVisual">
+              <div class="ring-floor"></div>
+              <div class="rope rope-top"></div>
+              <div class="rope rope-mid"></div>
+              <div class="rope rope-bot"></div>
+              <div class="rope rope-left"></div>
+              <div class="rope rope-right"></div>
+              <div class="turnbuckle tb-tl"></div>
+              <div class="turnbuckle tb-tr"></div>
+              <div class="turnbuckle tb-bl"></div>
+              <div class="turnbuckle tb-br"></div>
+              <div class="ring-apron"></div>
+              <div class="ring-wrestlers" id="ringWrestlers"></div>
+            </div>
+            <div class="action-bar">
+              <button class="continue-btn" id="continueBtn" onclick="nextMinute()">⚡ NEXT MINUTE ⚡</button>
+              <button class="restart-btn" id="restartBtn" onclick="restart()">🔄 RESTART</button>
+            </div>
+          </div>
+          <div class="right-col">
+            <div class="panel">
+              <div class="panel-header">📢 Action</div>
+              <div class="action-log-list" id="eventLog"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="active-wrestlers">
-          <h3>In the Ring:</h3>
-          <div id="activeWrestlers"></div>
+        <div class="info-bar">
+          <div class="info-card"><span class="label">Minute</span><span class="value" id="round">1</span></div>
+          <div class="info-card"><span class="label">In Ring</span><span class="value" id="inRingCount">0</span></div>
+          <div class="info-card"><span class="label">Waiting</span><span class="value" id="remaining">0</span></div>
+          <div class="info-card"><span class="label">Eliminated</span><span class="value" id="elimCount">0</span></div>
+          <div class="info-card salt-card"><span class="label">Salt</span><span class="value" id="salt"></span></div>
         </div>
 
-        <center>
-          <button id="continueBtn" onclick="nextMinute()">CONTINUE</button>
-          <button
-            id="restartBtn"
-            onclick="restart()"
-            style="display: none; background: #27ae60"
-          >
-            RESTART WITH SAME NAMES
-          </button>
-        </center>
+        <div class="elim-section">
+          <div class="panel">
+            <div class="panel-header">💀 Eliminated</div>
+            <div class="elim-list" id="elimList"><div class="elim-empty">No eliminations yet</div></div>
+          </div>
+        </div>
 
-        <div id="message"></div>
+        <div class="bottom-logo">
+          <h2>⚡ HASH SCRAPPER ⚡</h2>
+          <div class="sub">Where Hashes Decide Your Fate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="winner-overlay" id="winnerOverlay">
+      <div class="winner-card">
+        <div class="winner-emoji" id="winnerEmoji"></div>
+        <div class="winner-name" id="winnerName"></div>
+        <div class="winner-subtitle">🏆 Hash Scrapper Champion 🏆</div>
+        <button class="winner-close-btn" onclick="closeWinnerAndRestart()">RESTART</button>
       </div>
     </div>
 
@@ -234,74 +549,90 @@
       let entryPositions = {};
       let entryCounter = 0;
       let originalInput = "";
+      let animating = false;
+      let hashIdCounter = 0;
 
-      function cleanName(name) {
-        return name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const peopleEmojis = [
+        '🧑‍🦰','🧑‍🦱','🧑‍🦳','🧔','👨‍🎤','👩‍🎤','🦸','🦹','🧙','🧛',
+        '🧜','🧝','🧞','🧟','👮','🕵️','💂','👷','🤴','👸',
+        '🥷','🦹‍♂️','🦸‍♀️','🧑‍🚀','🧑‍🔬','🧑‍🎨','🧑‍🍳','🧑‍✈️','🧑‍🚒','🤠',
+        '👻','🤖','👽','🎅','🧑‍🎄','🧑‍🦲','🧑‍💼','🧑‍⚕️','🧑‍🏫','🧑‍🔧',
+        '🐵','💪','🤺','🏋️','🤸','🦾','👊','🦿'
+      ];
+      let wrestlerEmojis = {};
+      let eliminatedList = [];
+
+      function assignEmojis(list) {
+        wrestlerEmojis = {};
+        const shuffled = [...peopleEmojis].sort(() => Math.random() - 0.5);
+        list.forEach((name, i) => { wrestlerEmojis[name] = shuffled[i % shuffled.length]; });
       }
 
-      function displayName(name) {
-        return name.replace(/[^a-z0-9 ]/gi, "");
+      function makeHashToggle(label, detail) {
+        const id = 'hd' + (hashIdCounter++);
+        return `<div class="hash-detail" id="${id}">${label}: ${detail}</div>`;
       }
+
+      function launchConfetti() {
+        const colors = ['#f5c518','#e74c3c','#3498db','#2ecc71','#9b59b6','#e67e22','#c0392b'];
+        for (let i = 0; i < 80; i++) {
+          const c = document.createElement('div');
+          c.className = 'confetti';
+          c.style.left = Math.random() * 100 + 'vw';
+          c.style.background = colors[Math.floor(Math.random()*colors.length)];
+          c.style.animationDuration = (2 + Math.random() * 3) + 's';
+          c.style.animationDelay = Math.random() * 1.5 + 's';
+          c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          c.style.width = (5 + Math.random()*8) + 'px';
+          c.style.height = (5 + Math.random()*8) + 'px';
+          document.body.appendChild(c);
+          setTimeout(() => c.remove(), 5500);
+        }
+      }
+
+      function cleanName(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ""); }
+      function displayName(name) { return name.replace(/[^a-z0-9 ]/gi, ""); }
 
       function startRumble() {
         const input = document.getElementById("nameInput").value;
         const names = input.split("\n").filter((n) => n.trim());
+        if (names.length < 2) { alert("Please enter at least 2 competitors!"); return; }
 
-        if (names.length < 2) {
-          alert("Please enter at least 2 competitors!");
-          return;
-        }
-
-        // Clean the list and track display names
         displayNames = {};
         const seenClean = new Set();
         cleanedList = [];
-
         names.forEach((name) => {
           const display = displayName(name);
           const clean = cleanName(name);
-
-          if (clean && !seenClean.has(clean)) {
-            seenClean.add(clean);
-            cleanedList.push(clean);
-            displayNames[clean] = display;
-          }
+          if (clean && !seenClean.has(clean)) { seenClean.add(clean); cleanedList.push(clean); displayNames[clean] = display; }
         });
-
-        cleanedList.sort(); // Put in order
-
-        // Store the cleaned list for restart (with display names)
+        cleanedList.sort();
         originalInput = cleanedList.map((c) => displayNames[c]).join("\n");
-
-        // Update the textarea with cleaned list
         document.getElementById("nameInput").value = originalInput;
 
-        // Generate static salt (YYYY_MM_DD_HH_MM_SS)
         const now = new Date();
-        staticSalt = `${now.getFullYear()}_${String(
-          now.getMonth() + 1
-        ).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}_${String(
-          now.getHours()
-        ).padStart(2, "0")}_${String(now.getMinutes()).padStart(
-          2,
-          "0"
-        )}_${String(now.getSeconds()).padStart(2, "0")}`;
+        staticSalt = `${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,"0")}_${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}_${String(now.getMinutes()).padStart(2,"0")}_${String(now.getSeconds()).padStart(2,"0")}`;
 
-        // Initialize
         remainingEntrants = [...cleanedList];
         inRing = [];
         minute = 0;
         entryCounter = 0;
         entryPositions = {};
+        eliminatedList = [];
+        animating = false;
+        hashIdCounter = 0;
 
-        // Show ring, hide setup
+        assignEmojis(cleanedList);
+
         document.getElementById("setup").style.display = "none";
         document.getElementById("ring").style.display = "block";
         document.getElementById("salt").textContent = staticSalt;
         document.getElementById("continueBtn").style.display = "inline-block";
+        document.getElementById("continueBtn").classList.remove("disabled");
         document.getElementById("restartBtn").style.display = "none";
-
-        // Draw initial 2 wrestlers
+        document.getElementById("eventLog").innerHTML = '';
+        document.getElementById("ringWrestlers").innerHTML = '';
+        updateElimPanel();
         drawInitialWrestlers();
       }
 
@@ -309,213 +640,245 @@
         minute = 1;
         updateMinuteDisplay();
 
-        // Calculate hashes for all remaining entrants
         const hashes = remainingEntrants.map((name) => {
           const entryString = `${minute}${staticSalt}${name}`;
-          return {
-            name: name,
-            entryString: entryString,
-            hash: md5(entryString),
-          };
+          return { name, entryString, hash: md5(entryString) };
         });
-
-        // Sort by hash and get lowest 2
         hashes.sort((a, b) => a.hash.localeCompare(b.hash));
-
         const firstTwo = hashes.slice(0, 2);
 
-        let messageHtml =
-          '<div class="info"><strong>Starting the scrapper!</strong></div>';
-
+        let logHtml = '<div class="event-entry enter-event"><strong>⚡ THE SCRAPPER BEGINS!</strong></div>';
         firstTwo.forEach((wrestler) => {
           entryCounter++;
           inRing.push(wrestler.name);
           entryPositions[wrestler.name] = entryCounter;
-          remainingEntrants = remainingEntrants.filter(
-            (n) => n !== wrestler.name
-          );
-
-          messageHtml += `<div class="entrant-info">
-                    🎺 <strong>${displayNames[
-                      wrestler.name
-                    ].toUpperCase()} (#${entryCounter})</strong> enters!
-                    <div class="hash-details">
-                        Entry String: ${wrestler.entryString}<br>
-                        Entry Hash: ${wrestler.hash}
-                    </div>
-                </div>`;
+          remainingEntrants = remainingEntrants.filter((n) => n !== wrestler.name);
+          addWrestlerToRing(wrestler.name);
+          logHtml += `<div class="event-entry enter-event">
+            🎺 <strong>${wrestlerEmojis[wrestler.name]} ${displayNames[wrestler.name].toUpperCase()} (${entryCounter})</strong> enters!
+            ${makeHashToggle('Entry', wrestler.entryString + ' → ' + wrestler.hash)}
+          </div>`;
         });
 
-        updateDisplay();
-        document.getElementById("message").innerHTML = messageHtml;
+        document.getElementById("eventLog").innerHTML = logHtml;
+        updateCounts();
+        resizeWrestlers();
       }
 
       function nextMinute() {
-        if (inRing.length === 1 && remainingEntrants.length === 0) {
-          showWinner();
-          return;
-        }
+        if (animating) return;
+        if (inRing.length === 1 && remainingEntrants.length === 0) { showWinner(); return; }
 
         minute++;
         updateMinuteDisplay();
 
-        // Check for eliminations
         const gameHashes = inRing.map((name) => {
           const gameString = `${staticSalt}${name}${minute}`;
-          return {
-            name: name,
-            gameString: gameString,
-            hash: md5(gameString),
-          };
+          return { name, gameString, hash: md5(gameString) };
         });
 
-        // Check if any hash starts with e or f
         const eliminationCandidates = gameHashes.filter((w) => {
           const firstChar = w.hash.charAt(0);
           return firstChar === "e" || firstChar === "f";
         });
 
-        let messageHtml = "";
+        let logHtml = '';
+        let eliminatedName = null;
+        let eliminatorName = null;
 
         if (eliminationCandidates.length > 0) {
-          // Find highest hash to eliminate
           eliminationCandidates.sort((a, b) => b.hash.localeCompare(a.hash));
           const eliminated = eliminationCandidates[0];
+          const possibleEliminators = inRing.filter((n) => n !== eliminated.name);
+          const eliminator = possibleEliminators[Math.floor(Math.random() * possibleEliminators.length)];
 
-          // Pick a random eliminator from those still in the ring (excluding the eliminated)
-          const possibleEliminators = inRing.filter(
-            (n) => n !== eliminated.name
-          );
-          const eliminator =
-            possibleEliminators[
-              Math.floor(Math.random() * possibleEliminators.length)
-            ];
-
-          // Random elimination description
           const descriptions = [
-            `clotheslined`,
-            `body slammed`,
-            `dropkicked`,
-            `powerslammed`,
-            `superkicked`,
-            `pile-drived`,
-            `German suplexed`,
-            `spinebustered`,
-            `DDT'd`,
-			'Molly whopped',
-			'sweet chin musiced',
-			'suplexed',
-			'atomic dropped',
-			'bulldogged',
-			'stone cold stunned',
-			'pedigreed',
-			'smacked',
-			'backhanded',
-			'pimp slapped',
-			'headbutted',
-            'knife edge chopped',
-            'throat punched',
-            'brain bustered'			
+            'clotheslined','body slammed','dropkicked','powerslammed','superkicked',
+            'pile-drived','German suplexed','spinebustered',"DDT'd",'Molly whopped',
+            'sweet chin musiced','suplexed','atomic dropped','bulldogged',
+            'stone cold stunned','pedigreed','smacked','backhanded','pimp slapped',
+            'headbutted','knife edge chopped','throat punched','brain bustered'
           ];
-          const action =
-            descriptions[Math.floor(Math.random() * descriptions.length)];
+          const action = descriptions[Math.floor(Math.random() * descriptions.length)];
+          eliminatedName = eliminated.name;
+          eliminatorName = eliminator;
+          eliminatedList.push({ name: eliminated.name, position: entryPositions[eliminated.name] });
 
-          inRing = inRing.filter((n) => n !== eliminated.name);
-
-          messageHtml = `<div class="elimination">
-                    💥 ELIMINATED! 💥<br>
-                    <span style="font-size: 20px;">${displayNames[
-                      eliminator
-                    ].toUpperCase()} ${action} ${displayNames[
-            eliminated.name
-          ].toUpperCase()} out of the match!</span>
-                    <div class="hash-details" style="background: rgba(255,255,255,0.2); border-left-color: #fff; color: #fff;">
-                        Game String: ${eliminated.gameString}<br>
-                        Game Hash: ${eliminated.hash}
-                    </div>
-                </div>`;
+          logHtml += `<div class="event-entry elimination-event">
+            💥 ${wrestlerEmojis[eliminator]} ${displayNames[eliminator].toUpperCase()} ${action} ${wrestlerEmojis[eliminated.name]} ${displayNames[eliminated.name].toUpperCase()} out!
+            ${makeHashToggle('Game', eliminated.gameString + ' → ' + eliminated.hash)}
+          </div>`;
         } else {
-          messageHtml = `<div class="info">No eliminations this minute! All hashes start with 0-d.</div>`;
+          logHtml += `<div class="event-entry no-event">No eliminations — all hashes start with 0–d.</div>`;
         }
 
-        // Draw new entrant if available
+        let newEntrantData = null;
         if (remainingEntrants.length > 0) {
           const entryHashes = remainingEntrants.map((name) => {
             const entryString = `${minute}${staticSalt}${name}`;
-            return {
-              name: name,
-              entryString: entryString,
-              hash: md5(entryString),
-            };
+            return { name, entryString, hash: md5(entryString) };
           });
-
           entryHashes.sort((a, b) => a.hash.localeCompare(b.hash));
-          const newEntrant = entryHashes[0];
+          newEntrantData = entryHashes[0];
+        }
 
-          entryCounter++;
-          inRing.push(newEntrant.name);
-          entryPositions[newEntrant.name] = entryCounter;
-          remainingEntrants = remainingEntrants.filter(
-            (n) => n !== newEntrant.name
-          );
+        if (eliminatedName) {
+          animating = true;
+          document.getElementById("continueBtn").classList.add("disabled");
 
-          messageHtml += `<div class="entrant-info">
-                    🎺 <strong>${displayNames[
-                      newEntrant.name
-                    ].toUpperCase()} (#${entryCounter})</strong> enters!
-                    <div class="hash-details">
-                        Entry String: ${newEntrant.entryString}<br>
-                        Entry Hash: ${newEntrant.hash}
-                    </div>
+          const attackerEl = document.querySelector(`.ring-wrestler[data-name="${eliminatorName}"]`);
+          const victimEl = document.querySelector(`.ring-wrestler[data-name="${eliminatedName}"]`);
+
+          if (attackerEl) attackerEl.classList.add('attacking');
+
+          setTimeout(() => {
+            document.getElementById('ringVisual').classList.add('impact');
+            if (victimEl) victimEl.classList.add('eliminated-anim');
+
+            setTimeout(() => {
+              document.getElementById('ringVisual').classList.remove('impact');
+              if (attackerEl) attackerEl.classList.remove('attacking');
+              if (victimEl) victimEl.remove();
+              inRing = inRing.filter((n) => n !== eliminatedName);
+
+              if (newEntrantData) {
+                entryCounter++;
+                inRing.push(newEntrantData.name);
+                entryPositions[newEntrantData.name] = entryCounter;
+                remainingEntrants = remainingEntrants.filter((n) => n !== newEntrantData.name);
+                addWrestlerToRing(newEntrantData.name);
+
+                logHtml += `<div class="event-entry enter-event">
+                  🎺 <strong>${wrestlerEmojis[newEntrantData.name]} ${displayNames[newEntrantData.name].toUpperCase()} (${entryCounter})</strong> enters!
+                  ${makeHashToggle('Entry', newEntrantData.entryString + ' → ' + newEntrantData.hash)}
                 </div>`;
-        }
+              }
 
-        document.getElementById("message").innerHTML = messageHtml;
-        updateDisplay();
+              document.getElementById("eventLog").innerHTML = logHtml + document.getElementById("eventLog").innerHTML;
+              updateCounts();
+              updateElimPanel();
+              resizeWrestlers();
 
-        // Check if only one left
-        if (inRing.length === 1 && remainingEntrants.length === 0) {
-          document.getElementById("continueBtn").textContent =
-            "DECLARE WINNER!";
+              if (inRing.length === 1 && remainingEntrants.length === 0) {
+                document.getElementById("continueBtn").textContent = "🏆 DECLARE WINNER 🏆";
+              }
+              animating = false;
+              document.getElementById("continueBtn").classList.remove("disabled");
+            }, 700);
+          }, 400);
+
+        } else {
+          if (newEntrantData) {
+            entryCounter++;
+            inRing.push(newEntrantData.name);
+            entryPositions[newEntrantData.name] = entryCounter;
+            remainingEntrants = remainingEntrants.filter((n) => n !== newEntrantData.name);
+            addWrestlerToRing(newEntrantData.name);
+
+            logHtml += `<div class="event-entry enter-event">
+              🎺 <strong>${wrestlerEmojis[newEntrantData.name]} ${displayNames[newEntrantData.name].toUpperCase()} (${entryCounter})</strong> enters!
+              ${makeHashToggle('Entry', newEntrantData.entryString + ' → ' + newEntrantData.hash)}
+            </div>`;
+          }
+
+          document.getElementById("eventLog").innerHTML = logHtml + document.getElementById("eventLog").innerHTML;
+          updateCounts();
+          updateElimPanel();
+          resizeWrestlers();
+
+          if (inRing.length === 1 && remainingEntrants.length === 0) {
+            document.getElementById("continueBtn").textContent = "🏆 DECLARE WINNER 🏆";
+          }
         }
+      }
+
+      function addWrestlerToRing(name) {
+        const ringDiv = document.getElementById("ringWrestlers");
+        const el = document.createElement('div');
+        el.className = 'ring-wrestler entering';
+        el.setAttribute('data-name', name);
+        el.innerHTML = `<span class="emoji">${wrestlerEmojis[name]}</span>
+          <span class="name-tag">${displayNames[name]} (${entryPositions[name]})</span>`;
+        ringDiv.appendChild(el);
+        setTimeout(() => el.classList.remove('entering'), 600);
+      }
+
+      function resizeWrestlers() {
+        const count = inRing.length;
+        const ringDiv = document.getElementById("ringWrestlers");
+        const allEls = ringDiv.querySelectorAll('.ring-wrestler');
+        let emojiSize, tagSize, width, maxTag;
+        if (count <= 4) { emojiSize = 36; tagSize = 11; width = 80; maxTag = 78; }
+        else if (count <= 8) { emojiSize = 32; tagSize = 10; width = 72; maxTag = 70; }
+        else if (count <= 14) { emojiSize = 26; tagSize = 9; width = 64; maxTag = 62; }
+        else if (count <= 20) { emojiSize = 22; tagSize = 8; width = 54; maxTag = 52; }
+        else { emojiSize = 18; tagSize = 7; width = 44; maxTag = 42; }
+        allEls.forEach(el => {
+          el.style.width = width + 'px';
+          const emoji = el.querySelector('.emoji');
+          const tag = el.querySelector('.name-tag');
+          if (emoji) emoji.style.fontSize = emojiSize + 'px';
+          if (tag) { tag.style.fontSize = tagSize + 'px'; tag.style.maxWidth = maxTag + 'px'; }
+        });
       }
 
       function showWinner() {
         const winner = inRing[0];
-        document.getElementById(
-          "message"
-        ).innerHTML = `<div class="winner">🏆 WINNER! 🏆<br>${displayNames[
-          winner
-        ].toUpperCase()}<br>HASH SCRAPPER CHAMPION!</div>`;
+        const logHtml = `<div class="event-entry winner-event">🏆 ${wrestlerEmojis[winner]} ${displayNames[winner].toUpperCase()} — CHAMPION! 🏆</div>`;
+        document.getElementById("eventLog").innerHTML = logHtml + document.getElementById("eventLog").innerHTML;
         document.getElementById("continueBtn").style.display = "none";
         document.getElementById("restartBtn").style.display = "inline-block";
+        document.getElementById("winnerEmoji").textContent = wrestlerEmojis[winner];
+        document.getElementById("winnerName").textContent = displayNames[winner].toUpperCase();
+        document.getElementById("winnerOverlay").classList.add("show");
+        launchConfetti();
+      }
+
+      function closeWinnerAndRestart() {
+        document.getElementById("winnerOverlay").classList.remove("show");
+        restart();
       }
 
       function restart() {
         document.getElementById("nameInput").value = originalInput;
         document.getElementById("setup").style.display = "block";
         document.getElementById("ring").style.display = "none";
-        document.getElementById("message").innerHTML = "";
-        document.getElementById("continueBtn").textContent = "CONTINUE";
+        document.getElementById("eventLog").innerHTML = "";
+        document.getElementById("ringWrestlers").innerHTML = "";
+        document.getElementById("continueBtn").textContent = "⚡ NEXT MINUTE ⚡";
         document.getElementById("continueBtn").style.display = "inline-block";
+        document.getElementById("continueBtn").classList.remove("disabled");
+        document.getElementById("winnerOverlay").classList.remove("show");
       }
 
-      function updateDisplay() {
-        const activeDiv = document.getElementById("activeWrestlers");
-        activeDiv.innerHTML = inRing
-          .map(
-            (name) =>
-              `<span class="wrestler">${displayNames[name]} (${entryPositions[name]})</span>`
-          )
-          .join("");
+      function updateCounts() {
+        document.getElementById("inRingCount").textContent = inRing.length;
+        document.getElementById("remaining").textContent = remainingEntrants.length;
+        document.getElementById("elimCount").textContent = eliminatedList.length;
+      }
 
-        document.getElementById("remaining").textContent =
-          remainingEntrants.length;
+      function updateElimPanel() {
+        const el = document.getElementById("elimList");
+        if (eliminatedList.length === 0) {
+          el.innerHTML = '<div class="elim-empty">No eliminations yet</div>';
+        } else {
+          el.innerHTML = eliminatedList.map(e =>
+            `<span class="elim-chip"><span class="chip-num">(${e.position})</span> ${wrestlerEmojis[e.name]} ${displayNames[e.name]}</span>`
+          ).join('');
+        }
       }
 
       function updateMinuteDisplay() {
         document.getElementById("round").textContent = minute;
       }
+
+      // Click any event entry to toggle its hash detail
+      document.getElementById("eventLog").addEventListener("click", function(e) {
+        const entry = e.target.closest('.event-entry');
+        if (!entry) return;
+        const hd = entry.querySelector('.hash-detail');
+        if (hd) hd.classList.toggle('open');
+      });
     </script>
   </body>
 </html>
