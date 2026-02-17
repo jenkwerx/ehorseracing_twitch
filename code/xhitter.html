@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XHITTER 💩 - Shit Talking for Clout</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Space+Mono:wght@400;700&family=Satisfy&display=swap');
+
+:root {
+  --bg-dark: #0a0a0f;
+  --bg-card: #14141f;
+  --neon-pink: #ff2d7b;
+  --neon-blue: #00d4ff;
+  --neon-green: #39ff14;
+  --neon-yellow: #ffe600;
+  --neon-purple: #b026ff;
+  --neon-orange: #ff6b1a;
+  --lame-red: #ff0033;
+  --cancelled-gray: #555;
+  --text: #e8e8f0;
+  --text-dim: #7a7a9a;
+  --gold: #ffd700;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-dark);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,45,123,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(176,38,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1.title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.3rem;
+  text-align: center;
+  margin: 8px 0 2px;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+
+h1.title.setup-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin: 30px 0 10px;
+  filter: drop-shadow(0 0 20px rgba(255,45,123,0.3));
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  margin-bottom: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.subtitle.setup-subtitle {
+  font-size: 0.85rem;
+  margin-bottom: 40px;
+}
+
+/* SETUP SCREEN */
+#setup-screen {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.setup-box {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.setup-box h2 {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--neon-blue);
+}
+
+.setup-box label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+textarea {
+  width: 100%;
+  height: 180px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  padding: 15px;
+  resize: vertical;
+  transition: border-color 0.3s;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 15px rgba(255,45,123,0.15);
+}
+
+.player-count {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+.player-count span { color: var(--neon-green); font-weight: bold; }
+
+.btn {
+  display: inline-block;
+  padding: 14px 36px;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  color: white;
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 18px;
+  box-shadow: 0 4px 25px rgba(255,45,123,0.3);
+}
+
+.btn-start:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 35px rgba(255,45,123,0.5);
+}
+
+.btn-start:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#game-screen { display: none; }
+
+/* BATTLE GRID - 4 per row social media style */
+.battle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 10px 0;
+}
+
+@media (max-width: 1000px) {
+  .battle-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 700px) {
+  .battle-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.post-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 0;
+  position: relative;
+  transition: all 0.3s, order 0s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.post-card-header .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+}
+
+.post-card-header .name-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.post-card-header .display-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-card-header .handle {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+.post-card-body {
+  padding: 8px 12px 10px;
+  flex: 1;
+}
+
+.post-message {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--text);
+  min-height: 36px;
+}
+
+.repost-badge {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: rgba(57,255,20,0.08);
+  border: 1px solid rgba(57,255,20,0.2);
+  border-radius: 6px;
+  font-size: 0.6rem;
+  color: var(--neon-green);
+}
+
+.repost-badge.active { display: flex; }
+
+.repost-badge .influencer-name {
+  font-weight: bold;
+  color: var(--neon-yellow);
+}
+
+.post-card-footer {
+  padding: 6px 12px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.like-bar-container {
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  height: 6px;
+  flex: 1;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.like-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.15s linear;
+  min-width: 2px;
+}
+
+.like-count {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.like-count .heart { color: var(--neon-pink); font-size: 0.75rem; }
+
+/* POST CARD STATES */
+.post-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+  opacity: 0.3;
+}
+
+.post-card.leading {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 20px rgba(57,255,20,0.12);
+}
+
+.post-card.leading::before {
+  background: var(--neon-green);
+  opacity: 1;
+  height: 3px;
+}
+
+.post-card.lame {
+  opacity: 0.3;
+  border-color: var(--lame-red);
+  transform: scale(0.96);
+}
+
+.post-card.lame::after {
+  content: '💀 LAME';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.4rem;
+  color: var(--lame-red);
+  text-shadow: 0 0 10px rgba(255,0,51,0.5);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.post-card.cancelled {
+  opacity: 0.3;
+  border-color: var(--cancelled-gray);
+  transform: scale(0.96);
+}
+
+.post-card.cancelled::after {
+  content: '🚫 CANCELLED';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.2rem;
+  color: var(--cancelled-gray);
+  text-shadow: 0 0 10px rgba(85,85,85,0.5);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.post-card.winner {
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(255,215,0,0.3);
+  animation: winPulse 0.5s ease infinite alternate;
+}
+
+@keyframes winPulse {
+  from { box-shadow: 0 0 20px rgba(255,215,0,0.2); }
+  to { box-shadow: 0 0 50px rgba(255,215,0,0.5); }
+}
+
+/* BRACKET / PROGRESS */
+.progress-bar-outer {
+  background: rgba(255,255,255,0.05);
+  border-radius: 50px;
+  height: 8px;
+  margin: 10px 0 30px;
+  overflow: hidden;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+  border-radius: 50px;
+  transition: width 0.5s;
+}
+
+/* WINNER SCREEN */
+#winner-screen {
+  display: none;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+#winner-screen h2 {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--gold), var(--neon-orange), var(--neon-yellow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+#winner-screen .winner-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 3rem;
+  color: var(--neon-green);
+  text-shadow: 0 0 30px rgba(57,255,20,0.4);
+  margin: 20px 0;
+}
+
+#winner-screen .trophy { font-size: 6rem; margin: 20px 0; }
+
+.btn-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.btn-restart {
+  background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+  color: var(--bg-dark);
+}
+
+.btn-change {
+  background: linear-gradient(135deg, var(--neon-orange), var(--neon-pink));
+  color: white;
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+/* FLOATING LIKES ANIMATION */
+.float-like {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.2rem;
+  animation: floatUp 1s ease-out forwards;
+  z-index: 100;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
+}
+
+/* ELIMINATED FLASH */
+@keyframes eliminateFlash {
+  0% { background: rgba(255,0,51,0.3); }
+  100% { background: transparent; }
+}
+
+.flash-lame { animation: eliminateFlash 0.5s ease; }
+.flash-cancelled { animation: eliminateFlash 0.5s ease; }
+
+/* STATUS TOAST */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--neon-pink);
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.9rem;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: 0 4px 30px rgba(255,45,123,0.3);
+}
+
+.toast.show { opacity: 1; }
+
+.scroll-top-btn {
+
+}
+
+.start-round-overlay {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 10, 15, 0.85);
+  border: 2px solid var(--neon-yellow);
+  padding: 16px 40px;
+  border-radius: 60px;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1rem;
+  color: var(--neon-yellow);
+  text-align: center;
+  z-index: 300;
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(255,230,0,0.2);
+  animation: pulseGlow 1.5s ease infinite alternate;
+  white-space: nowrap;
+  display: none;
+}
+
+.start-round-overlay:hover {
+  background: rgba(255,230,0,0.1);
+}
+
+@keyframes pulseGlow {
+  from { box-shadow: 0 0 15px rgba(255,230,0,0.15); }
+  to { box-shadow: 0 0 40px rgba(255,230,0,0.35); }
+}
+
+.scroll-top-btn {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 150;
+  background: var(--neon-pink);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255,45,123,0.4);
+}
+
+/* EVENT LOG - lame/cancelled/repost alerts below grid */
+.event-log {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+  align-items: center;
+}
+
+.event-log:empty { display: none; }
+
+.event-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  animation: popIn 0.3s ease;
+  white-space: nowrap;
+}
+
+.event-entry.lame-event {
+  background: rgba(255,230,0,0.08);
+  border: 1px solid rgba(255,230,0,0.25);
+  color: var(--neon-yellow);
+}
+
+.event-entry.cancelled-event {
+  background: rgba(255,0,51,0.08);
+  border: 1px solid rgba(255,0,51,0.25);
+  color: var(--lame-red);
+}
+
+.event-entry.repost-event {
+  background: rgba(57,255,20,0.08);
+  border: 1px solid rgba(57,255,20,0.25);
+  color: var(--neon-green);
+}
+
+.event-entry .event-icon { font-size: 0.85rem; }
+
+.event-entry .event-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.game-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.round-info-line {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.game-brand {
+  text-align: center;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.8rem;
+  color: var(--neon-pink);
+  margin-top: 10px;
+  opacity: 0.6;
+  letter-spacing: 1px;
+}
+
+/* REPOST OVERLAY - big fullscreen takeover */
+.repost-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 5, 10, 0.94);
+  z-index: 450;
+  cursor: pointer;
+  animation: fadeInBanner 0.3s ease;
+}
+
+.repost-overlay-icon {
+  font-size: 5rem;
+  animation: repostSpin 0.6s ease;
+}
+
+@keyframes repostSpin {
+  0% { transform: rotate(-180deg) scale(0); opacity: 0; }
+  60% { transform: rotate(15deg) scale(1.2); opacity: 1; }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+.repost-overlay-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 2.5rem;
+  color: var(--neon-green);
+  text-shadow: 0 0 40px rgba(57,255,20,0.5);
+  margin-top: 10px;
+  letter-spacing: 4px;
+  animation: winTextSlide 0.4s ease 0.15s both;
+}
+
+.repost-overlay-influencer {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.5rem;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 20px rgba(255,230,0,0.4);
+  margin-top: 20px;
+  animation: winTextSlide 0.4s ease 0.3s both;
+}
+
+.repost-overlay-tag {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  animation: winTextSlide 0.4s ease 0.4s both;
+}
+
+.repost-overlay-arrow {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin: 18px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  animation: winTextSlide 0.4s ease 0.5s both;
+}
+
+.repost-overlay-player {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.8rem;
+  color: var(--neon-blue);
+  text-shadow: 0 0 25px rgba(0,212,255,0.4);
+  animation: winTextSlide 0.4s ease 0.6s both;
+}
+
+.repost-overlay-effect {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.1rem;
+  color: var(--neon-pink);
+  margin-top: 25px;
+  text-shadow: 0 0 15px rgba(255,45,123,0.4);
+  animation: boostPulse 0.8s ease 0.8s both infinite alternate;
+}
+
+@keyframes boostPulse {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.08); opacity: 1; }
+}
+
+.repost-overlay-hint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 1.2s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 0.6; }
+}
+
+/* CONFETTI */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 500;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 16px;
+  opacity: 0.9;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
+
+/* ROUND WINNER CELEBRATION */
+.round-winner-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 15, 0.92);
+  z-index: 400;
+  animation: fadeInBanner 0.4s ease;
+}
+
+@keyframes fadeInBanner {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.round-winner-banner .crown { font-size: 5rem; animation: crownBounce 0.6s ease; }
+
+@keyframes crownBounce {
+  0% { transform: scale(0) rotate(-20deg); }
+  50% { transform: scale(1.3) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.round-winner-banner .winner-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 2rem;
+  color: var(--neon-green);
+  text-shadow: 0 0 30px rgba(57,255,20,0.5);
+  margin: 15px 0 5px;
+  animation: winTextSlide 0.5s ease 0.2s both;
+}
+
+@keyframes winTextSlide {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.round-winner-banner .winner-sub {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  animation: winTextSlide 0.5s ease 0.4s both;
+}
+
+/* FINAL WINNER extra flair */
+#winner-screen .winner-name {
+  animation: finalWinnerPulse 1.5s ease infinite alternate;
+}
+
+@keyframes finalWinnerPulse {
+  from { text-shadow: 0 0 20px rgba(57,255,20,0.3); transform: scale(1); }
+  to { text-shadow: 0 0 50px rgba(57,255,20,0.7); transform: scale(1.05); }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <h1 class="title setup-title" id="main-title">XHITTER 💩</h1>
+  <p class="subtitle setup-subtitle" id="main-subtitle">shit talking for clout</p>
+
+  <!-- SETUP -->
+  <div id="setup-screen">
+    <div class="setup-box">
+      <h2>⚡ Enter Players</h2>
+      <label>One player name per line</label>
+      <textarea id="player-input" placeholder="Enter player names, one per line...&#10;&#10;e.g.&#10;xXShadowLordXx&#10;VibeQueen99&#10;Bro Dude&#10;MemeLord420"></textarea>
+      <div class="player-count">Unique players: <span id="player-count-num">0</span></div>
+    </div>
+    <button class="btn btn-start" id="start-btn" disabled>START XHITTING 💩</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game-screen">
+    <div class="battle-grid" id="battle-grid"></div>
+    <div class="event-log" id="event-log"></div>
+    <div class="game-footer">
+      <div class="round-info-line" id="round-info-line"></div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progress-bar"></div>
+      </div>
+      <div class="game-brand">XHITTER 💩 <span style="color:var(--text-dim);font-family:'Space Mono',monospace;font-size:0.6rem;margin-left:8px;">SHIT TALKING FOR CLOUT</span></div>
+    </div>
+  </div>
+
+  <!-- WINNER -->
+  <div id="winner-screen">
+    <div class="trophy">👑</div>
+    <h2>ULTIMATE INFLUENCER</h2>
+    <div class="winner-name" id="final-winner-name"></div>
+    <p style="color:var(--text-dim);margin-top:10px;" id="final-winner-msg"></p>
+    <div class="btn-group">
+      <button class="btn btn-restart" onclick="restartSame()">🔁 REMATCH</button>
+      <button class="btn btn-change" onclick="restartNew()">✏️ CHANGE PLAYERS</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="start-round-overlay" id="start-overlay">⚡ CLICK or press SPACE to start the round ⚡</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+<script>
+// ============ BRAINROT MESSAGES ============
+const BRAINROT_MESSAGES = [
+  "no thoughts just vibes 🧠✨","its giving main character energy fr fr","pov: you just woke up and chose violence","living my best life (delusional edition)","im not lazy im on energy saving mode 🔋","normalize cancelling plans to stare at the ceiling","the vibe check came back negative sorry","touch grass? in THIS economy?","bestie this is NOT the slay you think it is","if you cant handle me at my worst you dont deserve my slightly less worse","my toxic trait is thinking i can fix everything with a nap","not me accidentally becoming the villain of my own story","this post is sponsored by my crippling need for validation","i put the pro in procrastination 💅","romanticizing my life until further notice","the bar is in hell and men are digging","imagine being a morning person couldn't be me","i am once again asking for serotonin","going through it but make it aesthetic","plot twist: i was the drama all along","core memory unlocked: embarrassment","me: i should sleep early. also me at 3am: what if fish have feelings","the algorithm really said let me destroy this persons mental health","screaming into the void and the void said new phone who dis","i dont have red flags i have a whole red carpet 🚩","emotionally unavailable but physically right here","im in my flop era and honestly thriving","delulu is the solulu bestie","my personality is just references to things ive seen online","broke: going outside. woke: doom scrolling for 6 hours","the intrusive thoughts won today","gaslight gatekeep girlboss (affectionate)","i didnt choose the couch life the couch life chose me","tell me youre unhinged without telling me youre unhinged","this is your sign to do absolutely nothing productive","alexa play the sound of my bank account crying","pov: you open your camera on front facing mode","just vibing in the trenches tbh","not a phase mom this is my permanent personality now","if overthinking was a sport id have gold medals","me watching my life fall apart: hmm interesting","the situationship is situating","my last brain cell is on vacation","i peaked in 2019 and its been downhill since","life hack: lower your expectations to zero","chaotic neutral energy only today","im not dramatic the universe is just testing me specifically","normalize having absolutely no idea what youre doing","sorry i cant come out tonight my bed needs me","hot take: water is actually pretty good","the ghosts i see in sleep paralysis are more reliable than men","this post will get 7 likes and all of them will be from bots","if you vibrate at a high enough frequency you become invisible to haters","woke up chose to go back to sleep","me pretending to understand crypto: interesting tell me more","today's mood: a raccoon eating trash in an alley at 2am","side effects may include: scrolling, crying, repeat","i understand the assignment i just chose not to do it","my comfort show is on but im looking at my phone the whole time","trying to manifest but the universe left me on read","what doesnt kill you gives you unhealthy coping mechanisms","its not a breakdown its a spiritual awakening babe","im the friend that says we should totally hang out and never follows up","new personality just dropped who am i today","just remembered something from 2016 and now i cant function","the group chat is carrying my will to live rn","im not toxic im just seasoned","life is short eat the cake then feel guilty about it for 3 days","pov: your screen time report just destroyed your self esteem","relationship status: committed to my sofa","if anxiety was currency id be elon musk","i dont need therapy i need someone to agree with everything i say","normalize leaving the party at 9pm","going feral in the grocery store cereal aisle","the wifi went out for 5 minutes and i saw my family","me: im going to be productive today. narrator: they were not productive","the vibes are off and nobody is fixing them","being an adult is just saying how did i spend that much at target over and over","me googling my symptoms at 2am: so i have 3 days to live cool cool cool","sorry for what i said when i was hungry","im not arguing im explaining why im right","current status: buffering","the main character syndrome is strong today","normalize ugly laughing in public","me pretending im in a music video on the bus: oscar worthy","i contain multitudes (mostly anxiety and snacks)","my attention span said aight imma head out","the vibes are immaculate if you ignore everything falling apart","chaotic good but make it fashion","brain: remember that embarrassing thing? me: its 3am please","if procrastination was an art form id be picasso","new fear unlocked every single day","me: ill have one glass. the bottle: and i took that personally","this tweet is my entire personality","the algorithm knows me better than my therapist","sorry i was on airplane mode for 3 months","not to be dramatic but id literally walk into traffic for garlic bread","the audacity of mondays existing","me explaining my niche hyperfixation to someone who didnt ask","nobody: me: so anyway thats my entire trauma","imagine having your life together couldnt relate","the group project of life and im doing nothing","my love language is sending memes at 1am","emotionally im at a dennys parking lot at 3am","the way i just forgot what i was about to say mid sentence","my plans for the weekend: absolutely unhinged behavior","normalize responding to texts 3 business days later","pov: you just heard yourself on a recording","im in my healing era (still a mess tho)","the confidence i have at home vs in public is wild","not me thinking about what i should have said in that argument 5 years ago","going through the motions but the motions are just scrolling","lowkey highkey might just disappear into the woods","the universe said here have some trauma and called it character development","if looks could kill mine would mildly inconvenience","my toxic trait is starting new shows before finishing old ones","the disrespect of being awake right now","me trying to adult: instructions unclear ended up crying","who decided mornings should start so early","normalize having 47 tabs open in your brain","the way my bank account and my ambitions dont match","sorry cant talk rn im having a silent mental breakdown","me: i dont care what people think. also me: does everyone hate me","the emotional damage is free of charge apparently","my spirit animal is a sloth with anxiety","normalize being wildly unqualified but doing it anyway","pov: you just said something weird and now youre replaying it forever","the vibes shifted and not in a good direction","me trying to function before coffee: error 404","just realized im the toxic friend in the group","the way my sleep schedule is basically a suggestion","things that live rent free in my head: everything","im not avoiding responsibilities im prioritizing self care (lying in bed)","the wifi password to my heart is: feedme","me: time to be healthy. my body: pizza exists though","the existential crisis hits different at 4am","normalize not knowing what day it is","me acting surprised when consequences show up for my actions","the slay has been slain im just surviving now","current mood: that dog sitting in fire saying this is fine","my patience left the chat approximately never had any","pov: you just remembered you have to exist tomorrow too","the way i just gaslit myself into thinking im fine","im not late i was busy being fashionably chaotic","normalize cancelling on yourself","if sarcasm burned calories id be shredded","me vs me its always me losing","the plot thickens but i stopped reading chapters ago","my personality test results just came back: catastrophic","normalize having your crisis in the bathroom at work","pov: you just made eye contact with someone and now you live on mars","the government doesnt want you to know that naps are revolutionary","me manifesting while simultaneously self sabotaging: multitasking","the drama is free and im a loyal customer","sorry officer i didnt know i couldnt do that (i definitely knew)","normalize being the weird friend everyone needs","me in my head: eloquent genius. me out loud: word salad","the audacity of my alarm going off when im sleeping","pov: your phone dies and you have to interact with reality","the way i overshare and then immediately regret it","im not a people person im a snacks person","normalize running away from your problems (cardio)","me at the store for one thing coming out with bags: oops","the vibes are chaotic and thats on brand","pov: you just checked your email and now youre stressed","my energy level is a solid: barely","normalize not having a talent and just existing","me trying to parallel park: a horror movie","the way i just fell up the stairs in front of everyone","im not crying youre crying (we are both crying)","normalize leaving events early because your social battery died","me googling if its normal to: literally everything","the serotonin is on backorder apparently","pov: you just agreed to plans and immediately regretted it","me starting a sentence and forgetting what country im in","the chaos is internal but its leaking","normalize befriending the neighborhood cat instead of humans","me listening to sad music when im already sad: strategy","the way this generation communicates entirely through memes is beautiful","im giving what needs to be given which is nothing today","normalize telling people their baby looks like a potato (with love)","me: i should save money. my cart: lol","the NERVE of having to pay bills every single month","pov: you just sneezed and nobody said bless you so now youre feral","im living proof that sleep deprivation builds character","normalize crying at commercials its called being HUMAN","me: sets 15 alarms. also me: sleeps through all of them. shocked pikachu","the emotional range of a teaspoon but make it relatable","not me creating scenarios in my head and getting mad at them","normalize bringing snacks everywhere as emotional support","me explaining why im late: ok so first the vibes were off","the fact that adulting doesnt come with a tutorial is criminal","pov: you make plans sober and have to follow through","im an influencer i influence people to stay home","my brain has too many tabs open and theyre all playing music","normalize having a favorite parking spot at the grocery store","the way i relate to every single mental health meme is concerning","me: im going on a diet. fridge at midnight: hey bestie","pov: you just realized youve been on your phone for 4 hours","the universe really said here have some problems and dipped","normalize being overdressed for no reason","me pretending i didnt just trip: wow interesting sidewalk","the algorithm feeding me content i didnt know i needed at 3am","im not bossy i just have better ideas than everyone","normalize stress baking at midnight","pov: your ex liked your post from 2019 at 3am","the self awareness is there the self control is not","me in a meeting: nodding pretending i didnt zone out 5 min ago","normalize having a full conversation with your pet","the intrusive thoughts are really putting in overtime today","me: ill just check social media for 5 min. 3 hours later: oh","pov: you accidentally opened the front camera in public","normalize bringing a blanket literally everywhere","me trying to be a morning person: this was a mistake","the DRAMA in my family groupchat could fuel a netflix series","im not passive aggressive im just aggressive aggressive with a smile","normalize eating cereal for dinner its called efficiency","pov: someone asks what you do for fun and your mind goes blank","the way i can memorize song lyrics but not anything useful","me starting a new hobby: this will be my whole personality now. me 2 weeks later: what hobby","normalize being unreasonably attached to a specific water bottle","the ceiling has heard more of my problems than any therapist","me: confrontation. my anxiety: how about we simply never speak again","normalize having a go-to comfort movie you watch 700 times","pov: someone says we need to talk and your soul leaves your body","the way my confidence is entirely weather dependent","me rewriting a text 47 times before sending: k","normalize liking your own posts someone has to","the audacity of my metabolism slowing down in my 20s","pov: you just realized everyone in the room is younger than you","im not old im vintage","normalize talking to yourself its called an executive meeting","me: ill just rest my eyes for 5 min. wakes up in another dimension","the self care is just eating cheese at 11pm apparently","pov: your autocorrect just exposed you in the groupchat","normalize dramatic exits from rooms for no reason","me pretending to look busy when the boss walks by: academy award","the way i can feel my personality changing based on who im around","normalize being emotionally devastated by a fictional character","pov: someone took your unassigned assigned seat","me trying to make small talk: so do you breathe oxygen too","normalize having a crisis playlist ready at all times","the way my plants rely on me for survival is terrifying for them","me: i should go to bed. my brain: but what if aliens","pov: you realize youve been waving at someone who wasnt waving at you","normalize being competitive about the most unserious things","the duality of wanting attention but also please dont look at me","me trying to fold a fitted sheet: abstract art","normalize saying the wrong thing and then thinking about it for 7 years","pov: you just sent a risky text and immediately threw your phone","the way i have trust issues with my own memory","me: i dont need it. my brain: but what if you do. me: purchased","normalize dramatically sighing until someone asks whats wrong","the fact that napping isnt a recognized skill on linkedin is discrimination","pov: you hear your own voicemail greeting and question everything","im in my silly goose era and its permanent","me pretending im fine while everything is literally on fire: this is cozy","normalize having beef with an appliance","the way i overpack for a weekend trip like im relocating","pov: you just realized you told the waiter enjoy your meal too and said you too","me waking up: what fresh hell awaits today","normalize being the first one to laugh at your own joke","the intrusive thoughts are undefeated honestly","pov: you accidentally liked a post from 2017 while stalking","im giving generational trauma but make it quirky","normalize bringing your own snacks to the movie theater","me at 3am questioning every life decision: documentary mode","the emotional support water bottle goes everywhere with me","pov: someone pronounces your name wrong and you just accept your new identity","normalize being irrationally angry at inanimate objects","me trying to explain a meme to my parents: so theres this frog","the audacity of my jeans being tighter today specifically","normalize having a minor breakdown in the target parking lot","pov: you rehearse a phone call like youre preparing for a ted talk","im not dramatic the music is just really emotional right now","the way i alternate between i can do anything and i can do nothing","normalize hiding in the bathroom at social events to recharge","pov: you just accidentally called your teacher mom","me: this is the year i get my life together. december 31: maybe next year","the doomscroll is strong but my willpower is not","normalize eating birthday cake for breakfast its YOUR day","pov: someone asks you to describe yourself and you.exe has stopped working","the way my imposter syndrome has imposter syndrome","me adding things to my cart to feel something: retail therapy","normalize dramatically narrating your own life","pov: you just realized you have food on your face and nobody told you","im chronically online and im not even sorry about it","the universe keeps testing me and i keep failing spectacularly","normalize being the friend who sends 15 texts in a row","me trying to be mysterious: immediately overshares everything","pov: you wave at someone and they dont wave back so you pretend to stretch","the way my anxiety creates scenarios more creative than any writer","normalize having a full skincare routine as a coping mechanism","me in the morning: i hate everything. me after coffee: i tolerate everything","pov: you zone out during a conversation and they ask you a question","the sheer AUDACITY of food delivery fees","normalize wearing the same outfit twice in one week its called sustainability","me: im saving money this month. also me: ooh free shipping if i spend 50 more","pov: you make accidental eye contact with someone twice and now youre enemies","the way i have 99 problems and snacks solve approximately 67 of them","normalize panicking about plans you made while in a good mood","me telling myself ill do it tomorrow for the 47th consecutive day: discipline","pov: someone asks what music you listen to and you have an identity crisis","the emotional support hoodie deserves its own appreciation post","normalize having a signature order at every restaurant","me trying to take a candid photo: looks like a sleep paralysis demon","the way i can waste an entire day and feel accomplished about it","normalize being aggressively optimistic as a defense mechanism","pov: you just lied about having plans tonight and now you feel free","im not antisocial im just pro-solitude","the fact that i have to generate income to survive is honestly rude","normalize talking in movie quotes instead of expressing real emotions","pov: you start a sentence confidently and lose all conviction halfway through","me: balance is key. also me: eats a salad then an entire pizza","the way my attention span has been destroyed by short form content","normalize being weirdly good at one very specific useless thing","pov: your alarm goes off and for a moment you forget who you are","the unhinged energy is a feature not a bug","me trying to be productive: opens laptop sits there closes laptop nap time","normalize having strong opinions about which grocery store is superior","pov: someone walks into the elevator and you both stand in silence","the way i treat my spotify wrapped like its a personality assessment","normalize being dramatically affected by weather changes","me: i should journal my feelings. my journal: dear diary what is wrong with me","pov: you just waved at someone with your phone in your hand and almost threw it","the chaos is the brand at this point","normalize saying bestie to people youve met once","me trying to adult: microwaved water for tea and forgot about it 3 times","pov: someone says youre quiet and now you cant speak for the rest of the event","the way my comfort zone is approximately 2 square feet","normalize treating every minor inconvenience as a personal attack","me making eye contact with my pile of laundry: we meet again","pov: you accidentally send a screenshot to the person you screenshotted","the slay is on life support but were keeping hope alive","normalize being competitively lazy","me: i need to be more present. also me: mentally im in 2003","pov: you rehearse confrontation in the shower and win every time","the emotional whiplash of checking your bank balance","normalize having a parasocial relationship with a fictional character","me: its not that deep. my brain at 3am: its the marianas trench actually","pov: you just triple texted and now youre moving to another country",
+"my therapist: and how does that make you feel. me: like a wet sock in a dryer","the way i just bought something to cope and now i need to cope with my bank balance","normalize having a favorite grocery store aisle you visit for emotional support","pov: someone asks for your wifi password and you panic like its classified info","my brain has two modes: overthink everything or think about absolutely nothing","the audacity of my body needing 8 hours of sleep when theres content to consume","me: ill just watch one episode. netflix: are you still watching. me: dont judge me","normalize having a conversation with yourself and then disagreeing","pov: you accidentally open the group chat you were just talking about","my emotional support beverage is doing the heavy lifting today","the way i can feel my social battery depleting in real time","me trying to be healthy: eats one grape. reward center: now eat an entire pizza","normalize being irrationally proud of parallel parking","pov: someone says per my last email and you know violence was considered","the fact that my phone knows me better than my family is both impressive and sad","me: i should exercise. my couch: but consider this alternative","normalize having beef with a coworker you smile at every morning","the emotional damage of seeing your ex thriving on social media","pov: you accidentally call someone the wrong name and your soul evacuates","me: im going to be so productive this weekend. monday: so that was a lie","the way my autocorrect has given up trying to fix my spelling","normalize dramatically reading texts out loud to your pet for their opinion","pov: someone says we need to circle back and you black out","my love language is sending links with no context at 2am","the fact that i rehearse arguments in the shower and still lose them is wild","me trying to be mysterious: immediately shares my entire life story","normalize having a designated crying bathroom","pov: you make eye contact through a bathroom stall gap and now you can never return","the emotional rollercoaster of checking your bank balance after a night out","me: i should drink more water. also me: is coffee technically water","normalize having an entire personality based on a show you watched once","pov: someone compliments you and you short circuit trying to respond","my toxic trait is reading a text immediately and responding 4 hours later","the way i gaslight myself into thinking 5 hours of sleep is enough","normalize being emotionally attached to a specific mug","pov: you wave at someone in a car and its not who you thought it was","me adding to cart like money is a social construct: retail revolution","the audacity of my body getting tired when i still have scrolling to do","normalize having an opinion about which way the toilet paper should face","pov: someone asks what you do for work and you have an existential moment","my coping mechanism is buying candles like theyre going to fix my life","the fact that i have 47 unread emails and counting is my villain origin story","me: im fine. narrator: they were in fact googling their symptoms again","normalize being the person who always suggests food when plans are discussed","pov: you send a voice note and then listen to it back in horror","the way my confidence leaves my body the second i enter a room full of people","me trying to flirt: so do you also breathe air thats crazy we have so much in common","normalize having a specific gas station you refuse to go to for no logical reason","pov: you accidentally favorite a tweet from 2019 while investigating someone","my social media presence is 90 percent lurking and 10 percent chaos","the emotional weight of deciding what to eat for dinner every single day","me: one more youtube video. youtube: heres a 3 hour documentary. me: perfect","normalize being dramatically betrayed when your favorite show gets cancelled","pov: you check the time during a meeting and only 4 minutes have passed","the way i can spend 3 hours deciding what to watch and then just go to sleep","me pretending i understood the instructions: confident nodding intensifies","normalize having a nemesis at the gym who doesnt know they are your nemesis","pov: someone pronounces espresso as expresso and you feel personally attacked","my therapist would be proud of me if i actually went to therapy","the fact that i type lol more than i actually laugh out loud is concerning","me: ill save this recipe for later. the recipe sitting in my bookmarks for 3 years: hello","normalize planning your outfit the night before like youre going to war","pov: you sneeze in a quiet room and everyone stares like you committed a crime","the way my amazon cart is basically a vision board i accidentally purchase","me during a fire drill: this is the most exercise ive gotten all month","normalize being emotionally wrecked by a pixar movie at age 30","pov: you try to tell a story and forget the point halfway through","my toxic trait is adding things to online carts just to feel something","the audacity of my alarm being so aggressive first thing in the morning","me: i need to go outside more. outside: exists. me: actually nevermind","normalize having strong feelings about where to sit in a restaurant","pov: someone sends you a hey text and you prepare for the worst","the emotional journey of trying to cancel a subscription online","me acting like im listening to a long story: wow really no way thats crazy","normalize being competitive about absolutely nonsensical things","pov: you forget someones name immediately after they introduce themselves","my brain at 3am: what if everyone secretly hates you. me: cool thanks needed that","the way i prepare for a phone call like im about to testify in court","me: im going to eat clean this week. Wednesday: and i took that personally","normalize having a backup plan for your backup plan that you also wont follow","pov: you accidentally like your own post and pretend it was on purpose","the fact that adulting is just a series of asking is this normal in different situations","me explaining my screen time: its research actually","normalize being unable to sleep because you remembered something from 2014","pov: someone asks you to describe yourself in three words and you freeze","my personality is just a collage of every character i thought was cool growing up","the way i can procrastinate procrastinating is honestly a skill","me: this will be a quick trip to target. my wallet: you fool you absolute fool","normalize having heated debates about the correct way to load a dishwasher","pov: you hear your name in a conversation you werent part of and go full detective","the emotional terrorism of someone typing for 5 minutes and then sending ok","me trying to meditate: clear your mind. my mind: remember that thing from 2017","normalize being the friend who always has snacks in their bag like a responsible adult","pov: you confidently give directions and they turn out to be completely wrong","my toxic trait is starting 15 hobbies and mastering exactly zero of them","the way my attention span has been destroyed by 15 second videos is tragic","me: ill just rest my eyes for a minute. four dimensions later: where am i","normalize judging people by their phone battery percentage","pov: someone asks if youve seen a movie and you lie and say yes and they quiz you","the fact that i have opinions about fonts is something i cant explain to normal people","me acting surprised when the thing i procrastinated on becomes urgent: who couldve predicted this","normalize having a different personality in every group chat","pov: you try to discreetly check if something is in your teeth and someone catches you","my emotional support playlist has been working overtime this week","the way i plan entire conversations in my head that never happen is creative writing actually","me: i should unsubscribe from these emails. also me: what if theres a good sale though","normalize being threatened by someone who has their life together","pov: you realize youve been nodding along to a conversation you stopped listening to 5 minutes ago","the audacity of my metabolism just deciding to retire in my late twenties","me googling is it normal to at 3am: the algorithm knows my deepest fears","normalize having a specific order at a restaurant and panicking if its unavailable","pov: someone claps when the plane lands and you question all of humanity","my love language is sending memes that say this is us about situations that are not us","the way i say im going to bed and then scroll for another 2 hours is art","me: financial responsibility starts today. also me: ooh a limited edition version","normalize being emotionally invested in strangers relationships on the internet","pov: you wave back at someone who was actually waving at the person behind you part 47","the fact that i dress like im going somewhere important to go absolutely nowhere","me acting normal after walking into a glass door: nothing to see here folks","normalize having a rivalry with the weather forecast","pov: you open your camera and see yourself from a truly unfortunate angle","my toxic trait is remembering every embarrassing thing ive ever done in chronological order","the way a single text can ruin my entire vibe for the day is honestly powerful","me: i should meal prep. also me: ordering delivery because the kitchen is far","normalize being emotionally destroyed by a song you havent heard in years","pov: someone asks for your honest opinion and you have to decide between truth and friendship","the emotional equivalent of stepping on a lego is checking your credit card statement","me pretending the gym isnt packed and picking the machine next to someone: were workout buddies now","normalize manifesting while simultaneously doing nothing to achieve the thing","pov: you accidentally send a message to the person you were talking about","the fact that my comfort zone has gotten smaller every year since 2020","me: this is the year of no regrets. also me 3 days in: i have several regrets","normalize being aggressively normal about things that should probably concern you","pov: you try to take a cute selfie and end up questioning your entire existence","my brain refusing to remember where i put my keys but remembering every lyric from 2009","the way i say ill be ready in 5 minutes knowing full well its going to be 25","me calculating how much sleep ill get if i fall asleep right now: mathematician mode","normalize having an emotional connection to a gas station snack","pov: someone asks you to speak up in a meeting and your voice cracks","the absolute theater of pretending to look for something in your bag to avoid someone","me trying to be an adult: pays one bill. reward center: treat yourself","normalize being haunted by typos you sent in important emails","pov: you accidentally make eye contact with someone through the gap in bathroom stalls","the way i overthink a two word text message for 45 minutes is a talent","me: im just going to browse. my cart 20 minutes later: that will be three hundred dollars","normalize having a personal vendetta against a household appliance","pov: someone says lets go around the room and introduce ourselves and your heart rate triples","my spirit animal is the spinning wheel of loading because same","the fact that my phone screen time report feels like a personal attack every week","me: ill just have a light snack. the snack: is an entire meal","normalize being suspiciously good at remembering useless trivia but not peoples birthdays","pov: you try to discreetly check your phone and drop it face down on concrete","the way my confidence varies wildly depending on which mirror im looking in","me starting a new journal: this is going to change my life. page 3: abandoned","normalize being emotionally compromised by a particularly good sunset","pov: someone starts a sentence with no offense and you brace for emotional impact","my toxic trait is being fully aware of my problems and doing nothing about them","the audacity of hangers getting tangled like they have a personal vendetta against me","me: i need to be more spontaneous. someone: wanna go out tonight. me: i need 3 business days notice","normalize having a specific way you load the dishwasher and getting upset when others do it wrong","pov: you forget the word for something basic and describe it like a riddle","the emotional devastation of biting into what you thought was chocolate chip but was raisin","me pretending to understand the plot of a movie ive been on my phone during: fascinating cinema","normalize being irrationally angry at people who walk slowly in groups on the sidewalk","pov: you try to tell a joke and mess up the punchline and then explain it which makes it worse","the way i have full conversations in my head with people who dont even know theyre involved","me at self checkout: unexpected item in bagging area. me: thats my emotional baggage","normalize having a favorite pen and experiencing genuine grief when it runs out","pov: you realize the store closed 5 minutes ago and youre still inside","the way i say sure ill figure it out knowing i will absolutely not figure it out","me: im going to start waking up at 6am. my alarm at 6am: absolutely not","normalize being emotionally manipulated by targeted advertising","pov: someone tags you in a photo without warning and its your villain origin story","the audacity of time moving faster on weekends than weekdays","me making plans when im in a good mood vs me when the day actually comes: two different people","normalize having beef with the sun for being too bright at inconvenient times","pov: you try to casually bring up something you saw on their instagram without being creepy","my emotional range goes from i cant even to i literally cant","the way every trip to the store for one thing becomes a full shopping expedition","me: i should organize my closet. my closet: good luck with that","normalize being personally victimized by your own reflection in a zoom call","pov: you see someone you know in public and execute a tactical avoidance maneuver","the fact that my most productive hours are between 11pm and 3am is probably not healthy","me telling myself tomorrow will be different while doing the exact same thing","normalize having a crisis about what to watch and then putting on the same show again","pov: you try to tell someone about a dream and realize halfway through it makes no sense","my toxic trait is agreeing to help people move and then dreading it for two weeks","the way my fridge has more condiments than actual food is a lifestyle choice","me: lets be responsible adults. my friend: theres a sale. me: adulting can wait","normalize being dramatically affected by minor changes in routine","pov: someone reads your message and doesnt reply and you write their eulogy in your head","the emotional whiplash of getting a notification that turns out to be an app update","me at 2am: i should reorganize my entire life. me at 8am: surviving is enough","normalize having a parasocial relationship with a podcast host","pov: you accidentally hit reply all and watch your career flash before your eyes","the way i can spend an hour choosing a netflix show and 10 minutes actually watching it","me: i dont need a cart ill just carry everything. me 5 minutes later: my arms are failing","normalize being threatened by people who wake up early and are happy about it","pov: someone asks whats your five year plan and you cant even plan dinner","the absolute confidence i have online vs the anxiety i have ordering food in person","me: lets eat healthy. my uber eats history: that was never the plan","normalize having genuine opinions about which direction the toilet paper faces","pov: you start telling a story and realize nobodys listening so you just trail off","the way i can feel a personality shift happening based on what music is playing","me pretending to know what im doing at work: corporate confidence achieved","normalize being emotionally attached to a hoodie that should have been retired years ago"
+];
+
+// ============ GLOBALS ============
+let allPlayers = [];
+let currentPlayers = [];
+let salt = '';
+let groups = [];
+let roundResults = [];
+let currentRoundIndex = 0;
+let currentGroupIndex = 0;
+let gameInterval = null;
+let eliminationInterval = null;
+let repostInterval = null;
+let sortInterval = null;
+let usedMessages = new Set();
+let gamePhase = 'setup'; // setup, groups, finals
+
+// ============ PHONY INFLUENCERS ============
+const INFLUENCERS = [
+  {name:"Zlippy Zorp the GOAT",tag:"@zlippyzorp"},
+  {name:"Crunch Mildew Supreme",tag:"@crunchymildew"},
+  {name:"Skibidi Snacc Attack",tag:"@skibidisanacc"},
+  {name:"Glorp Glow-Up Era",tag:"@glorpglow"},
+  {name:"Nibble Wobble Esq.",tag:"@nibblewobble"},
+  {name:"Froggy Static TV",tag:"@froggystatic"},
+  {name:"Soggy Byte Deluxe",tag:"@soggybyte"},
+  {name:"Blinko Bingington",tag:"@blinkobing"},
+  {name:"Waffle Vortex 3000",tag:"@wafflevortex"},
+  {name:"Sir Gloop Fizz",tag:"@gloopfizz"},
+  {name:"Snorfle Pop Certified",tag:"@snorflepop"},
+  {name:"Bingus Drip Reloaded",tag:"@bingusdrip"},
+  {name:"Crusty Orbit Prime",tag:"@crustyorbit"},
+  {name:"Zaza the Zoodle",tag:"@zazazoodle"},
+  {name:"Muffin Static Arc",tag:"@muffinstatic"},
+  {name:"Blip Blorpington",tag:"@blipblorp"},
+  {name:"Toasty Goblin Mode",tag:"@toasty_goblin"},
+  {name:"Quantum Noodle QC",tag:"@quantumnoodle"},
+  {name:"Skittle Spasm Live",tag:"@skittlespasm"},
+  {name:"Plinko Jellybean",tag:"@plinkojelly"},
+  {name:"Rizzle Chunk the Third",tag:"@rizzlechunk"},
+  {name:"Giga Wiggle Wig",tag:"@gigawiggle"},
+  {name:"Snick Snacko Supreme",tag:"@snicksnacko"},
+  {name:"Borp the Slinger",tag:"@borpslinger"},
+  {name:"Fizzlet Wink Wonka",tag:"@fizzletwink"},
+  {name:"Mango Mush Mania",tag:"@mangomush"},
+  {name:"Cringe Sprout Sprouted",tag:"@cringesprout"},
+  {name:"Jibble Jolt Jr.",tag:"@jibblejolt"},
+  {name:"Nutter Blinkathon",tag:"@nutterblink"},
+  {name:"Pog Slime Central",tag:"@pogslime"},
+  {name:"Glizzy Glimmer Glam",tag:"@glizzyglimmer"},
+  {name:"Bloop Doodle Dandy",tag:"@bloopdoodle"},
+  {name:"Wobble Spork & Co",tag:"@wobblespork"},
+  {name:"Sizzle Wink Express",tag:"@sizzlewink"},
+  {name:"Gunk Bunny Buns",tag:"@gunkbunny"},
+  {name:"Hyper Tofu Titan",tag:"@hypertofu"},
+  {name:"Skronk Wave Radio",tag:"@skronkwave"},
+  {name:"Puddle Panic!",tag:"@puddlepainic"},
+  {name:"Nib Nab Noodlehouse",tag:"@nibnabnoodle"},
+  {name:"Zing Zoodle Zoom",tag:"@zingzoodle"},
+  {name:"Bark Byte.exe",tag:"@barkbyte"},
+  {name:"Spud Frenzy Fiesta",tag:"@spudfrenzy"},
+  {name:"Goober Flux Capacitor",tag:"@gooberflux"},
+  {name:"Twango Fizzleton",tag:"@twangofizz"},
+  {name:"Snuggle Zap Zapper",tag:"@snugglezap"},
+  {name:"Biscuit Realm Royale",tag:"@biscuitrealm"},
+  {name:"Fizzle Crumb Crumble",tag:"@fizzlecrumb"},
+  {name:"Yap Zap Yolkster",tag:"@yapzapyolk"},
+  {name:"Orbit Oofington",tag:"@orbitoof"},
+  {name:"Tater Twist Deluxe",tag:"@tatertwist"},
+  {name:"Blink Biscuit Baron",tag:"@blinkbiscuit"},
+  {name:"Skribble Splat Splatoon",tag:"@skribblesplat"},
+  {name:"Clout Crayon Crayola",tag:"@cloutcrayon"},
+  {name:"Wiggle Wormhole Warp",tag:"@wigglewormhole"},
+  {name:"Noodle Nuke Nukem",tag:"@noodlenuke"},
+  {name:"Zorp Zone Z",tag:"@zorpzone"},
+  {name:"Buzzy Fungus Amongus",tag:"@buzzyfungus"},
+  {name:"Ramen Ruckus Riot",tag:"@ramenruckus"},
+  {name:"Glimmer Gunk Glamour",tag:"@glimmergunk"},
+  {name:"Snazzy Splat Splash",tag:"@snazzysplat"},
+  {name:"Crispy Meme Lordship",tag:"@crispymemelord"},
+  {name:"Goblin Mode Maximum",tag:"@goblinmodemax"},
+  {name:"Sog Champ Supreme",tag:"@sogchamp"},
+  {name:"Pancake Static Stack",tag:"@pancakestatic"},
+  {name:"Flop Era Reload",tag:"@flopera"},
+  {name:"Zoodle Zoomer",tag:"@zoodlezoom"},
+  {name:"Bing Bong the Bard",tag:"@bingbongbard"},
+  {name:"Snack Attack O'Clock",tag:"@snackattacko"},
+  {name:"Mushroom Mayhem MD",tag:"@mushroommayhem"},
+  {name:"Doodle Dorkington",tag:"@doodledork"},
+  {name:"Crinkle Core Chaos",tag:"@crinklecore"},
+  {name:"Fizz Gob Goblin",tag:"@fizzgob"},
+  {name:"Blink Snack Supreme",tag:"@blinksnaack"},
+  {name:"Tofu Tempest Storm",tag:"@tofutempest"},
+  {name:"Rizzler Ranch Royale",tag:"@rizzlerranch"},
+  {name:"Nyan Noodle Nonsense",tag:"@nyannoodle"},
+  {name:"Oof Orbit Odyssey",tag:"@oofoorbit"},
+  {name:"Gloop Guruji",tag:"@gloopguru"},
+  {name:"Snickerdoodle of Doom",tag:"@snickerdoodledoom"},
+  {name:"Pixel Pickle Pro",tag:"@pixelpickle"},
+  {name:"Splat Daddy Deluxe",tag:"@splatdaddy"},
+  {name:"Rizz Wizard 9000",tag:"@rizzwizard"},
+  {name:"Yeet Yeeterston",tag:"@yeetyeet"},
+  {name:"Clonk Donkey Mode",tag:"@clonkdonk"},
+  {name:"Spaghetti Senpai",tag:"@spaghettisenpai"},
+  {name:"Moist Crisp Legend",tag:"@moistcrisp"},
+  {name:"Turbo Snail Racing",tag:"@turbosnail"},
+  {name:"Feral Pickle Jar",tag:"@feralpickle"},
+  {name:"Broccoli Bandit Bob",tag:"@broccolibandit"},
+  {name:"Gonk the Unhinged",tag:"@gonkunhinged"},
+  {name:"Slurp Supreme Court",tag:"@slurpsupreme"},
+  {name:"Vibe Czar Certified",tag:"@vibeczar"},
+  {name:"Mushy Pea Protocol",tag:"@mushypea"},
+  {name:"Bongo Biscuit Brain",tag:"@bongobiscuit"},
+  {name:"Crunchwrap Chaos",tag:"@crunchwrapchaos"},
+  {name:"Drip Lord Eternal",tag:"@driplord"},
+  {name:"Floof Commander",tag:"@floofcommander"},
+  {name:"Gnocchi Nightmare",tag:"@gnocchinight"},
+  {name:"Holographic Ham",tag:"@holographicham"},
+  {name:"Infinite Scroll Sage",tag:"@infinitescroll"},
+  {name:"Jellyfish Jester",tag:"@jellyjester"},
+  {name:"Kebab King Khaos",tag:"@kebabking"},
+  {name:"Linguine Lurker",tag:"@linguinelurk"},
+  {name:"Mango Menace Manor",tag:"@mangomenace"},
+  {name:"Nugget Nomad Nation",tag:"@nuggetnomad"},
+  {name:"Oatmeal Overlord",tag:"@oatmeallord"},
+  {name:"Pretzel Phantom PhD",tag:"@pretzelphantom"},
+  {name:"Queso Quest Queen",tag:"@quesoquest"},
+  {name:"Rogue Radish Rex",tag:"@rogueradish"},
+  {name:"Socks n Sandals Stan",tag:"@sockssandals"},
+  {name:"Taco Tornado Tim",tag:"@tacotornado"},
+  {name:"Udon Underdog Ultra",tag:"@udonunderdog"},
+  {name:"Velvet Void Vince",tag:"@velvetvoid"},
+  {name:"Wasp Whisperer W",tag:"@waspwhisperer"},
+  {name:"Xtra Xtra Xhitter",tag:"@xtraxhitter"},
+  {name:"Yam Yeet Yacht",tag:"@yamyeetyacht"},
+  {name:"Zesty Zombie Zen",tag:"@zestyzombie"},
+  {name:"Alpha Avocado Arc",tag:"@alphaavocado"},
+  {name:"Beta Burrito Bro",tag:"@betaburrito"},
+  {name:"Cosmic Corn Dog",tag:"@cosmiccorn"},
+  {name:"Doom Donut Drip",tag:"@doomdonut"},
+  {name:"Echo Enchilada Era",tag:"@echoenchilada"},
+  {name:"Fudge Factory Flex",tag:"@fudgeflex"},
+  {name:"Grumpy Grape God",tag:"@grumpygrape"},
+  {name:"Humble Hotdog Hero",tag:"@humblehotdog"},
+  {name:"Icy Igloo Influencer",tag:"@icyigloo"},
+  {name:"Janky Juice Box",tag:"@jankyjuice"},
+  {name:"Kale Kween Kaos",tag:"@kalekween"},
+  {name:"Lemon Lad Legacy",tag:"@lemonlad"},
+  {name:"Muffin Man Manifesto",tag:"@muffinmanifesto"},
+  {name:"Nachos at Night",tag:"@nachosnight"},
+  {name:"Olive Oil Oracle",tag:"@oliveoiloracle"},
+  {name:"Popcorn Pirate Pat",tag:"@popcornpirate"},
+  {name:"Quinoa Queen Quest",tag:"@quinoaqueen"},
+  {name:"Ramen Rebel Rising",tag:"@ramenrebel"},
+  {name:"Smoothie Szn Stan",tag:"@smoothieszn"},
+  {name:"Toast Tyrant TikTok",tag:"@toasttyrant"},
+  {name:"Umami Ultra Unc",tag:"@umamiultra"},
+  {name:"Veggie Villain Vibes",tag:"@veggievillain"},
+  {name:"Waffle Warlord W",tag:"@wafflewarlord"},
+  {name:"Xtreme Xylophone",tag:"@xtremexylophone"},
+  {name:"Yogurt Yapper Yo",tag:"@yogurtyapper"},
+  {name:"Zucchini Zealot Z",tag:"@zucchinizealot"},
+  {name:"Angry Asparagus A",tag:"@angryasparagus"},
+  {name:"Blaze Brownie Baron",tag:"@blazebrownie"},
+  {name:"Churro Champion",tag:"@churrochamp"},
+  {name:"Dank Dumpling Duke",tag:"@dankdumpling"},
+  {name:"Eggplant Emperor",tag:"@eggplantemperor"},
+  {name:"Funky Falafel Fred",tag:"@funkyfalafel"},
+  {name:"Garlic Gang OG",tag:"@garlicgang"},
+  {name:"Hummus Hustler Hub",tag:"@hummushustler"},
+  {name:"Iced Tea Idol",tag:"@icedteaidol"},
+  {name:"Jalapeno Jedi Jeff",tag:"@jalapenojedi"},
+  {name:"Kimchi King Kong",tag:"@kimchiking"},
+  {name:"Lasagna Lifestyle",tag:"@lasagnalife"},
+  {name:"Marshmallow Mafia",tag:"@marshmallowmafia"},
+  {name:"Noodle Ninja NPC",tag:"@noodleninja"},
+  {name:"Oreo Oracle Online",tag:"@oreooracle"},
+  {name:"Pasta Pope Premium",tag:"@pastapope"},
+  {name:"Quiche Quake Quinn",tag:"@quichequake"},
+  {name:"Ravioli Rascal Rex",tag:"@raviolirascal"},
+  {name:"Sushi Sensei Stan",tag:"@sushisensei"},
+  {name:"Truffle Trouble T",tag:"@truffletrouble"},
+  {name:"Ultra Udon Utopia",tag:"@ultraudon"},
+  {name:"Vanilla Vandal V",tag:"@vanillavandal"},
+  {name:"Wasabi Warrior W",tag:"@wasabiwarrior"},
+  {name:"Xpresso Xpert X",tag:"@xpressoxpert"},
+  {name:"Yakisoba Yolo Y",tag:"@yakisobayolo"},
+  {name:"Ziti Zapper Zone",tag:"@zitizapper"},
+  {name:"Boba Boss Battle",tag:"@bobaboss"},
+  {name:"Chai Chat Champion",tag:"@chaichat"},
+  {name:"Donut Drama Daily",tag:"@donutdrama"},
+  {name:"Edamame Empire E",tag:"@edamameempire"},
+  {name:"Fries First Forever",tag:"@friesfirst"},
+  {name:"Gyoza Gang Grind",tag:"@gyozagang"},
+  {name:"Hash Brown Hero H",tag:"@hashbrownhero"},
+  {name:"Ice Pop Icon I",tag:"@icepopicon"},
+  {name:"Jelly Jam Junkie",tag:"@jellyjamjunkie"},
+  {name:"Katsu Karma King",tag:"@katsukarma"},
+  {name:"Latte Lurker Lord",tag:"@lattelurker"},
+  {name:"Mocha Menace Mode",tag:"@mochamenace"},
+  {name:"Nacho Ninja Night",tag:"@nachoninja"},
+  {name:"Onion Ring Oracle",tag:"@onionringoracle"},
+  {name:"Pizza Party Patrol",tag:"@pizzapatrol"},
+  {name:"Quesadilla Quest Q",tag:"@quesadillaquest"},
+  {name:"Roti Riot Radio",tag:"@rotiriot"},
+  {name:"Scone Scene Supreme",tag:"@sconescene"},
+  {name:"Tempura Titan TT",tag:"@tempuratitan"},
+  {name:"Unagi Underworld",tag:"@unagiunderworld"},
+  {name:"Vindaloo Vibes V",tag:"@vindaloovibes"},
+  {name:"Wonton Wizard W",tag:"@wontonwizard"},
+  {name:"Xiaolongbao Xtra",tag:"@xiaolongbaox"},
+  {name:"Yuzu Yapper Yeet",tag:"@yuzuyapper"},
+  {name:"Zaatar Zombie Zoo",tag:"@zaatarzombie"},
+  {name:"Acai Anarchist A",tag:"@acaianarchist"},
+  {name:"Bibimbap Bandit B",tag:"@bibimbapbandit"},
+  {name:"Croissant Chaos C",tag:"@croissantchaos"},
+  {name:"Dalgona Drama D",tag:"@dalgona_drama"},
+  {name:"Espresso Ego Trip",tag:"@espressoego"},
+  {name:"Focaccia Freak F",tag:"@focacciafreak"},
+  {name:"Granola Gremlin G",tag:"@granolagremlin"},
+  {name:"Halloumi Hype H",tag:"@halloumihype"},
+  {name:"Injera Icon I",tag:"@injeraicon"},
+  {name:"Jerk Chicken Jester",tag:"@jerkjester"},
+  {name:"Kombucha Kween K",tag:"@kombuchakween"},
+  {name:"Lobster Lurk Lord",tag:"@lobsterlurk"},
+  {name:"Matcha Madness M",tag:"@matchamadness"},
+  {name:"Naan Nightmare N",tag:"@naannightmare"},
+  {name:"Okonomiyaki OG",tag:"@okonomiyakiog"},
+  {name:"Pho Phoenix P",tag:"@phophoenix"},
+  {name:"Quiche Queen Q2",tag:"@quichequeen2"},
+  {name:"Risotto Rebel R",tag:"@risottorebel"},
+  {name:"Samosa Savage S",tag:"@samosasavage"},
+  {name:"Tiramisu Terror T",tag:"@tiramisuterror"},
+  {name:"Ube Uprising U",tag:"@ubeuprising"},
+  {name:"Vermicelli Vandal V",tag:"@vermicelliv"},
+  {name:"Wagyu Warlord W2",tag:"@wagyuwarlord"},
+  {name:"Xiao Mai Xtreme",tag:"@xiaomaixtreme"},
+  {name:"Yorkshire Yapper Y",tag:"@yorkshireyap"},
+  {name:"Zeppole Zealot Z2",tag:"@zeppolezealot"},
+  {name:"Arancini Agent A",tag:"@aranciniagent"},
+  {name:"Baklava Brawler B",tag:"@baklavabrawl"},
+  {name:"Cannoli Crusader C",tag:"@cannolicrusader"},
+  {name:"Dim Sum Demon D",tag:"@dimsumdemon"},
+  {name:"Eclair Elite E",tag:"@eclairelite"},
+  {name:"Flan Fanatic F",tag:"@flanfanatic"},
+  {name:"Goulash Guru G",tag:"@goulashguru"},
+  {name:"Humbow Hooligan H",tag:"@humbowhooligan"},
+  {name:"Idli Instigator I",tag:"@idliinstigator"},
+  {name:"Jambalaya Joker J",tag:"@jambalayajoker"},
+  {name:"Knish Knight K",tag:"@knishknight"},
+  {name:"Lumpia Legend L",tag:"@lumpialeqend"},
+  {name:"Mochi Monster M",tag:"@mochimonster"},
+  {name:"Nasi Goreng Nerd N",tag:"@nasigorengnerd"},
+  {name:"Oyster Oracle O",tag:"@oysteroracle"},
+  {name:"Pierogi Phantom P",tag:"@pierogiphantom"},
+  {name:"Queso Quasar Q2",tag:"@quesoquasar"},
+  {name:"Rendang Rogue R",tag:"@rendangrogue"},
+  {name:"Schnitzel Sage S",tag:"@schnitzelsage"},
+  {name:"Tamale Titan T2",tag:"@tamaletitan"},
+  {name:"Urchin Ultraman U",tag:"@urchinultra"},
+  {name:"Vol-au-vent Vandal",tag:"@volauventvandal"},
+  {name:"Wurst Wizard W3",tag:"@wurstwizard"},
+  {name:"Xinjiang Xpert X",tag:"@xinjiangxpert"},
+  {name:"Yaki Udon Yeller",tag:"@yakiudonyell"},
+  {name:"Zabaglione Zapper",tag:"@zabaglionezap"},
+  {name:"Arepa Avenger A2",tag:"@arepaavenger"},
+  {name:"Beignet Beast B2",tag:"@beignetbeast"},
+  {name:"Ceviche Champion C2",tag:"@cevichechamp"},
+  {name:"Dolma Destroyer D2",tag:"@dolmadestroyer"},
+  {name:"Empanada Elite E2",tag:"@empanadaelite"},
+  {name:"Fattoush Fighter F2",tag:"@fattoushfighter"},
+  {name:"Gimbap Guardian G2",tag:"@gimbapguardian"},
+  {name:"Harissa Havoc H2",tag:"@harissahavoc"},
+  {name:"Isso Insane I2",tag:"@issoinsane"},
+  {name:"Jollof Juggernaut J2",tag:"@jollofjugg"},
+  {name:"Katayef Kingpin K2",tag:"@katayefking"},
+  {name:"Laksa Legend L2",tag:"@laksalegend"},
+  {name:"Mansaf Maniac M2",tag:"@mansafmaniac"},
+  {name:"Nyonya Nuke N2",tag:"@nyonyanuke"},
+  {name:"Omurice Oracle O2",tag:"@omuriceoracle"},
+  {name:"Pupusa Prince P2",tag:"@pupusaprince"},
+  {name:"Quiche Querent Q3",tag:"@quichequerent"},
+  {name:"Ragu Renegade R2",tag:"@ragurenegade"},
+  {name:"Sfogliatella Spy S2",tag:"@sfogliatellaspy"},
+  {name:"Tteokbokki Titan T3",tag:"@tteokbokkititan"}
+];
+
+// ============ UTILS ============
+function normalizePlayer(name) {
+  return name.replace(/[^a-z0-9]/gi, '').toLowerCase();
+}
+
+function generateSalt() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}_${pad(d.getMonth()+1)}_${pad(d.getDate())}_${pad(d.getHours())}_${pad(d.getMinutes())}_${pad(d.getSeconds())}`;
+}
+
+function hashPlayer(name, salt) {
+  return md5(normalizePlayer(name) + salt);
+}
+
+function getUniquePlayersFromInput(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const seen = new Set();
+  const unique = [];
+  for (const line of lines) {
+    const norm = normalizePlayer(line);
+    if (norm && !seen.has(norm)) {
+      seen.add(norm);
+      unique.push(line);
+    }
+  }
+  return unique;
+}
+
+function createGroups(players, saltVal) {
+  // Hash-sort players
+  const sorted = [...players].sort((a, b) => {
+    return hashPlayer(a, saltVal).localeCompare(hashPlayer(b, saltVal));
+  });
+
+  const n = sorted.length;
+  let numGroups;
+  if (n <= 9) {
+    numGroups = 1;
+  } else {
+    numGroups = Math.ceil(n / 9);
+    // Ensure no group > 9
+    while (Math.ceil(n / numGroups) > 9) numGroups++;
+  }
+
+  const baseSize = Math.floor(n / numGroups);
+  const remainder = n % numGroups;
+  const grps = [];
+  let idx = 0;
+  for (let i = 0; i < numGroups; i++) {
+    const size = baseSize + (i < remainder ? 1 : 0);
+    grps.push(sorted.slice(idx, idx + size));
+    idx += size;
+  }
+
+  // Sort groups by MD5 hash of concatenated normalized names
+  grps.sort((a, b) => {
+    const ha = md5(a.map(p => normalizePlayer(p)).join('') + saltVal);
+    const hb = md5(b.map(p => normalizePlayer(p)).join('') + saltVal);
+    return ha.localeCompare(hb);
+  });
+
+  return grps;
+}
+
+function getRandomMessage() {
+  const available = BRAINROT_MESSAGES.filter((_, i) => !usedMessages.has(i));
+  if (available.length === 0) {
+    usedMessages.clear();
+    return getRandomMessage();
+  }
+  const idx = Math.floor(Math.random() * available.length);
+  const origIdx = BRAINROT_MESSAGES.indexOf(available[idx]);
+  usedMessages.add(origIdx);
+  return available[idx];
+}
+
+function playerColor(name) {
+  const h = parseInt(md5(name).slice(0, 6), 16) % 360;
+  return `hsl(${h}, 70%, 55%)`;
+}
+
+function showToast(msg, duration = 2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function addEventLog(type, playerName, likesOrInfo) {
+  const log = document.getElementById('event-log');
+  if (!log) return;
+  const entry = document.createElement('div');
+  entry.className = `event-entry ${type}-event`;
+  if (type === 'lame') {
+    entry.innerHTML = `<span class="event-icon">💀</span><span class="event-name">@${playerName}</span> LAME <span style="opacity:0.6">(${likesOrInfo.toLocaleString()}❤️)</span>`;
+  } else if (type === 'cancelled') {
+    entry.innerHTML = `<span class="event-icon">🚫</span><span class="event-name">@${playerName}</span> CANCELLED <span style="opacity:0.6">(${likesOrInfo.toLocaleString()}❤️)</span>`;
+  } else if (type === 'repost') {
+    entry.innerHTML = `<span class="event-icon">🔁</span><span class="event-name">@${playerName}</span> ${likesOrInfo}`;
+  }
+  log.appendChild(entry);
+}
+
+function clearEventLog() {
+  const log = document.getElementById('event-log');
+  if (log) log.innerHTML = '';
+}
+
+// ============ SETUP ============
+const textarea = document.getElementById('player-input');
+const countEl = document.getElementById('player-count-num');
+const startBtn = document.getElementById('start-btn');
+
+textarea.addEventListener('input', () => {
+  const players = getUniquePlayersFromInput(textarea.value);
+  countEl.textContent = players.length;
+  startBtn.disabled = players.length < 2;
+});
+
+startBtn.addEventListener('click', () => {
+  const players = getUniquePlayersFromInput(textarea.value);
+  if (players.length < 2) return;
+  allPlayers = players;
+  startGame(players);
+});
+
+// ============ GAME START ============
+function startGame(players) {
+  currentPlayers = [...players];
+  salt = generateSalt();
+  usedMessages.clear();
+  groups = createGroups(currentPlayers, salt);
+  roundResults = [];
+  currentRoundIndex = 0;
+  currentGroupIndex = 0;
+
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('winner-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+
+  if (groups.length === 1 && groups[0].length <= 9) {
+    gamePhase = 'finals';
+    startRound(groups[0], 'FINAL BATTLE', `All ${groups[0].length} players`);
+  } else {
+    gamePhase = 'groups';
+    startNextGroup();
+  }
+}
+
+function startNextGroup() {
+  if (currentGroupIndex >= groups.length) {
+    // All groups in this phase are done
+    if (roundResults.length === 1) {
+      // Only one winner total — game over
+      endGame(roundResults[0]);
+      return;
+    }
+
+    // Move to finals with all collected winners
+    gamePhase = 'finals';
+
+    if (roundResults.length > 9) {
+      // Too many winners for one round — split into finals heats
+      const winners = [...roundResults];
+      roundResults = [];
+      groups = createGroups(winners, salt + '_finals');
+      currentGroupIndex = 0;
+      startNextGroup();
+    } else {
+      // All winners fit in one final round
+      const finalists = [...roundResults];
+      roundResults = [];
+      groups = [finalists];
+      currentGroupIndex = 0;
+      startNextGroup();
+    }
+    return;
+  }
+
+  const group = groups[currentGroupIndex];
+  const totalGroups = groups.length;
+
+  const progress = ((currentGroupIndex) / totalGroups) * 100;
+  document.getElementById('progress-bar').style.width = progress + '%';
+
+  const isFinals = gamePhase === 'finals';
+  const title = isFinals
+    ? (totalGroups === 1 ? '🏆 GRAND FINALS 🏆' : `FINALS — HEAT ${currentGroupIndex + 1}/${totalGroups}`)
+    : `GROUP ${currentGroupIndex + 1} of ${totalGroups}`;
+
+  startRound(
+    group,
+    title,
+    `${group.length} players competing`
+  );
+}
+
+// ============ ROUND LOGIC ============
+function startRound(players, title, info) {
+  document.getElementById('round-info-line').textContent = `${title} — ${info}`;
+  clearEventLog();
+
+  // Shrink header during gameplay
+  document.getElementById('main-title').classList.remove('setup-title');
+  document.getElementById('main-subtitle').classList.remove('setup-subtitle');
+  document.getElementById('main-title').style.display = 'none';
+  document.getElementById('main-subtitle').style.display = 'none';
+
+  const grid = document.getElementById('battle-grid');
+  grid.innerHTML = '';
+
+  const state = players.map(player => ({
+    player,
+    message: getRandomMessage(),
+    likes: 0,
+    eliminated: false,
+    eliminationType: null,
+    reposted: false,
+    repostBoost: 1
+  }));
+
+  // Build cards
+  state.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.id = `card-${i}`;
+    card.innerHTML = `
+      <div class="post-card-header">
+        <span class="avatar" style="background:${playerColor(s.player)}">${s.player.charAt(0).toUpperCase()}</span>
+        <div class="name-col">
+          <span class="display-name">${s.player}</span>
+          <span class="handle">@${normalizePlayer(s.player)}</span>
+        </div>
+      </div>
+      <div class="post-card-body">
+        <div class="post-message">${s.message}</div>
+        <div class="repost-badge" id="repost-${i}">
+          🔁 Reposted by <span class="influencer-name" id="repost-name-${i}"></span>
+        </div>
+      </div>
+      <div class="post-card-footer">
+        <div class="like-bar-container">
+          <div class="like-bar" id="bar-${i}" style="width:0%;background:${playerColor(s.player)}"></div>
+        </div>
+        <div class="like-count">
+          <span class="heart">❤️</span>
+          <span id="likes-${i}">0</span>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Show overlay — wait for click or space
+  const overlay = document.getElementById('start-overlay');
+  overlay.style.display = 'block';
+
+  function beginRound() {
+    overlay.style.display = 'none';
+    document.removeEventListener('keydown', onKey);
+    overlay.removeEventListener('click', beginRound);
+    runRound(state);
+  }
+
+  function onKey(e) {
+    if (e.code === 'Space' || e.key === ' ') {
+      e.preventDefault();
+      beginRound();
+    }
+  }
+
+  document.addEventListener('keydown', onKey);
+  overlay.addEventListener('click', beginRound);
+}
+
+function runRound(state) {
+  let winner = null;
+
+  if (gameInterval) clearInterval(gameInterval);
+  if (eliminationInterval) clearInterval(eliminationInterval);
+  if (repostInterval) clearInterval(repostInterval);
+  if (sortInterval) clearInterval(sortInterval);
+
+  let paused = false;
+  const usedInfluencerIndices = new Set();
+
+  // Repost system: every 4 seconds, random chance an influencer reposts someone's post
+  // Shows a BIG fullscreen takeover, pauses game until click/space
+  // Each influencer can only repost once per game
+  repostInterval = setInterval(() => {
+    if (winner || paused) return;
+    const active = state.filter(s => !s.eliminated && !s.reposted);
+    if (active.length === 0) return;
+
+    // Check if any influencers left
+    const availableInfluencers = INFLUENCERS.map((inf, i) => i).filter(i => !usedInfluencerIndices.has(i));
+    if (availableInfluencers.length === 0) return;
+
+    // ~30% chance each check
+    if (Math.random() > 0.3) return;
+
+    paused = true;
+
+    const target = active[Math.floor(Math.random() * active.length)];
+    const infIdx = availableInfluencers[Math.floor(Math.random() * availableInfluencers.length)];
+    const influencer = INFLUENCERS[infIdx];
+    usedInfluencerIndices.add(infIdx);
+
+    target.reposted = true;
+    const boost = 2 + Math.floor(Math.random() * 4); // 2x - 5x
+    target.repostBoost = boost;
+
+    const idx = state.indexOf(target);
+    const badge = document.getElementById(`repost-${idx}`);
+    const nameEl = document.getElementById(`repost-name-${idx}`);
+    if (badge) badge.classList.add('active');
+    if (nameEl) nameEl.textContent = `${influencer.name} ${influencer.tag}`;
+
+    // Show big repost overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'repost-overlay';
+    overlay.innerHTML = `
+      <div class="repost-overlay-icon">🔁</div>
+      <div class="repost-overlay-label">REPOSTED!</div>
+      <div class="repost-overlay-influencer">${influencer.name}</div>
+      <div class="repost-overlay-tag">${influencer.tag}</div>
+      <div class="repost-overlay-arrow">just reposted</div>
+      <div class="repost-overlay-player">@${normalizePlayer(target.player)}</div>
+      <div class="repost-overlay-effect">⚡ ${boost}× LIKE BOOST ACTIVATED ⚡</div>
+      <div class="repost-overlay-hint">press SPACE or click to continue</div>
+    `;
+    document.body.appendChild(overlay);
+
+    addEventLog('repost', target.player, `${boost}× by ${influencer.tag}`);
+
+    function dismiss() {
+      overlay.remove();
+      paused = false;
+      document.removeEventListener('keydown', onKey);
+    }
+
+    function onKey(e) {
+      if (e.code === 'Space' || e.key === ' ') { e.preventDefault(); dismiss(); }
+    }
+
+    overlay.addEventListener('click', dismiss);
+    document.addEventListener('keydown', onKey);
+  }, 4000);
+
+  // Like assignment: every 150ms (slower, more readable pace)
+  // Each tick: pick ONE random active player, give them 2-5 likes
+  // 1/12 chance of mega burst: 20-60 likes to one player
+  gameInterval = setInterval(() => {
+    if (winner || paused) return;
+
+    const active = state.filter(s => !s.eliminated);
+    if (active.length === 0) return;
+
+    // Auto-win if only 1 player left
+    if (active.length === 1 && !winner) {
+      winner = active[0];
+      clearInterval(gameInterval);
+      clearInterval(eliminationInterval);
+      clearInterval(repostInterval);
+      clearInterval(sortInterval);
+      const wIdx = state.indexOf(winner);
+      const wCard = document.getElementById(`card-${wIdx}`);
+      if (wCard) {
+        wCard.classList.remove('leading');
+        wCard.classList.add('winner');
+      }
+      showToast(`🏆 @${winner.player} is the INFLUENCER OF THE MOMENT! ${winner.likes.toLocaleString()} LIKES!`, 3000);
+
+      setTimeout(() => {
+        advanceRound(winner.player, winner.likes);
+      }, 2500);
+      return;
+    }
+
+    // Weighted random: players with more likes are more likely to get picked (momentum)
+    // Reposted players get a big multiplier
+    const weights = active.map(s => {
+      const base = 1 + (s.likes / 100);
+      return base * (s.repostBoost || 1);
+    });
+    const totalWeight = weights.reduce((a, b) => a + b, 0);
+    let roll = Math.random() * totalWeight;
+    let target = active[0];
+    for (let i = 0; i < active.length; i++) {
+      roll -= weights[i];
+      if (roll <= 0) { target = active[i]; break; }
+    }
+
+    // 1/12 chance of mega burst
+    const isMega = Math.random() < (1 / 12);
+    const likesToGive = isMega
+      ? 20 + Math.floor(Math.random() * 41) // 20-60
+      : 2 + Math.floor(Math.random() * 4);  // 2-5
+
+    target.likes += likesToGive;
+
+    // Check winner & update display
+    let maxLikes = 0;
+    let leadIdx = -1;
+    state.forEach((s, i) => {
+      const likesEl = document.getElementById(`likes-${i}`);
+      const barEl = document.getElementById(`bar-${i}`);
+      if (likesEl) likesEl.textContent = s.likes.toLocaleString();
+      if (barEl) barEl.style.width = Math.min((s.likes / 500) * 100, 100) + '%';
+
+      if (!s.eliminated && s.likes > maxLikes) {
+        maxLikes = s.likes;
+        leadIdx = i;
+      }
+
+      if (!s.eliminated && s.likes >= 500) {
+        winner = s;
+      }
+    });
+
+    // Highlight leader
+    state.forEach((s, i) => {
+      const card = document.getElementById(`card-${i}`);
+      if (!card) return;
+      if (i === leadIdx && !s.eliminated) {
+        card.classList.add('leading');
+      } else {
+        card.classList.remove('leading');
+      }
+    });
+
+    if (winner) {
+      clearInterval(gameInterval);
+      clearInterval(eliminationInterval);
+      clearInterval(repostInterval);
+      clearInterval(sortInterval);
+      const wIdx = state.indexOf(winner);
+      const wCard = document.getElementById(`card-${wIdx}`);
+      if (wCard) {
+        wCard.classList.remove('leading');
+        wCard.classList.add('winner');
+      }
+      showToast(`🏆 @${winner.player} WINS WITH ${winner.likes.toLocaleString()} LIKES!`, 3000);
+
+      setTimeout(() => {
+        advanceRound(winner.player, winner.likes);
+      }, 2500);
+    }
+  }, 150);
+
+  // Elimination: every 2.5 seconds (aggressive!)
+  eliminationInterval = setInterval(() => {
+    if (winner || paused) return;
+    const active = state.filter(s => !s.eliminated);
+    if (active.length <= 1) return;
+
+    const isCancel = Math.random() < 0.1;
+
+    let target;
+    if (isCancel) {
+      target = active[Math.floor(Math.random() * active.length)];
+      target.eliminated = true;
+      target.eliminationType = 'cancelled';
+      const idx = state.indexOf(target);
+      const card = document.getElementById(`card-${idx}`);
+      if (card) {
+        card.classList.add('cancelled', 'flash-cancelled');
+        card.classList.remove('leading');
+      }
+      addEventLog('cancelled', target.player, target.likes);
+    } else {
+      target = active.reduce((min, s) => s.likes < min.likes ? s : min, active[0]);
+      target.eliminated = true;
+      target.eliminationType = 'lame';
+      const idx = state.indexOf(target);
+      const card = document.getElementById(`card-${idx}`);
+      if (card) {
+        card.classList.add('lame', 'flash-lame');
+        card.classList.remove('leading');
+      }
+      addEventLog('lame', target.player, target.likes);
+    }
+  }, 2500);
+
+  // Sort cards every 3 seconds: leaders first by likes desc, then lame, then cancelled
+  sortInterval = setInterval(() => {
+    if (winner || paused) return;
+    const grid = document.getElementById('battle-grid');
+    if (!grid) return;
+
+    const indices = state.map((s, i) => i);
+    indices.sort((a, b) => {
+      const sa = state[a], sb = state[b];
+      const pa = sa.eliminated ? (sa.eliminationType === 'lame' ? 1 : 2) : 0;
+      const pb = sb.eliminated ? (sb.eliminationType === 'lame' ? 1 : 2) : 0;
+      if (pa !== pb) return pa - pb;
+      return sb.likes - sa.likes;
+    });
+
+    indices.forEach(idx => {
+      const card = document.getElementById(`card-${idx}`);
+      if (card) grid.appendChild(card);
+    });
+  }, 3000);
+}
+
+function spawnConfetti(duration = 3000) {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  const colors = ['#ff2d7b','#00d4ff','#39ff14','#ffe600','#b026ff','#ff6b1a','#ffd700'];
+  const count = 80;
+
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.animationDelay = Math.random() * 1.5 + 's';
+    piece.style.width = (6 + Math.random() * 10) + 'px';
+    piece.style.height = (8 + Math.random() * 14) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => container.remove(), duration + 2000);
+}
+
+function showRoundWinnerCelebration(name, likes, callback) {
+  spawnConfetti(3000);
+
+  const banner = document.createElement('div');
+  banner.className = 'round-winner-banner';
+  banner.innerHTML = `
+    <div class="crown">👑</div>
+    <div class="winner-text">@${name}</div>
+    <div class="winner-sub">🏆 ${likes.toLocaleString()} likes — ADVANCES!</div>
+  `;
+  document.body.appendChild(banner);
+
+  // Click or space to dismiss early
+  let dismissed = false;
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    banner.remove();
+    document.removeEventListener('keydown', onKey);
+    if (callback) callback();
+  }
+
+  function onKey(e) {
+    if (e.code === 'Space' || e.key === ' ') { e.preventDefault(); dismiss(); }
+  }
+
+  banner.addEventListener('click', dismiss);
+  document.addEventListener('keydown', onKey);
+
+  // Auto dismiss after 3s
+  setTimeout(dismiss, 3000);
+}
+
+function advanceRound(winnerName, winnerLikes) {
+  roundResults.push(winnerName);
+  currentGroupIndex++;
+
+  showRoundWinnerCelebration(winnerName, winnerLikes || 0, () => {
+    if (currentGroupIndex >= groups.length) {
+      // All groups in current phase done
+      if (roundResults.length === 1) {
+        // Single winner — game over
+        endGame(roundResults[0]);
+      } else if (gamePhase === 'finals') {
+        // Finals had multiple heats, need another finals round with these winners
+        if (roundResults.length > 9) {
+          const winners = [...roundResults];
+          roundResults = [];
+          groups = createGroups(winners, salt + '_superfinals_' + Date.now());
+          currentGroupIndex = 0;
+          startNextGroup();
+        } else {
+          const finalists = [...roundResults];
+          roundResults = [];
+          groups = [finalists];
+          currentGroupIndex = 0;
+          startNextGroup();
+        }
+      } else {
+        // Group phase done — transition to finals via startNextGroup
+        startNextGroup();
+      }
+    } else {
+      // More groups left in this phase
+      startNextGroup();
+    }
+  });
+}
+
+// ============ END GAME ============
+function endGame(winnerName) {
+  if (gameInterval) clearInterval(gameInterval);
+  if (eliminationInterval) clearInterval(eliminationInterval);
+  if (repostInterval) clearInterval(repostInterval);
+  if (sortInterval) clearInterval(sortInterval);
+
+  spawnConfetti(5000);
+  setTimeout(() => spawnConfetti(4000), 1500);
+
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('winner-screen').style.display = 'block';
+  document.getElementById('final-winner-name').textContent = `@${winnerName}`;
+  document.getElementById('final-winner-msg').textContent = `Crowned the Ultimate Social Media Influencer!`;
+}
+
+// ============ RESTART ============
+function restartSame() {
+  document.getElementById('winner-screen').style.display = 'none';
+  startGame(allPlayers);
+}
+
+function restartNew() {
+  document.getElementById('winner-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('setup-screen').style.display = 'block';
+  document.getElementById('main-title').style.display = '';
+  document.getElementById('main-subtitle').style.display = '';
+  document.getElementById('main-title').classList.add('setup-title');
+  document.getElementById('main-subtitle').classList.add('setup-subtitle');
+  gamePhase = 'setup';
+}
+</script>
+</body>
+</html>
