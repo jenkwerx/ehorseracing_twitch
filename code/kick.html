@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐴 KICKED!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #1a1a2e;
+  --bg2: #16213e;
+  --card: #0f3460;
+  --text: #e8e8e8;
+  --text2: #a0a0c0;
+  --accent: #e94560;
+  --accent2: #f5a623;
+  --green: #53d769;
+  --stable: #4a3728;
+  --stable2: #6b4f3a;
+  --ground: #2d5a27;
+  --ground2: #3a7a32;
+  --sky: #1a1a3e;
+  --fence: #8B7355;
+  --shadow: rgba(0,0,0,0.4);
+  --kapow-bg: #e94560;
+  --kapow-text: #fff;
+  --input-bg: #0f3460;
+  --input-border: #e94560;
+  --btn-bg: #e94560;
+  --btn-text: #fff;
+  --celebration-bg: rgba(26,26,46,0.95);
+  --queue-bg: rgba(15,52,96,0.7);
+}
+
+[data-theme="light"] {
+  --bg: #faf3e0;
+  --bg2: #f5e6ca;
+  --card: #fff8ee;
+  --text: #2d2d2d;
+  --text2: #6a6a6a;
+  --accent: #d63031;
+  --accent2: #e17055;
+  --green: #00b894;
+  --stable: #8B7355;
+  --stable2: #a0896b;
+  --ground: #7cb342;
+  --ground2: #8bc34a;
+  --sky: #87CEEB;
+  --fence: #6d4c2a;
+  --shadow: rgba(0,0,0,0.15);
+  --kapow-bg: #d63031;
+  --kapow-text: #fff;
+  --input-bg: #fff;
+  --input-border: #d63031;
+  --btn-bg: #d63031;
+  --btn-text: #fff;
+  --celebration-bg: rgba(250,243,224,0.95);
+  --queue-bg: rgba(255,248,238,0.8);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Fredoka', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+.theme-toggle {
+  position: fixed; top: 14px; right: 14px; z-index: 1000;
+  background: var(--card); border: 2px solid var(--accent); color: var(--text);
+  font-family: 'Fredoka', sans-serif; font-size: 1.1rem;
+  padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: all 0.3s;
+}
+.theme-toggle:hover { transform: scale(1.1); }
+
+.game-title {
+  font-family: 'Bangers', cursive; font-size: 3rem; text-align: center;
+  color: var(--accent); letter-spacing: 4px;
+  text-shadow: 3px 3px 0 var(--shadow); padding-top: 20px;
+}
+.subtitle { text-align: center; color: var(--text2); font-size: 1rem; margin-bottom: 20px; }
+
+/* SETUP */
+#setup-screen { max-width: 660px; margin: 0 auto; padding: 16px; }
+.setup-card {
+  background: var(--card); border-radius: 18px; padding: 24px;
+  margin-bottom: 16px; box-shadow: 0 6px 24px var(--shadow);
+}
+.setup-card h2 {
+  font-family: 'Bangers', cursive; font-size: 1.6rem;
+  color: var(--accent2); margin-bottom: 10px; letter-spacing: 2px;
+}
+.setup-card label { display: block; font-weight: 600; margin-bottom: 4px; color: var(--text2); }
+#player-input {
+  width: 100%; min-height: 130px; background: var(--input-bg);
+  border: 2px solid var(--input-border); border-radius: 10px;
+  color: var(--text); font-family: 'Fredoka', sans-serif; font-size: 1rem; padding: 12px; resize: vertical;
+}
+#player-input::placeholder { color: var(--text2); opacity: 0.5; }
+.player-count-info { margin-top: 6px; font-size: 0.85rem; color: var(--text2); }
+.salt-display {
+  font-family: monospace; background: var(--bg); padding: 8px 14px;
+  border-radius: 8px; font-size: 0.95rem; color: var(--accent2); margin-top: 6px;
+}
+.btn {
+  display: inline-block; font-family: 'Bangers', cursive; font-size: 1.4rem;
+  letter-spacing: 2px; padding: 12px 36px; border: none; border-radius: 50px;
+  cursor: pointer; background: var(--btn-bg); color: var(--btn-text);
+  box-shadow: 0 4px 15px var(--shadow); transition: all 0.25s;
+}
+.btn:hover { transform: translateY(-2px) scale(1.04); }
+.btn:active { transform: translateY(0); }
+.btn-row { text-align: center; margin-top: 16px; }
+
+/* GAME */
+#game-screen { display: none; max-width: 940px; margin: 0 auto; padding: 0 12px; }
+
+.round-header { text-align: center; padding: 10px 0 4px; }
+.round-header h2 {
+  font-family: 'Bangers', cursive; font-size: 2rem; color: var(--accent2); letter-spacing: 3px;
+}
+.round-header .group-info { color: var(--text2); font-size: 0.9rem; margin-top: 2px; }
+
+.current-walker-label {
+  text-align: center; font-family: 'Bangers', cursive; font-size: 1.6rem;
+  color: var(--accent); letter-spacing: 2px; min-height: 2.2rem; margin: 4px 0;
+}
+
+.status-text {
+  text-align: center; font-family: 'Fredoka', sans-serif; font-weight: 600;
+  font-size: 1rem; color: var(--text2); min-height: 1.5rem; margin-bottom: 4px;
+}
+
+/* ARENA */
+.arena {
+  width: 100%; height: 360px;
+  background: linear-gradient(180deg, var(--sky) 0%, var(--sky) 52%, var(--ground) 52%, var(--ground2) 100%);
+  border-radius: 18px; position: relative; overflow: hidden;
+  box-shadow: 0 6px 24px var(--shadow);
+}
+
+.celestial { position: absolute; top: 14px; left: 40px; font-size: 36px; z-index: 1; }
+
+/* Fence */
+.fence { position: absolute; bottom: 42px; left: 0; right: 0; height: 20px; z-index: 2; }
+.fence-rail { position: absolute; bottom: 10px; left: 0; right: 0; height: 3px; background: var(--fence); }
+.fence-rail2 { position: absolute; bottom: 18px; left: 0; right: 0; height: 3px; background: var(--fence); }
+.fence-post { position: absolute; bottom: 0; width: 6px; height: 26px; background: var(--fence); border-radius: 1px; }
+
+/* Stable */
+.stable { position: absolute; right: 30px; bottom: 48px; width: 160px; height: 180px; z-index: 10; }
+.stable-roof {
+  width: 190px; height: 44px; background: var(--accent);
+  position: absolute; top: 0; left: -15px;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%); z-index: 12;
+}
+.stable-body {
+  width: 160px; height: 136px; background: var(--stable);
+  position: absolute; bottom: 0; border-radius: 3px; border: 3px solid var(--stable2); z-index: 11;
+}
+.stable-door {
+  width: 60px; height: 80px; background: var(--bg2);
+  position: absolute; bottom: 0; left: 50px;
+  border-radius: 30px 30px 0 0; border: 2px solid var(--stable2);
+}
+
+/* Horse */
+.horse-sprite {
+  position: absolute; right: 50px; bottom: 56px; font-size: 70px; z-index: 15;
+  transform: scaleX(-1); filter: drop-shadow(2px 3px 5px rgba(0,0,0,0.4));
+  transition: right 1.2s ease-in, opacity 1s ease-in;
+}
+.horse-sprite.kick { animation: horseKick 0.35s ease-in-out; }
+@keyframes horseKick {
+  0% { transform: scaleX(-1) rotate(0); }
+  25% { transform: scaleX(-1) rotate(-18deg) translateX(-15px); }
+  55% { transform: scaleX(-1) rotate(8deg) translateX(8px); }
+  100% { transform: scaleX(-1) rotate(0); }
+}
+
+/* In-arena queue tokens — positioned absolutely, animated via left */
+.arena-token {
+  position: absolute; bottom: 58px; z-index: 5;
+  display: flex; flex-direction: column; align-items: center;
+  transition: left 0.35s ease;
+}
+.arena-token .at-emoji { font-size: 36px; filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.3)); }
+.arena-token.behind-horse {
+  z-index: 20;
+}
+.arena-token.behind-horse .at-emoji { font-size: 42px; }
+
+/* KAPOW */
+.kapow {
+  position: absolute; z-index: 100;
+  font-family: 'Bangers', cursive; font-size: 2.4rem;
+  color: var(--kapow-text); background: var(--kapow-bg);
+  padding: 6px 20px; border-radius: 16px; border: 3px solid var(--accent2);
+  transform: rotate(-8deg) scale(0);
+  animation: kapowPop 1s ease-out forwards;
+  pointer-events: none; text-shadow: 2px 2px 0 rgba(0,0,0,0.3); white-space: nowrap;
+}
+@keyframes kapowPop {
+  0% { transform: rotate(-8deg) scale(0); opacity:1; }
+  18% { transform: rotate(5deg) scale(1.4); opacity:1; }
+  35% { transform: rotate(-3deg) scale(1); opacity:1; }
+  75% { opacity:1; transform: rotate(0deg) scale(1); }
+  100% { opacity:0; transform: rotate(6deg) scale(0.4) translateY(-30px); }
+}
+
+/* Kicked flying player */
+.kicked-flying {
+  position: absolute; z-index: 90; font-size: 36px; pointer-events: none;
+  transition: all 0.7s ease-out;
+}
+
+/* Bird */
+.bird { position: absolute; font-size: 20px; z-index: 200; pointer-events: none; }
+
+/* Survivors bar */
+.survivors-bar { margin-top: 8px; max-width: 940px; }
+.survivors-bar h3 {
+  font-family: 'Bangers', cursive; color: var(--green); font-size: 1.2rem; letter-spacing: 1px;
+}
+.surv-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.surv-item {
+  background: var(--card); padding: 5px 14px; border-radius: 20px;
+  font-size: 1.05rem; color: var(--green); border: 1px solid var(--green);
+  font-weight: 600;
+}
+.surv-item.active-surv {
+  outline: 2px solid var(--accent); border-color: var(--accent); color: var(--accent);
+}
+
+/* Elim bar */
+.elim-bar { margin-top: 8px; max-width: 940px; }
+.elim-bar h3 {
+  font-family: 'Bangers', cursive; color: var(--accent); font-size: 1.2rem; letter-spacing: 1px;
+}
+.elim-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.elim-item {
+  background: var(--card); padding: 4px 12px; border-radius: 20px;
+  font-size: 0.85rem; color: var(--text2); opacity: 0.75;
+  animation: fadeInElim 0.3s ease;
+}
+@keyframes fadeInElim {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:0.75; transform:translateY(0); }
+}
+
+/* Celebration overlay */
+.celebration-overlay {
+  display: none; position: fixed; inset: 0;
+  background: var(--celebration-bg); z-index: 500;
+  flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+}
+.celebration-overlay.show { display: flex; animation: fadeInCeleb 0.5s ease; }
+@keyframes fadeInCeleb { from { opacity:0; } to { opacity:1; } }
+.celebration-overlay .winner-emoji { font-size: 90px; animation: bounceWinner 0.8s ease infinite; }
+@keyframes bounceWinner { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+.celebration-overlay h2 {
+  font-family: 'Bangers', cursive; font-size: 2.6rem; color: var(--accent2);
+  letter-spacing: 4px; margin: 12px 0 6px;
+}
+.celebration-overlay .celeb-sub { font-size: 1.1rem; color: var(--text2); max-width: 480px; }
+.celebration-overlay .celeb-msg { font-size: 1.4rem; color: var(--green); margin-top: 10px; font-weight: 700; }
+
+.confetti-piece {
+  position: fixed; width: 10px; height: 10px; z-index: 501;
+  pointer-events: none; animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0); opacity:1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity:0; }
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
+
+<h1 class="game-title">🐴 KICKED!</h1>
+<p class="subtitle">Don't stand behind the horse.</p>
+
+<!-- SETUP -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <h2>🏇 Enter Players</h2>
+    <label for="player-input">One player per line:</label>
+    <textarea id="player-input" placeholder="Alice&#10;Bob&#10;Charlie&#10;H1OE B&#10;h1oeb (dupe of above!)"></textarea>
+    <div class="player-count-info" id="player-count-info">0 unique players</div>
+  </div>
+  <div class="setup-card">
+    <h2>🧂 Salt</h2>
+    <label>Auto-generated at game start:</label>
+    <div class="salt-display" id="salt-display"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="startGame()">🐴 LET'S RIDE!</button>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game-screen">
+  <div class="round-header">
+    <h2 id="round-title">Round 1</h2>
+    <div class="group-info" id="group-info"></div>
+  </div>
+  <div class="current-walker-label" id="current-walker-label">&nbsp;</div>
+  <div class="status-text" id="status-text"></div>
+  <div class="arena" id="arena">
+    <div class="celestial" id="celestial">🌙</div>
+    <div class="fence" id="fence-container"></div>
+    <div class="stable">
+      <div class="stable-roof"></div>
+      <div class="stable-body"></div>
+      <div class="stable-door"></div>
+    </div>
+    <div class="horse-sprite" id="horse">🐴</div>
+  </div>
+  <div class="survivors-bar">
+    <h3>🏆 Still Standing</h3>
+    <div class="surv-list" id="surv-list"></div>
+  </div>
+  <div class="elim-bar">
+    <h3>💥 Kicked Out</h3>
+    <div class="elim-list" id="elim-list"></div>
+  </div>
+</div>
+
+<!-- CELEBRATION -->
+<div class="celebration-overlay" id="celebration-overlay">
+  <div class="winner-emoji" id="winner-emoji"></div>
+  <h2 id="celeb-title"></h2>
+  <p class="celeb-sub" id="celeb-sub"></p>
+  <p class="celeb-msg" id="celeb-msg"></p>
+  <div class="btn-row" style="margin-top:20px;">
+    <button class="btn" onclick="celebrationNext()">CONTINUE</button>
+  </div>
+</div>
+
+<script>
+// ─── MD5 ───
+var MD5=function(){function h(a,b){var c,d,e,f,g;e=a&2147483648;f=b&2147483648;c=a&1073741824;d=b&1073741824;g=(a&1073741823)+(b&1073741823);return c&d?g^2147483648^e^f:c|d?g&1073741824?g^3221225472^e^f:g^1073741824^e^f:g^e^f}function k(a,b,c,d,e,f,g){a=h(a,h(h(b&c|~b&d,e),g));return h(a<<f|a>>>32-f,b)}function l(a,b,c,d,e,f,g){a=h(a,h(h(b&d|c&~d,e),g));return h(a<<f|a>>>32-f,b)}function m(a,b,c,d,e,f,g){a=h(a,h(h(b^c^d,e),g));return h(a<<f|a>>>32-f,b)}function n(a,b,c,d,e,f,g){a=h(a,h(h(c^(b|~d),e),g));return h(a<<f|a>>>32-f,b)}function p(a){var b="",c,d;for(d=0;d<=3;d++)c=a>>>d*8&255,b+="0123456789abcdef".charAt(c>>4&15)+"0123456789abcdef".charAt(c&15);return b}var q=Array();return function(a){var b,c,d,e,f,g,i,j;a=function(a){a=a.replace(/\r\n/g,"\n");for(var b="",c=0;c<a.length;c++){var d=a.charCodeAt(c);d<128?b+=String.fromCharCode(d):(d>127&&d<2048?b+=String.fromCharCode(d>>6|192):(b+=String.fromCharCode(d>>12|224),b+=String.fromCharCode(d>>6&63|128)),b+=String.fromCharCode(d&63|128))}return b}(a);q=function(a){for(var b=a.length,c=b+8,d=(c-c%64)/64,e=16*(d+1),f=Array(e-1),g=0,h=0;h<b;)d=(h-h%4)/4,g=h%4*8,f[d]=f[d]|a.charCodeAt(h)<<g,h++;f[(h-h%4)/4]=f[(h-h%4)/4]|128<<h%4*8;f[e-2]=b<<3;f[e-1]=b>>>29;return f}(a);f=1732584193;g=4023233417;i=2562383102;j=271733878;for(a=0;a<q.length;a+=16)b=f,c=g,d=i,e=j,f=k(f,g,i,j,q[a],7,3614090360),j=k(j,f,g,i,q[a+1],12,3905402710),i=k(i,j,f,g,q[a+2],17,606105819),g=k(g,i,j,f,q[a+3],22,3250441966),f=k(f,g,i,j,q[a+4],7,4118548399),j=k(j,f,g,i,q[a+5],12,1200080426),i=k(i,j,f,g,q[a+6],17,2821735955),g=k(g,i,j,f,q[a+7],22,4249261313),f=k(f,g,i,j,q[a+8],7,1770035416),j=k(j,f,g,i,q[a+9],12,2336552879),i=k(i,j,f,g,q[a+10],17,4294925233),g=k(g,i,j,f,q[a+11],22,2304563134),f=k(f,g,i,j,q[a+12],7,1804603682),j=k(j,f,g,i,q[a+13],12,4254626195),i=k(i,j,f,g,q[a+14],17,2792965006),g=k(g,i,j,f,q[a+15],22,1236535329),f=l(f,g,i,j,q[a+1],5,4129170786),j=l(j,f,g,i,q[a+6],9,3225465664),i=l(i,j,f,g,q[a+11],14,643717713),g=l(g,i,j,f,q[a],20,3921069994),f=l(f,g,i,j,q[a+5],5,3593408605),j=l(j,f,g,i,q[a+10],9,38016083),i=l(i,j,f,g,q[a+15],14,3634488961),g=l(g,i,j,f,q[a+4],20,3889429448),f=l(f,g,i,j,q[a+9],5,568446438),j=l(j,f,g,i,q[a+14],9,3275163606),i=l(i,j,f,g,q[a+3],14,4107603335),g=l(g,i,j,f,q[a+8],20,1163531501),f=l(f,g,i,j,q[a+13],5,2850285829),j=l(j,f,g,i,q[a+2],9,4243563512),i=l(i,j,f,g,q[a+7],14,1735328473),g=l(g,i,j,f,g,q[a+12],20,2368359562),f=m(f,g,i,j,q[a+5],4,4294588738),j=m(j,f,g,i,q[a+8],11,2272392833),i=m(i,j,f,g,q[a+11],16,1839030562),g=m(g,i,j,f,q[a+14],23,4259657740),f=m(f,g,i,j,q[a+1],4,2763975236),j=m(j,f,g,i,q[a+4],11,1272893353),i=m(i,j,f,g,q[a+7],16,4139469664),g=m(g,i,j,f,q[a+10],23,3200236656),f=m(f,g,i,j,q[a+13],4,681279174),j=m(j,f,g,i,q[a],11,3936430074),i=m(i,j,f,g,q[a+3],16,3572445317),g=m(g,i,j,f,q[a+6],23,76029189),f=m(f,g,i,j,q[a+9],4,3654602809),j=m(j,f,g,i,q[a+12],11,3873151461),i=m(i,j,f,g,q[a+15],16,530742520),g=m(g,i,j,f,q[a+2],23,3299628645),f=n(f,g,i,j,q[a],6,4096336452),j=n(j,f,g,i,q[a+7],10,1126891415),i=n(i,j,f,g,q[a+14],15,2878612391),g=n(g,i,j,f,q[a+5],21,4237533241),f=n(f,g,i,j,q[a+12],6,1700485571),j=n(j,f,g,i,q[a+3],10,2399980690),i=n(i,j,f,g,q[a+10],15,4293915773),g=n(g,i,j,f,q[a+1],21,2240044497),f=n(f,g,i,j,q[a+8],6,1873313359),j=n(j,f,g,i,q[a+15],10,4264355552),i=n(i,j,f,g,q[a+6],15,2734768916),g=n(g,i,j,f,q[a+13],21,1309151649),f=n(f,g,i,j,q[a+4],6,4149444226),j=n(j,f,g,i,j,q[a+11],10,3174756917),i=n(i,j,f,g,q[a+2],15,718787259),g=n(g,i,j,f,q[a+9],21,3951481745),f=h(f,b),g=h(g,c),i=h(i,d),j=h(j,e);return(p(f)+p(g)+p(i)+p(j)).toLowerCase()}}();
+
+// ─── KAPOW WORDS (100, editable) ───
+const ALL_KAPOW_WORDS = [
+  "OOF!", "KAPOW!", "BLOW-EE!", "WHAM!", "ZONK!", "CRUNCH!", "SPLAT!", "THWACK!",
+  "BONK!", "BIFF!", "CLONK!", "SMASH!", "YEET!", "WHOMP!", "THUD!", "CRACK!",
+  "WALLOP!", "KABOOM!", "BLAM!", "POW!", "KAZAM!", "WHOOSH!", "SLAM!", "CRUMBLE!",
+  "OUCH!", "WHAP!", "SWOOSH!", "KERPLUNK!", "ZOWIE!", "BAM!", "WHAMMO!", "PUNT!",
+  "CRACKLE!", "PLONK!", "KLANG!", "THWAP!", "BASH!", "DONK!", "BOINK!", "SKRONK!",
+  "FWIP!", "YOWZA!", "CLANG!", "WHACK!", "KRUNCH!", "SPLOOSH!", "BLAMMO!", "TINK!",
+  "ZINGER!", "FWACK!", "KABLAM!", "SWACK!", "SHAZAM!", "THONK!", "CLATTER!", "CRUMP!",
+  "TWANG!", "KERBLAM!", "FLUMP!", "SPLORT!", "SKADOOSH!", "THUMP!", "BLOOP!", "CONK!",
+  "SKREEE!", "WUMP!", "PLOP!", "CHUNK!", "ZING!", "KERPOW!", "BLORT!", "KLUNK!",
+  "FWOMP!", "SPACK!", "GLONK!", "THWICK!", "BRRRAP!", "SKRONCH!", "FLACK!", "PLINK!",
+  "WHAMMY!", "KRAKOW!", "BLURP!", "SNIKT!", "ZLONK!", "TWACK!", "SPLOT!", "KRONCH!",
+  "DOINK!", "FLAM!", "KERUNCH!", "SPANG!", "THRACK!", "CLOP!", "WHUMP!", "BLANG!",
+  "SQUISH!", "KERTHUD!", "FWAM!", "SPLACK!",
+
+  "BOP!", "ZAP!", "ZOT!", "ZINGO!", "ZAPPO!", "ZLOP!", "ZRAK!", "ZRAKK!", "ZRRRT!",
+  "ZRAAAP!", "ZINGZANG!", "ZOW!", "ZOWZA!", "ZAPOW!", "ZLOINK!", "ZLOPPO!",
+  "BRAM!", "BRAP!", "BRAMMO!", "BRACK!", "BRACKLE!", "BRRRAK!", "BRRRT!", "BRUM!",
+  "BRUMBLE!", "BRASH!", "BRONK!", "BRUNK!", "BRUNG!", "BRANG!", "BRANGG!",
+
+  "KRAK!", "KRAKK!", "KRAKKLE!", "KRASH!", "KRASHH!", "KRUM!", "KRUMP!", "KRANG!",
+  "KRING!", "KRONKLE!", "KRUNCHY!", "KROOSH!", "KRASHOOM!", "KRAPOW!",
+
+  "BLAST!", "BLASTO!", "BLASTY!", "BLASTER!", "BLAT!", "BLATT!", "BLATTY!",
+  "BLORTCH!", "BLORP!", "BLORPLE!", "BLAMMER!", "BLAMSTER!", "BLANGO!", "BLANGOOM!",
+  "BLARE!", "BLAREK!",
+
+  "THRAK!", "THRAKK!", "THRUM!", "THRUMM!", "THRASH!", "THRASHH!", "THROK!",
+  "THROKK!", "THROOP!", "THROOSH!", "THRANG!", "THRING!", "THRANGG!",
+
+  "SPRAK!", "SPRACK!", "SPRANG!", "SPRONG!", "SPRUNG!", "SPROING!", "SPROINK!",
+  "SPROSH!", "SPROSHH!", "SPRASH!", "SPLOINK!", "SPLOINKK!",
+
+  "FRAK!", "FRAKK!", "FRASH!", "FRASHH!", "FRUMP!", "FRUMBLE!", "FRANG!",
+  "FRANGG!", "FRINK!", "FRONK!", "FRONKK!", "FRAP!", "FRAPPO!",
+
+  "CLASH!", "CLASHH!", "CLANK!", "CLANKK!", "CLONKLE!", "CLASHBOOM!", "CLAT!",
+  "CLATTT!", "CLATTERK!", "CLINK!", "CLINKK!", "CLONKED!",
+
+  "PRAK!", "PRANG!", "PRANGG!", "PRONG!", "PRUNG!", "PRUNK!", "PRASH!",
+  "PRASHH!", "PROINK!", "PROINKK!", "PROSH!", "PROSHH!",
+
+  "GRAK!", "GRAKK!", "GRASH!", "GRASHH!", "GRUM!", "GRUMM!", "GRONK!",
+  "GRONKK!", "GRANG!", "GRANGG!", "GRING!", "GRINGG!",
+
+  "SMAK!", "SMAKK!", "SMORK!", "SMORKK!", "SMASHO!", "SMASHY!", "SMACKO!",
+  "SMACKER!", "SMACKLE!",
+
+  "WHIRR!", "WHIZZ!", "WHIZZLE!", "WHIRRLE!", "WHRRAP!", "WHRRACK!",
+  "WHRRUM!", "WHRRUMM!",
+
+  "BLOINK!", "BLOINKK!", "BLOP!", "BLOPP!", "BLOSH!", "BLOSHH!", "BLOOSH!",
+  "BLOOSHH!",
+
+  "DRAK!", "DRAKK!", "DRASH!", "DRASHH!", "DRUM!", "DRUMM!", "DRONK!",
+  "DRONKK!",
+
+  "KLOP!", "KLOPP!", "KLOSH!", "KLOSHH!", "KLOINK!", "KLOINKK!",
+
+  "TROK!", "TROKK!", "TRASH!", "TRASHH!", "TRUM!", "TRUMM!", "TRONK!",
+  "TRONKK!",
+
+  "PLASH!", "PLASHH!", "PLONKK!", "PLINKK!", "PLUNK!", "PLUNKK!",
+
+  "SNAP!", "SNAPP!", "SNARL!", "SNARK!", "SNORK!", "SNORKK!", "SNAPPO!",
+
+  "DRAP!", "DRAPP!", "DRIP!", "DRIPP!", "DROP!", "DROPP!",
+
+  "GLASH!", "GLASHH!", "GLONKK!", "GLINK!", "GLINKK!", "GLUNK!", "GLUNKK!"
+];
+
+const EMOJI_POOL = [
+  "🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯",
+  "🦁","🐮","🐷","🐸","🐵","🐔","🐧","🐦","🐤","🦆",
+  "🦅","🦉","🦇","🐺","🐗","🦄","🐝","🐛","🦋","🐌",
+  "🐞","🐜","🦂","🐢","🐍","🦎","🐙","🦀","🐡","🐠",
+  "🐟","🐬","🐳","🐋","🦈","🐊","🐅","🐆","🦍","🐘",
+  "🦏","🐪","🐫","🦒","🐃","🐂","🐄","🐎","🐖","🐏",
+  "🐑","🐐","🦌","🐕","🐩","🐈","🐓","🦃","🕊️","🐇",
+  "🐁","🐀","🐿️","🦔","🦝","🦡","🦦","🦥","🦨","🦩",
+  "🦚","🦜","🐾","😺","😸","😹","😻","😼","😽","🙀",
+  "😿","😾","🤠","🤡","👻","💀","👽","🤖","🎃","🦧"
+];
+
+// ─── GLOBAL STATE ───
+let gameSalt = "";
+let masterPlayerMap = {};
+let groups = [];
+let currentRound = 0;
+let currentGroupIdx = 0;
+let isFinalRound = false;
+let kapowPool = [];
+let celebrationCallback = null;
+let abortController = null;
+
+// ─── HELPERS ───
+function generateSalt() {
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}_${p(d.getMonth()+1)}_${p(d.getDate())}_${p(d.getHours())}_${p(d.getMinutes())}_${p(d.getSeconds())}`;
+}
+function normalizeKey(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+function parsePlayers(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const seen = new Set(), out = [];
+  for (const line of lines) {
+    const key = normalizeKey(line);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ displayName: line, key });
+  }
+  return out;
+}
+function assignEmojis(players, salt) {
+  const shuffled = EMOJI_POOL.map(e => ({ e, h: MD5(salt + 'emoji' + e) }))
+    .sort((a, b) => a.h.localeCompare(b.h)).map(x => x.e);
+  const ordered = [...players].sort((a, b) => MD5(salt + a.key).localeCompare(MD5(salt + b.key)));
+  ordered.forEach((p, i) => { p.emoji = shuffled[i % shuffled.length]; });
+}
+function makeGroups(players, salt) {
+  const hashed = players.map(p => ({ ...p, sortHash: MD5(salt + p.key) }));
+  hashed.sort((a, b) => a.sortHash.localeCompare(b.sortHash));
+  const n = hashed.length, numG = Math.ceil(n / 9), base = Math.floor(n / numG), extra = n % numG;
+  const gs = []; let idx = 0;
+  for (let g = 0; g < numG; g++) {
+    const sz = base + (g < extra ? 1 : 0);
+    gs.push({ players: hashed.slice(idx, idx + sz), winner: null }); idx += sz;
+  }
+  return gs;
+}
+function getKapow() {
+  if (kapowPool.length === 0) kapowPool = [...ALL_KAPOW_WORDS];
+  return kapowPool.splice(Math.floor(Math.random() * kapowPool.length), 1)[0];
+}
+function updateCelestial() {
+  const el = document.getElementById('celestial');
+  if (el) el.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '☀️';
+}
+function sleep(ms, signal) {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(resolve, ms);
+    if (signal) signal.addEventListener('abort', () => { clearTimeout(t); reject(new DOMException('','AbortError')); }, { once: true });
+  });
+}
+
+function refreshSalt() {
+  gameSalt = generateSalt();
+  document.getElementById('salt-display').textContent = gameSalt;
+}
+
+// ─── SETUP WIRING ───
+document.getElementById('player-input').addEventListener('input', function() {
+  const p = parsePlayers(this.value);
+  document.getElementById('player-count-info').textContent = `${p.length} unique player${p.length !== 1 ? 's' : ''}`;
+});
+refreshSalt(); setInterval(refreshSalt, 1000);
+
+// Fence posts
+(function() {
+  const fc = document.getElementById('fence-container'); if (!fc) return;
+  fc.innerHTML = '<div class="fence-rail"></div><div class="fence-rail2"></div>';
+  for (let x = 0; x < 950; x += 55) {
+    const p = document.createElement('div'); p.className = 'fence-post'; p.style.left = x + 'px'; fc.appendChild(p);
+  }
+})();
+
+// ─── START GAME ───
+function startGame() {
+  const players = parsePlayers(document.getElementById('player-input').value);
+  if (players.length < 2) { alert("Need at least 2 unique players!"); return; }
+  gameSalt = generateSalt();
+  document.getElementById('salt-display').textContent = gameSalt;
+  assignEmojis(players, gameSalt);
+  masterPlayerMap = {};
+  players.forEach(p => { masterPlayerMap[p.key] = { ...p }; });
+  kapowPool = [...ALL_KAPOW_WORDS];
+  groups = makeGroups(players, gameSalt);
+  currentRound = 1; currentGroupIdx = 0; isFinalRound = false;
+  const old = document.getElementById('end-banner'); if (old) old.remove();
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+  updateCelestial();
+  playNextGroup();
+}
+
+function playNextGroup() {
+  while (currentGroupIdx < groups.length && groups[currentGroupIdx].winner) currentGroupIdx++;
+  if (currentGroupIdx >= groups.length) { finishRound(); return; }
+  const group = groups[currentGroupIdx];
+  group.players.forEach(p => { if (masterPlayerMap[p.key]) p.emoji = masterPlayerMap[p.key].emoji; });
+  const label = isFinalRound ? "🏆 FINALS" : `Round ${currentRound}`;
+  document.getElementById('round-title').textContent = label;
+  document.getElementById('group-info').textContent =
+    groups.length > 1 ? `Group ${currentGroupIdx + 1} of ${groups.length} — ${group.players.length} players` :
+    `${group.players.length} players`;
+  document.getElementById('status-text').textContent = '';
+  document.getElementById('current-walker-label').innerHTML = '&nbsp;';
+  document.getElementById('elim-list').innerHTML = '';
+  document.getElementById('surv-list').innerHTML = '';
+  runGroupRound(group);
+}
+
+// ══════════════════════════════════════
+// CORE ROUND — queue-in-arena approach
+// ══════════════════════════════════════
+async function runGroupRound(group) {
+  if (abortController) abortController.abort();
+  abortController = new AbortController();
+  const signal = abortController.signal;
+
+  const arena = document.getElementById('arena');
+  const horse = document.getElementById('horse');
+
+  // Reset horse
+  horse.className = 'horse-sprite';
+  horse.style.right = '50px'; horse.style.opacity = '1';
+  horse.style.transition = 'none'; horse.offsetHeight;
+  horse.style.transition = 'right 1.2s ease-in, opacity 1s ease-in';
+
+  // Clean old elements
+  arena.querySelectorAll('.arena-token, .kapow, .kicked-flying, .bird').forEach(e => e.remove());
+
+  const players = [...group.players];
+  const roundKey = isFinalRound ? 'final' : String(currentRound);
+  players.forEach(p => { p.roundHash = MD5(gameSalt + p.key + roundKey); });
+  const guaranteedWinner = [...players].sort((a, b) => a.roundHash.localeCompare(b.roundHash))[0];
+
+  const kickChance = isFinalRound ? 0.60 : 0.50;
+  const startTime = Date.now();
+  let kickingStarted = false;
+  let roundOver = false;
+
+  // ── Queue: array where index 0 = front (closest to horse) ──
+  // Players cycle: front walks behind horse, then goes to back.
+  let queue = [...players];
+
+  // ── Layout constants ──
+  const arenaW = arena.offsetWidth || 900;
+  const TOKEN_W = 46;           // px per token slot
+  const HORSE_LEFT = arenaW - 200; // x position "behind" the horse
+  const QUEUE_RIGHT_EDGE = HORSE_LEFT - 20; // rightmost edge of the waiting line
+
+  // ── Create DOM token for each player ──
+  const tokenEls = {};
+  players.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'arena-token';
+    el.innerHTML = `<span class="at-emoji">${p.emoji}</span>`;
+    el.dataset.key = p.key;
+    arena.appendChild(el);
+    tokenEls[p.key] = el;
+  });
+
+  // ── Position all tokens based on current queue, right-justified ──
+  // queue[0] = back of line (leftmost), queue[last] = front of line (rightmost, closest to horse)
+  function layoutQueue(behindHorseKey) {
+    const waitingCount = queue.length - (behindHorseKey ? 1 : 0);
+    let slotIdx = 0;
+    for (let i = 0; i < queue.length; i++) {
+      const p = queue[i];
+      const el = tokenEls[p.key];
+      if (!el) continue;
+
+      if (p.key === behindHorseKey) {
+        el.style.left = HORSE_LEFT + 'px';
+        el.classList.add('behind-horse');
+      } else {
+        el.classList.remove('behind-horse');
+        // slotIdx 0 = leftmost in the waiting line
+        // rightmost waiting slot is at QUEUE_RIGHT_EDGE - TOKEN_W
+        const x = QUEUE_RIGHT_EDGE - TOKEN_W - ((waitingCount - 1 - slotIdx) * TOKEN_W);
+        el.style.left = Math.max(5, x) + 'px';
+        slotIdx++;
+      }
+    }
+  }
+
+  // ── Bottom-panel survivors list ──
+  function renderSurvivors(activeKey) {
+    const sl = document.getElementById('surv-list');
+    sl.innerHTML = '';
+    queue.forEach(p => {
+      const s = document.createElement('span');
+      s.className = 'surv-item' + (p.key === activeKey ? ' active-surv' : '');
+      s.textContent = `${p.emoji} ${p.displayName}`;
+      sl.appendChild(s);
+    });
+  }
+
+  layoutQueue(null);
+  renderSurvivors(null);
+
+  // ── Kick visual ──
+  function doKick(player) {
+    const el = tokenEls[player.key];
+
+    // Horse kick anim
+    horse.classList.remove('kick'); horse.offsetHeight; horse.classList.add('kick');
+
+    // KAPOW
+    const kw = getKapow();
+    const kapow = document.createElement('div');
+    kapow.className = 'kapow';
+    kapow.textContent = kw;
+    kapow.style.right = (arenaW - HORSE_LEFT + 10) + 'px';
+    kapow.style.bottom = (95 + Math.random() * 60) + 'px';
+    arena.appendChild(kapow);
+    setTimeout(() => kapow.remove(), 1100);
+
+    // Flying emoji from horse position
+    const fly = document.createElement('div');
+    fly.className = 'kicked-flying';
+    fly.textContent = player.emoji;
+    fly.style.left = HORSE_LEFT + 'px';
+    fly.style.bottom = '62px';
+    arena.appendChild(fly);
+    requestAnimationFrame(() => {
+      const angle = -20 - Math.random() * 140;
+      const dist = 160 + Math.random() * 220;
+      const rad = angle * Math.PI / 180;
+      fly.style.transform = `translate(${Math.cos(rad)*dist}px, ${Math.sin(rad)*dist}px) rotate(${400+Math.random()*400}deg)`;
+      fly.style.opacity = '0';
+    });
+    setTimeout(() => fly.remove(), 800);
+
+    // Remove arena token
+    if (el) { el.remove(); delete tokenEls[player.key]; }
+
+    spawnBird();
+
+    // Elim list
+    const ei = document.createElement('span');
+    ei.className = 'elim-item';
+    ei.textContent = `${player.emoji} ${player.displayName} — ${kw}`;
+    document.getElementById('elim-list').appendChild(ei);
+
+    // Remove from queue
+    queue = queue.filter(q => q.key !== player.key);
+  }
+
+  function spawnBird() {
+    const bird = document.createElement('div');
+    bird.className = 'bird';
+    bird.textContent = ['🐦','🐤','🦅','🕊️','🦆','🐧','🦜'][Math.floor(Math.random()*7)];
+    const aw = arena.offsetWidth, ah = arena.offsetHeight;
+    const side = Math.floor(Math.random() * 4);
+    let sx, sy;
+    if (side === 0) { sx = Math.random()*aw; sy = -25; }
+    else if (side === 1) { sx = aw+25; sy = Math.random()*ah*0.5; }
+    else if (side === 2) { sx = Math.random()*aw; sy = ah+25; }
+    else { sx = -25; sy = Math.random()*ah*0.5; }
+    bird.style.left = sx + 'px'; bird.style.top = sy + 'px';
+    bird.style.transition = `all ${0.7+Math.random()*0.7}s ease-in-out`;
+    arena.appendChild(bird);
+    requestAnimationFrame(() => {
+      bird.style.left = (aw - sx + (Math.random()-0.5)*200) + 'px';
+      bird.style.top = (-30 - Math.random()*50) + 'px';
+      bird.style.opacity = '0';
+    });
+    setTimeout(() => bird.remove(), 1800);
+  }
+
+  function endRound() {
+    if (roundOver) return;
+    roundOver = true;
+    const winner = queue[0] || guaranteedWinner;
+    group.winner = winner;
+    document.getElementById('current-walker-label').innerHTML =
+      `🏆 ${winner.emoji} ${winner.displayName} — SURVIVOR!`;
+    document.getElementById('status-text').textContent = '';
+    renderSurvivors(null);
+    layoutQueue(null);
+
+    horse.classList.remove('kick');
+    setTimeout(() => { horse.style.right = '-220px'; horse.style.opacity = '0'; }, 300);
+
+    setTimeout(() => {
+      showCelebration(
+        winner.emoji,
+        `${winner.displayName} Wins!`,
+        isFinalRound
+          ? "The horse's ALL-TIME FAVORITE! 🏆 Grand Champion!"
+          : groups.length > 1
+            ? `Group ${currentGroupIdx + 1} champion — the horse's favorite!`
+            : "The horse's favorite!",
+        isFinalRound ? "👑 ULTIMATE CHAMPION! 👑" : "Advancing...",
+        () => {
+          if (isFinalRound) showFinalScreen(winner);
+          else { currentGroupIdx++; playNextGroup(); }
+        }
+      );
+    }, 1400);
+  }
+
+  // ══════════════════════
+  // MAIN LOOP
+  // queue[last] = front of line (rightmost, closest to horse)
+  // safe player goes to queue[0] (back of line, leftmost)
+  // ══════════════════════
+  const GRACE_PERIOD = 8000;    // no kicks for first 8 seconds
+  const FORCE_KICK_WINDOW = 50000; // 50s of 50% kicks before force-ending
+
+  try {
+    await sleep(400, signal);
+
+    while (!roundOver && !signal.aborted) {
+      if (queue.length <= 1) { if (!roundOver) endRound(); break; }
+
+      // Front of the visual line = last element in array
+      const player = queue[queue.length - 1];
+
+      // Update label
+      document.getElementById('current-walker-label').innerHTML =
+        `<span style="font-size:1.3rem">${player.emoji}</span> ${player.displayName}`;
+
+      // Animate front player to horse position
+      layoutQueue(player.key);
+      renderSurvivors(player.key);
+
+      // Stand behind the horse for 1.5s
+      await sleep(1500, signal);
+
+      // Check if kicking has started (after grace period)
+      const elapsed = Date.now() - startTime;
+      if (!kickingStarted && elapsed >= GRACE_PERIOD) {
+        kickingStarted = true;
+        document.getElementById('status-text').textContent = "⚠️ The horse is getting antsy!";
+      }
+
+      let kicked = false;
+      if (kickingStarted && queue.length > 1) {
+        const isProtected = player.key === guaranteedWinner.key;
+        if (!isProtected && Math.random() < kickChance) {
+          kicked = true;
+        }
+      }
+
+      if (kicked) {
+        doKick(player);
+        layoutQueue(null);
+        renderSurvivors(null);
+        document.getElementById('current-walker-label').innerHTML = '&nbsp;';
+        await sleep(500, signal);
+      } else {
+        // Safe — remove from end, insert at index 0 (back of line, leftmost)
+        queue.pop();
+        queue.unshift(player);
+        layoutQueue(null);
+        renderSurvivors(null);
+        document.getElementById('current-walker-label').innerHTML = '&nbsp;';
+        await sleep(200, signal);
+      }
+
+      // Safety timeout: force-kick after grace + force window
+      const forceKickAt = GRACE_PERIOD + FORCE_KICK_WINDOW;
+      if (!roundOver && (Date.now() - startTime) > forceKickAt && queue.length > 1) {
+        document.getElementById('status-text').textContent = "🐴 The horse has had enough!";
+        while (queue.length > 1 && !roundOver && !signal.aborted) {
+          // Kick from the front of line (last in array)
+          const victim = queue[queue.length - 1];
+          if (victim.key === guaranteedWinner.key) {
+            // Move winner to back, try next
+            queue.pop();
+            queue.unshift(victim);
+            continue;
+          }
+          document.getElementById('current-walker-label').innerHTML =
+            `<span style="font-size:1.3rem">${victim.emoji}</span> ${victim.displayName}`;
+          layoutQueue(victim.key);
+          renderSurvivors(victim.key);
+          await sleep(800, signal);
+          doKick(victim);
+          layoutQueue(null);
+          renderSurvivors(null);
+          document.getElementById('current-walker-label').innerHTML = '&nbsp;';
+          await sleep(350, signal);
+        }
+        if (!roundOver) endRound();
+        break;
+      }
+    }
+  } catch (e) {
+    if (e.name !== 'AbortError') throw e;
+  }
+}
+
+// ─── FINISH ROUND ───
+function finishRound() {
+  const winners = groups.map(g => g.winner).filter(Boolean);
+  if (winners.length === 1) {
+    showCelebration(winners[0].emoji, `${winners[0].displayName} is the GRAND CHAMPION!`,
+      "The horse's all-time favorite! Nobody survives those hooves like you!",
+      "👑🐴 ULTIMATE WINNER! 🐴👑", () => showFinalScreen(winners[0]));
+    return;
+  }
+  winners.forEach(w => { if (masterPlayerMap[w.key]) w.emoji = masterPlayerMap[w.key].emoji; });
+  if (winners.length <= 9) {
+    isFinalRound = true; currentRound++;
+    groups = [{ players: [...winners], winner: null }];
+    currentGroupIdx = 0; playNextGroup();
+  } else {
+    currentRound++; isFinalRound = false;
+    groups = makeGroups(winners, gameSalt + '_round' + currentRound);
+    currentGroupIdx = 0; playNextGroup();
+  }
+}
+
+// ─── CELEBRATION ───
+function showCelebration(emoji, title, sub, msg, callback) {
+  document.getElementById('winner-emoji').textContent = emoji;
+  document.getElementById('celeb-title').textContent = title;
+  document.getElementById('celeb-sub').textContent = sub;
+  document.getElementById('celeb-msg').textContent = msg;
+  celebrationCallback = callback;
+  document.getElementById('celebration-overlay').classList.add('show');
+  spawnConfetti();
+}
+function celebrationNext() {
+  document.getElementById('celebration-overlay').classList.remove('show');
+  document.querySelectorAll('.confetti-piece').forEach(e => e.remove());
+  if (celebrationCallback) celebrationCallback();
+}
+function spawnConfetti() {
+  const colors = ['#e94560','#f5a623','#53d769','#00b4d8','#ff6b6b','#ffd93d','#c084fc','#ff9ff3'];
+  for (let i = 0; i < 65; i++) {
+    const c = document.createElement('div'); c.className = 'confetti-piece';
+    c.style.left = Math.random()*100+'vw'; c.style.top = '-10px';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.width = (6+Math.random()*8)+'px'; c.style.height = (6+Math.random()*8)+'px';
+    c.style.borderRadius = Math.random()>0.5?'50%':'2px';
+    c.style.animationDuration = (2+Math.random()*3)+'s';
+    c.style.animationDelay = (Math.random()*1.5)+'s';
+    document.body.appendChild(c);
+  }
+}
+
+// ─── FINAL SCREEN ───
+function showFinalScreen(winner) {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('setup-screen').style.display = 'block';
+  document.getElementById('celebration-overlay').classList.remove('show');
+  document.querySelectorAll('.confetti-piece').forEach(e => e.remove());
+  const old = document.getElementById('end-banner'); if (old) old.remove();
+  const banner = document.createElement('div'); banner.id = 'end-banner';
+  banner.style.cssText = `text-align:center; padding:20px; margin:10px auto; max-width:660px;
+    background:var(--card); border-radius:18px; box-shadow:0 6px 24px var(--shadow);`;
+  banner.innerHTML = `
+    <div style="font-size:56px;">${winner.emoji}</div>
+    <h2 style="font-family:'Bangers',cursive; color:var(--accent2); font-size:1.8rem; letter-spacing:3px;">
+      🏆 ${winner.displayName} was the Horse's Favorite! 🏆
+    </h2>
+    <p style="color:var(--green); font-size:1rem;">Grand Champion — survived every kick!</p>
+    <p style="color:var(--text2); margin-top:6px;">Edit the player list below and play again!</p>`;
+  document.getElementById('setup-screen').prepend(banner);
+  refreshSalt();
+}
+
+// ─── THEME ───
+function toggleTheme() {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  updateCelestial();
+}
+</script>
+</body>
+</html>
